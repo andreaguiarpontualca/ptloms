@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_TRAN" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <TSTC>
+    <TCODE>/PTLOMS/PTLOMS</TCODE>
+    <PGMNA>/PTLOMS/MP001</PGMNA>
+    <DYPNO>0005</DYPNO>
+   </TSTC>
+   <TSTCC>
+    <TCODE>/PTLOMS/PTLOMS</TCODE>
+    <S_WEBGUI>1</S_WEBGUI>
+    <S_WIN32>X</S_WIN32>
+    <S_PLATIN>X</S_PLATIN>
+    <S_PERVAS>X</S_PERVAS>
+   </TSTCC>
+   <I18N_TPOOL>
+    <TSTCT>
+     <SPRSL>P</SPRSL>
+     <TTEXT>OMS - On Mob Service</TTEXT>
+    </TSTCT>
+   </I18N_TPOOL>
+  </asx:values>
+ </asx:abap>
+</abapGit>

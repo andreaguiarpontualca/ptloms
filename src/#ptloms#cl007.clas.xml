@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/PTLOMS/CL007</CLSNAME>
+    <LANGU>P</LANGU>
+    <DESCRIPT>OMS - Selects</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_CLASS>
+    <SEOCLASSTX>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Selects</DESCRIPT>
+    </SEOCLASSTX>
+   </DESCRIPTIONS_CLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_AUSP</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela AUSP</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_EQST</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela EQUI</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_EQUI</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela EQUI</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_IFLOT</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela IFLOT</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_IHPA</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela EQUI</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_IMPTT</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela AUSP</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_IMRG</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela EQUI</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_INOB</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela INOB</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_MAST</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela EQUI</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_T352C</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela IFLOT</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SELECT_TPST</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Select na tabela EQUI</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>SELECT_IMPTT</CMPNAME>
+     <SCONAME>RT_ATINN</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Table Type of RSDSSELOPT</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

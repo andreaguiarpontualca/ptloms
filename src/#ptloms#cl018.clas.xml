@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/PTLOMS/CL018</CLSNAME>
+    <LANGU>P</LANGU>
+    <DESCRIPT>OMS - Respostas</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_CLASS>
+    <SEOCLASSTX>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Respostas</DESCRIPT>
+    </SEOCLASSTX>
+   </DESCRIPTIONS_CLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>BUSCA_RESPOSTAS</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Processamento das respostas</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>PESQUISAR_RESPOSTAS</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Pesquisar respostas do checklist</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_RESPOSTAS</CMPNAME>
+     <SCONAME>E_RESPOSTAS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Categoria de Tabela para /PTLOMS/ET090</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_RESPOSTAS</CMPNAME>
+     <SCONAME>E_RETORNO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - V2 : Estrutura Retorno</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_RESPOSTAS</CMPNAME>
+     <SCONAME>I_RESPOSTAS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Categoria de Tabela para /PTLOMS/ET090</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PESQUISAR_RESPOSTAS</CMPNAME>
+     <SCONAME>ET_DADOS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Checklist Questões</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PESQUISAR_RESPOSTAS</CMPNAME>
+     <SCONAME>IV_ERDAT_FIM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Data de criação do registro</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PESQUISAR_RESPOSTAS</CMPNAME>
+     <SCONAME>IV_ERDAT_INI</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Data de criação do registro</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PESQUISAR_RESPOSTAS</CMPNAME>
+     <SCONAME>IV_FORMULARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Formulário</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PESQUISAR_RESPOSTAS</CMPNAME>
+     <SCONAME>IV_ORDEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nº ordem</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PESQUISAR_RESPOSTAS</CMPNAME>
+     <SCONAME>IV_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nome do responsável que criou o objeto</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

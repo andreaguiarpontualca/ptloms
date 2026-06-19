@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/PTLOMS/CL020</CLSNAME>
+    <LANGU>P</LANGU>
+    <DESCRIPT>OMS - Desenvolvimentos IA</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_CLASS>
+    <SEOCLASSTX>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Desenvolvimentos IA</DESCRIPT>
+    </SEOCLASSTX>
+   </DESCRIPTIONS_CLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>ANALISAR_CHECKLIST</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Analisar Checklist</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>BUILD_PROMPT</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Construir Promt</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>CALL_OPENAI</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Chamar Open AI</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>ANALISAR_CHECKLIST</CMPNAME>
+     <SCONAME>IV_JSON_DADOS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Dados para análise</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ANALISAR_CHECKLIST</CMPNAME>
+     <SCONAME>IV_PROMPT_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Prompt de entrada</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ANALISAR_CHECKLIST</CMPNAME>
+     <SCONAME>RS_RESULT</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Categoria de tabela da estrutura /PTLOMS/ET202</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUILD_PROMPT</CMPNAME>
+     <SCONAME>IV_JSON_DADOS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Dados para análise</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUILD_PROMPT</CMPNAME>
+     <SCONAME>IV_PROMPT_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Prompt usuário</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

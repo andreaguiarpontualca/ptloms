@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/PTLOMS/CL005</CLSNAME>
+    <LANGU>P</LANGU>
+    <DESCRIPT>OMS - Autenticação</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_CLASS>
+    <SEOCLASSTX>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Autenticação</DESCRIPT>
+    </SEOCLASSTX>
+   </DESCRIPTIONS_CLASS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>ATUALIZA_SENHA</CMPNAME>
+     <SCONAME>EX_SENHA_ALTERADA</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Código de uma posição</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ATUALIZA_SENHA</CMPNAME>
+     <SCONAME>IM_CONFSENHA</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Campo de caracteres com um comprimento de 32</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ATUALIZA_SENHA</CMPNAME>
+     <SCONAME>IM_SENHA</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Campo de caracteres com um comprimento de 32</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ATUALIZA_SENHA</CMPNAME>
+     <SCONAME>IM_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nome do usuário no mestre de usuários</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>AUTENTICA</CMPNAME>
+     <SCONAME>EX_AUTENTICADO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Código de uma posição</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>AUTENTICA</CMPNAME>
+     <SCONAME>IM_SENHA</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Campo de caracteres com um comprimento de 32</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>AUTENTICA</CMPNAME>
+     <SCONAME>IM_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nome do usuário no mestre de usuários</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_SESSAO</CMPNAME>
+     <SCONAME>EX_GUID</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Campo de caracteres com um comprimento de 32</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_SESSAO</CMPNAME>
+     <SCONAME>IM_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nome do usuário no mestre de usuários</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CRIA_SESSAO</CMPNAME>
+     <SCONAME>EX_SESSAO_CRIADA</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Código de uma posição</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CRIA_SESSAO</CMPNAME>
+     <SCONAME>IM_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nome do usuário no mestre de usuários</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>FINALIZA_SESSAO</CMPNAME>
+     <SCONAME>EX_SESSAO_FINALIZADA</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Código de uma posição</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>FINALIZA_SESSAO</CMPNAME>
+     <SCONAME>IM_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nome do usuário no mestre de usuários</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

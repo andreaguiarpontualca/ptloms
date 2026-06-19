@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/PTLOMS/CL017</CLSNAME>
+    <LANGU>P</LANGU>
+    <DESCRIPT>OMS - Checklist</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_CLASS>
+    <SEOCLASSTX>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Checklist</DESCRIPT>
+    </SEOCLASSTX>
+   </DESCRIPTIONS_CLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>BUSCA_PERGUNTAS</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Recuperar perguntas do checklist</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_PERGUNTAS</CMPNAME>
+     <SCONAME>E_OPCOES</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Categoria de Tabela para /PTLOMS/ET089</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_PERGUNTAS</CMPNAME>
+     <SCONAME>E_PERGUNTAS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - V2 : Estrutura para /PTLOMS/ET088</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_PERGUNTAS</CMPNAME>
+     <SCONAME>E_RETORNO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - V2 : Estrutura para BAPIRET2</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BUSCA_PERGUNTAS</CMPNAME>
+     <SCONAME>I_PERGUNTAS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - V2 : Estrutura para /PTLOMS/ET088</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>
