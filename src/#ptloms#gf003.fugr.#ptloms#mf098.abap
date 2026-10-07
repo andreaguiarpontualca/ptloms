@@ -30,6 +30,19 @@ FUNCTION /ptloms/mf098.
         lv_msg      TYPE char20,
         ls_tb060    TYPE /ptloms/tb060.
 
+* Objetos utilizados no método Registrar_Alerta
+  DATA: lv_objidext TYPE objidext VALUE '%00000000001',
+        lv_ifrefnum TYPE ifrefnum VALUE 1.
+
+  DATA: ls_tb033     TYPE /ptloms/tb033,
+        lv_documento TYPE /ptloms/ed156,
+        lv_titulo    TYPE /ptloms/ed159,
+        lv_mensagem  TYPE /ptloms/ed160,
+        vl_tplnr     TYPE tplnr.
+
+  CONSTANTS: lc_tpdoc     TYPE /ptloms/ed155 VALUE 'R',
+             lc_intervalo TYPE inri-nrrangenr VALUE '01'.
+
 * Verifica se COMPONENTE foi preenchido
   IF im_componente IS INITIAL.
     RETURN.
@@ -250,7 +263,34 @@ FUNCTION /ptloms/mf098.
 
       MODIFY /ptloms/tb060 FROM ls_tb060.
 
+      " Registrar Alerta
+      SELECT SINGLE * INTO ls_tb033
+        FROM tb033 CLIENT SPECIFIED.
+
+      lv_documento = lv_rsnum.
+      CONCATENATE 'Operação' lv_documento INTO lv_titulo SEPARATED BY space.
+      CONCATENATE 'Foi criada a reserva numero' lv_documento
+                  'do tipo' ls_component-res_type
+                  'descrição' ls_component-item_text1
+                  'para o equipamento' ls_tb060-equipament
+        INTO lv_mensagem SEPARATED BY space.
+      vl_tplnr = ls_tb060-functloc.
+
+      CALL METHOD /ptloms/cl030=>registrar_alerta
+        EXPORTING
+          is_contexto_tb033   = ls_tb033
+          iv_tipo_evento      = /ptloms/cl030=>c_evento_nota
+          iv_tipo_documento   = lc_tpdoc
+          iv_documento        = lv_documento
+          iv_equipamento      = ls_tb060-equipament
+          iv_local_instalacao = vl_tplnr
+          iv_usuario          = lv_usuario
+          iv_titulo           = lv_titulo
+          iv_mensagem         = lv_mensagem
+          iv_intervalo        = lc_intervalo.
+
     ENDIF.
+
   ENDIF.
 
   it_return[] = lt_return[].

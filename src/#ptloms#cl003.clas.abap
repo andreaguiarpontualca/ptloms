@@ -300,235 +300,652 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD in_anexar_imagem.
+METHOD in_anexar_imagem.
 
-*********************************************************************************************************
-***  Trecho do código abaixo REVISADO em 30/04/2024 em função da incompatibilidade de versão com a SOLAR.
-*********************************************************************************************************
-***  INICIO - Vidal
-*********************************************************************************************************
+***********************************************************************
+* Anexar documentos em Ordem PM / Nota PM via GOS
+*
+* Compatibilidade:
+* - ABAP antigo / release inferior a 6.5
+* - Sem declarações inline
+* - Sem sintaxe Open SQL moderna
+*
+* Regra:
+* - LS_ANEXO-TIPO_DOCUMENTO = 'ORDEM' -> BUS2007
+* - LS_ANEXO-TIPO_DOCUMENTO = 'NOTA'  -> BUS2038
+*
+* IM_OBJKEY:
+* - Para ORDEM deve conter AUFNR
+* - Para NOTA deve conter QMNUM
+***********************************************************************
 
-* Declarações para geração do anexo
-    DATA: lt_objhead    TYPE STANDARD TABLE OF soli,
-          lt_content    TYPE STANDARD TABLE OF soli,
-          ls_folder_id  TYPE soodk,
-          lv_xstring    TYPE xstring,
-          ls_obj_data   TYPE sood1,
-          ls_obj_id     TYPE soodk,
-          ls_folmem_k   TYPE sofmk,
-          ls_object     TYPE borident,
-          ls_note       TYPE borident,
-          lv_ep_note    TYPE borident-objkey,
-          lv_nota       TYPE qmnum,
-          lv_media(100) TYPE c,
-          lv_type(50)   TYPE c.
+*---------------------------------------------------------------------*
+* Declarações SAPoffice / GOS
+*---------------------------------------------------------------------*
+  DATA: lt_objhead    TYPE STANDARD TABLE OF soli,
+        lt_content    TYPE STANDARD TABLE OF soli,
+        ls_folder_id  TYPE soodk,
+        lv_xstring    TYPE xstring,
+        ls_obj_data   TYPE sood1,
+        ls_obj_id     TYPE soodk,
+        ls_folmem_k   TYPE sofmk,
+        ls_object     TYPE borident,
+        ls_note       TYPE borident,
+        lv_ep_note    TYPE borident-objkey,
+        lv_media(100) TYPE c,
+        lv_type(50)   TYPE c.
 
-* Declaração de estrutura
-    DATA: ls_return LIKE LINE OF et_return.
+*---------------------------------------------------------------------*
+* Business Object
+*---------------------------------------------------------------------*
+  DATA: lv_objtype TYPE borident-objtype,
+        lv_objkey  TYPE borident-objkey.
 
-* Declaração de objeto
-    DATA: o_log TYPE REF TO /ptloms/cl004.
+*---------------------------------------------------------------------*
+* Nota PM
+*---------------------------------------------------------------------*
+  DATA: lv_nota    TYPE qmnum,
+        lv_nota_db TYPE qmnum.
 
-* Declaração de variáveis para Log
-    DATA: lv_subobject TYPE balsubobj,
-          lv_extnumber TYPE balnrext,
-          lv_msg       TYPE bapi_msg,
-          lv_type_log  TYPE symsgty,
-          lv_user      TYPE sy-uname.
+*---------------------------------------------------------------------*
+* Ordem PM
+*---------------------------------------------------------------------*
+  DATA: lv_ordem    TYPE aufnr,
+        lv_ordem_db TYPE aufnr.
 
-    DATA ls_anexo LIKE LINE OF it_anexo.
+*---------------------------------------------------------------------*
+* Auxiliares
+*---------------------------------------------------------------------*
+  DATA: lv_lines      TYPE i.
 
-    IF im_objkey IS NOT INITIAL.
+*---------------------------------------------------------------------*
+* Estruturas
+*---------------------------------------------------------------------*
+  DATA: ls_return LIKE LINE OF et_return,
+        ls_anexo  LIKE LINE OF it_anexo.
 
-      LOOP AT it_anexo INTO ls_anexo WHERE arquivo IS NOT INITIAL.
+*---------------------------------------------------------------------*
+* Log
+*---------------------------------------------------------------------*
+  DATA: o_log TYPE REF TO /ptloms/cl004.
 
+  DATA: lv_subobject TYPE balsubobj,
+        lv_extnumber TYPE balnrext,
+        lv_msg       TYPE bapi_msg,
+        lv_type_log  TYPE symsgty,
+        lv_user      TYPE sy-uname.
 
-*    LOOP AT it_anexo INTO DATA(ls_anexo) WHERE arquivo IS NOT INITIAL.
-
-        ls_object-objkey  = im_objkey.
-        ls_object-objtype = im_objtyp.
-
-        lv_xstring = ls_anexo-arquivo.
-
-*    "Decodificar base64 para Hexadecimal
-*    CALL FUNCTION 'SCMS_BASE64_DECODE_STR'
-*      EXPORTING
-*        input  = ls_anexo-arquivo
-*      IMPORTING
-*        output = lv_xstring
-*      EXCEPTIONS
-*        failed = 1
-*        OTHERS = 2.
-*    IF sy-subrc <> 0.
-** Implement suitable error handling here
-*      ex_message = 'Falha ao decodificar base64'.
-*      RETURN.
-*    ENDIF.
-
-        FREE: lt_content.
-        "Converter de hexadecimal para binario
-        CALL FUNCTION 'SCMS_XSTRING_TO_BINARY'
-          EXPORTING
-            buffer          = lv_xstring
-            append_to_table = 'X'
-*    IMPORTING
-*           output_length   = vl_size
-          TABLES
-            binary_tab      = lt_content.
-
-        IF lt_content IS INITIAL.
-          ls_return-type = 'E'.
-          ls_return-type_desc = 'Error'(025).
-          ls_return-message = 'Falha na conversão de hexadecimal para binário'(026).
-          APPEND ls_return TO et_return.
-          CONTINUE.
-        ENDIF.
-
-        CALL FUNCTION 'SO_CONVERT_CONTENTS_BIN'
-          EXPORTING
-            it_contents_bin = lt_content[]
-          IMPORTING
-            et_contents_bin = lt_content[].
+*---------------------------------------------------------------------*
+* Apoio
+*---------------------------------------------------------------------*
+  DATA: lv_subrc(10) TYPE c.
+  DATA: lv_tipo_documento(20) TYPE c.
 
 
-        CALL FUNCTION 'SO_FOLDER_ROOT_ID_GET'
-          EXPORTING
-            region                = 'B'
-          IMPORTING
-            folder_id             = ls_folder_id
-          EXCEPTIONS
-            communication_failure = 1
-            owner_not_exist       = 2
-            system_failure        = 3
-            x_error               = 4
-            OTHERS                = 5.
-        IF sy-subrc <> 0.
-          ls_return-type = 'E'.
-          ls_return-type_desc = 'Error'(025).
-          ls_return-message = 'Falha ao criar ID da pasta. (SO_FOLDER_ROOT_ID_GET)'(027).
-          APPEND ls_return TO et_return.
-          CONTINUE.
-        ENDIF.
+***********************************************************************
+* Validação inicial
+***********************************************************************
+  IF im_objkey IS INITIAL.
 
-        SPLIT ls_anexo-media_type AT '/' INTO lv_media lv_type.
+    CLEAR ls_return.
 
-        CASE ls_anexo-media_type.
-          WHEN 'application/vnd.ms-excel'.
-            lv_type = 'xls'.
-          WHEN 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'.
-            lv_type = 'xlsx'.
-          WHEN 'application/msword'.
-            lv_type = 'doc'.
-          WHEN 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'.
-            lv_type = 'docx'.
-          WHEN 'application/vnd.ms-powerpoint'.
-            lv_type = 'ppt'.
-          WHEN 'application/vnd.openxmlformats-officedocument.presentationml.presentation'.
-            lv_type = 'pptx'.
-        ENDCASE.
+    ls_return-type      = 'E'.
+    ls_return-type_desc = 'Error'.
 
-        ls_obj_data-objsns   = 'O'.
-        ls_obj_data-objla    = sy-langu.
-        ls_obj_data-objdes   = ls_anexo-file_name.
-        ls_obj_data-file_ext = lv_type."'PNG'."'JPG'.
-*      ls_obj_data-objlen   = lines( lt_content ) * 255.
-        DATA: lv_lines     TYPE i.
-        CLEAR lv_lines.
-        DESCRIBE TABLE lt_content LINES lv_lines.
-        ls_obj_data-objlen   = lv_lines * 255.
+    ls_return-message =
+      'Chave do objeto não informada para criação do anexo'.
 
-        CALL FUNCTION 'SO_OBJECT_INSERT'
-          EXPORTING
-            folder_id             = ls_folder_id
-            object_type           = 'EXT'
-            object_hd_change      = ls_obj_data
-          IMPORTING
-            object_id             = ls_obj_id
-          TABLES
-            objhead               = lt_objhead
-            objcont               = lt_content
-          EXCEPTIONS
-            active_user_not_exist = 35
-            folder_not_exist      = 6
-            object_type_not_exist = 17
-            owner_not_exist       = 22
-            parameter_error       = 23
-            OTHERS                = 1000.
+    APPEND ls_return TO et_return.
 
-        IF sy-subrc <> 0.
-          ls_return-type = 'E'.
-          ls_return-type_desc = 'Error'(025).
-          ls_return-message = 'Falha ao criar ID da pasta. (SO_FOLDER_ROOT_ID_GET)'(027).
-          APPEND ls_return TO et_return.
-          CONTINUE.
-        ENDIF.
+    RETURN.
 
-        ls_folmem_k-foltp = ls_folder_id-objtp.
-        ls_folmem_k-folyr = ls_folder_id-objyr.
-        ls_folmem_k-folno = ls_folder_id-objno.
-        ls_folmem_k-doctp = ls_obj_id-objtp.
-        ls_folmem_k-docyr = ls_obj_id-objyr.
-        ls_folmem_k-docno = ls_obj_id-objno.
-        lv_ep_note        = ls_folmem_k.
-        ls_note-objtype   = 'MESSAGE'.
-        ls_note-objkey    = lv_ep_note.
+  ENDIF.
 
-        CALL FUNCTION 'BINARY_RELATION_CREATE_COMMIT'
-          EXPORTING
-            obj_rolea    = ls_object
-            obj_roleb    = ls_note
-            relationtype = 'ATTA'
-          EXCEPTIONS
-            OTHERS       = 1.
+***********************************************************************
+* Processamento dos anexos
+***********************************************************************
+  LOOP AT it_anexo INTO ls_anexo
+                    WHERE arquivo IS NOT INITIAL.
 
-        IF sy-subrc = 0.
-          ls_return-type = 'S'.
-          ls_return-type_desc = 'Success'(028).
-          ls_return-message = 'Anexo gravado com sucesso!'(029).
-          APPEND ls_return TO et_return.
-        ELSE.
-          ls_return-type = 'E'.
-          ls_return-type_desc = 'Error'(025).
-          ls_return-message = 'Erro ao criar relacionamento do anexo com a Ordem'(030).
-          APPEND ls_return TO et_return.
-        ENDIF.
+*---------------------------------------------------------------------*
+* Limpeza obrigatória por documento
+*---------------------------------------------------------------------*
+    CLEAR: ls_object,
+           ls_note,
+           ls_obj_data,
+           ls_obj_id,
+           ls_folmem_k,
+           ls_folder_id,
+           lv_ep_note,
+           lv_xstring,
+           lv_media,
+           lv_type,
+           lv_objtype,
+           lv_objkey,
+           lv_nota,
+           lv_nota_db,
+           lv_ordem,
+           lv_ordem_db,
+           lv_lines,
+           ls_return.
 
-      ENDLOOP.
+    REFRESH: lt_objhead,
+             lt_content.
 
-    ELSE.
-      ls_return-type = 'E'.
-      ls_return-type_desc = 'Error'(025).
-      ls_return-message = 'Erro ao criar relacionamento do anexo com a Ordem'(030).
-      APPEND ls_return TO et_return.
+***********************************************************************
+* Normaliza tipo de documento
+***********************************************************************
+    CLEAR lv_tipo_documento.
+
+    lv_tipo_documento = ls_anexo-tipo_documento.
+
+    TRANSLATE lv_tipo_documento TO UPPER CASE.
+
+    CONDENSE lv_tipo_documento NO-GAPS.
+
+    IF lv_tipo_documento EQ 'NOTAC/ORDEM' OR lv_tipo_documento EQ 'ORDEMPARAATENDIMEN' OR lv_tipo_documento EQ 'ORDEMDELISTADETA'.
+      lv_tipo_documento = 'ORDEM'.
     ENDIF.
 
-* Grava Log
-    IF et_return[] IS NOT INITIAL.
-      IF im_objtyp = 'BUS2007'.
-        lv_subobject = '/PTLOMS/ORDEM'.
-      ELSEIF im_objtyp = 'BUS2038'.
-        lv_subobject = '/PTLOMS/NOTA'.
+***********************************************************************
+* Determinação do Business Object
+***********************************************************************
+    CASE lv_tipo_documento.
+
+*---------------------------------------------------------------------*
+* NOTA PM
+*---------------------------------------------------------------------*
+      WHEN 'NOTA'.
+
+        lv_objtype = 'BUS2038'.
+        lv_nota    = im_objkey.
+
+*---------------------------------------------------------------------*
+* Normaliza QMNUM
+*---------------------------------------------------------------------*
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+          EXPORTING
+            input  = lv_nota
+          IMPORTING
+            output = lv_nota.
+
+*---------------------------------------------------------------------*
+* Valida se a nota existe
+*---------------------------------------------------------------------*
+        SELECT SINGLE qmnum
+          INTO lv_nota_db
+          FROM qmel
+          WHERE qmnum = lv_nota.
+
+        IF sy-subrc <> 0.
+
+          CLEAR ls_return.
+
+          ls_return-type      = 'E'.
+          ls_return-type_desc = 'Error'.
+
+          CONCATENATE
+            'Nota PM não encontrada:'
+            im_objkey
+            INTO ls_return-message
+            SEPARATED BY space.
+
+          APPEND ls_return TO et_return.
+
+          CONTINUE.
+
+        ENDIF.
+
+        lv_objkey = lv_nota.
+
+*---------------------------------------------------------------------*
+* ORDEM PM
+*---------------------------------------------------------------------*
+      WHEN 'ORDEM'.
+
+        lv_objtype = 'BUS2007'.
+        lv_ordem   = im_objkey.
+
+*---------------------------------------------------------------------*
+* Normaliza AUFNR
+*---------------------------------------------------------------------*
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+          EXPORTING
+            input  = lv_ordem
+          IMPORTING
+            output = lv_ordem.
+
+*---------------------------------------------------------------------*
+* Valida se a ordem existe
+*---------------------------------------------------------------------*
+        SELECT SINGLE aufnr
+          INTO lv_ordem_db
+          FROM aufk
+          WHERE aufnr = lv_ordem.
+
+        IF sy-subrc <> 0.
+
+          CLEAR ls_return.
+
+          ls_return-type      = 'E'.
+          ls_return-type_desc = 'Error'.
+
+          CONCATENATE
+            'Ordem PM não encontrada:'
+            im_objkey
+            INTO ls_return-message
+            SEPARATED BY space.
+
+          APPEND ls_return TO et_return.
+
+          CONTINUE.
+
+        ENDIF.
+
+        lv_objkey = lv_ordem.
+
+*---------------------------------------------------------------------*
+* Tipo não reconhecido
+*---------------------------------------------------------------------*
+      WHEN OTHERS.
+
+        CLEAR ls_return.
+
+        ls_return-type      = 'E'.
+        ls_return-type_desc = 'Error'.
+
+        CONCATENATE
+          'TIPO_DOCUMENTO inválido:'
+          ls_anexo-tipo_documento
+          INTO ls_return-message
+          SEPARATED BY space.
+
+        APPEND ls_return TO et_return.
+
+        CONTINUE.
+
+    ENDCASE.
+
+***********************************************************************
+* Montagem do objeto BOR
+***********************************************************************
+    CLEAR ls_object.
+
+    ls_object-objtype = lv_objtype.
+    ls_object-objkey  = lv_objkey.
+
+***********************************************************************
+* Conteúdo do documento
+***********************************************************************
+    lv_xstring = ls_anexo-arquivo.
+
+*---------------------------------------------------------------------*
+* Converte XSTRING para binário
+*---------------------------------------------------------------------*
+    CALL FUNCTION 'SCMS_XSTRING_TO_BINARY'
+      EXPORTING
+        buffer          = lv_xstring
+        append_to_table = 'X'
+      TABLES
+        binary_tab      = lt_content.
+
+    IF lt_content[] IS INITIAL.
+
+      CLEAR ls_return.
+
+      ls_return-type      = 'E'.
+      ls_return-type_desc = 'Error'.
+
+      CONCATENATE
+        'Falha na conversão do arquivo para binário:'
+        ls_anexo-file_name
+        INTO ls_return-message
+        SEPARATED BY space.
+
+      APPEND ls_return TO et_return.
+
+      CONTINUE.
+
+    ENDIF.
+
+***********************************************************************
+* Conversão necessária para SAPoffice
+***********************************************************************
+    CALL FUNCTION 'SO_CONVERT_CONTENTS_BIN'
+      EXPORTING
+        it_contents_bin = lt_content[]
+      IMPORTING
+        et_contents_bin = lt_content[].
+
+***********************************************************************
+* Recupera pasta raiz SAPoffice
+***********************************************************************
+    CLEAR ls_folder_id.
+
+    CALL FUNCTION 'SO_FOLDER_ROOT_ID_GET'
+      EXPORTING
+        region                = 'B'
+      IMPORTING
+        folder_id             = ls_folder_id
+      EXCEPTIONS
+        communication_failure = 1
+        owner_not_exist       = 2
+        system_failure        = 3
+        x_error               = 4
+        OTHERS                = 5.
+
+    IF sy-subrc <> 0.
+
+      CLEAR ls_return.
+
+      ls_return-type      = 'E'.
+      ls_return-type_desc = 'Error'.
+
+      CLEAR lv_subrc.
+      WRITE sy-subrc TO lv_subrc.
+
+      CONCATENATE
+        'Falha ao recuperar pasta SAPoffice. SUBRC:'
+        lv_subrc
+        INTO ls_return-message
+        SEPARATED BY space.
+
+      APPEND ls_return TO et_return.
+
+      CONTINUE.
+
+    ENDIF.
+
+***********************************************************************
+* Determinação da extensão
+***********************************************************************
+    CLEAR: lv_media,
+           lv_type.
+
+    SPLIT ls_anexo-media_type
+      AT '/'
+      INTO lv_media lv_type.
+
+*---------------------------------------------------------------------*
+* MIME Types especiais
+*---------------------------------------------------------------------*
+    CASE ls_anexo-media_type.
+
+      WHEN 'application/vnd.ms-excel'.
+        lv_type = 'xls'.
+
+      WHEN
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'.
+        lv_type = 'xlsx'.
+
+      WHEN 'application/msword'.
+        lv_type = 'doc'.
+
+      WHEN
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'.
+        lv_type = 'docx'.
+
+      WHEN 'application/vnd.ms-powerpoint'.
+        lv_type = 'ppt'.
+
+      WHEN
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'.
+        lv_type = 'pptx'.
+
+      WHEN 'application/pdf'.
+        lv_type = 'pdf'.
+
+      WHEN 'image/jpeg'.
+        lv_type = 'jpg'.
+
+      WHEN 'image/jpg'.
+        lv_type = 'jpg'.
+
+      WHEN 'image/png'.
+        lv_type = 'png'.
+
+      WHEN 'image/gif'.
+        lv_type = 'gif'.
+
+      WHEN 'text/plain'.
+        lv_type = 'txt'.
+
+    ENDCASE.
+
+***********************************************************************
+* Dados do objeto SAPoffice
+***********************************************************************
+    CLEAR ls_obj_data.
+
+    ls_obj_data-objsns   = 'O'.
+    ls_obj_data-objla    = sy-langu.
+    ls_obj_data-objdes   = ls_anexo-file_name.
+    ls_obj_data-file_ext = lv_type.
+
+*---------------------------------------------------------------------*
+* Tamanho aproximado
+*---------------------------------------------------------------------*
+    CLEAR lv_lines.
+
+    DESCRIBE TABLE lt_content LINES lv_lines.
+
+    ls_obj_data-objlen = lv_lines * 255.
+
+***********************************************************************
+* Criação física do documento SAPoffice
+***********************************************************************
+    CLEAR ls_obj_id.
+
+    CALL FUNCTION 'SO_OBJECT_INSERT'
+      EXPORTING
+        folder_id             = ls_folder_id
+        object_type           = 'EXT'
+        object_hd_change      = ls_obj_data
+      IMPORTING
+        object_id             = ls_obj_id
+      TABLES
+        objhead               = lt_objhead
+        objcont               = lt_content
+      EXCEPTIONS
+        active_user_not_exist = 35
+        folder_not_exist      = 6
+        object_type_not_exist = 17
+        owner_not_exist       = 22
+        parameter_error       = 23
+        OTHERS                = 1000.
+
+    IF sy-subrc <> 0.
+
+      CLEAR ls_return.
+
+      ls_return-type      = 'E'.
+      ls_return-type_desc = 'Error'.
+
+      CLEAR lv_subrc.
+      WRITE sy-subrc TO lv_subrc.
+
+      CONCATENATE
+        'Erro ao criar documento SAPoffice. SUBRC:'
+        lv_subrc
+        INTO ls_return-message
+        SEPARATED BY space.
+
+      APPEND ls_return TO et_return.
+
+      CONTINUE.
+
+    ENDIF.
+
+***********************************************************************
+* Monta chave do documento SAPoffice
+***********************************************************************
+    CLEAR ls_folmem_k.
+
+    ls_folmem_k-foltp = ls_folder_id-objtp.
+    ls_folmem_k-folyr = ls_folder_id-objyr.
+    ls_folmem_k-folno = ls_folder_id-objno.
+
+    ls_folmem_k-doctp = ls_obj_id-objtp.
+    ls_folmem_k-docyr = ls_obj_id-objyr.
+    ls_folmem_k-docno = ls_obj_id-objno.
+
+***********************************************************************
+* Converte estrutura SAPoffice para chave MESSAGE
+***********************************************************************
+    CLEAR: lv_ep_note,
+           ls_note.
+
+    lv_ep_note = ls_folmem_k.
+
+    ls_note-objtype = 'MESSAGE'.
+    ls_note-objkey  = lv_ep_note.
+
+***********************************************************************
+* Criação do relacionamento GOS
+*
+* OBJ_ROLEA:
+*     BUS2007 -> Ordem PM
+*     BUS2038 -> Nota PM
+*
+* OBJ_ROLEB:
+*     MESSAGE -> documento SAPoffice
+*
+* Relação:
+*     ATTA -> Attachment
+***********************************************************************
+    CALL FUNCTION 'BINARY_RELATION_CREATE_COMMIT'
+      EXPORTING
+        obj_rolea    = ls_object
+        obj_roleb    = ls_note
+        relationtype = 'ATTA'
+      EXCEPTIONS
+        OTHERS       = 1.
+
+    IF sy-subrc = 0.
+
+***********************************************************************
+* Sucesso
+***********************************************************************
+      CLEAR ls_return.
+
+      ls_return-type      = 'S'.
+      ls_return-type_desc = 'Success'.
+
+      IF lv_objtype = 'BUS2038'.
+
+        CONCATENATE
+          'Anexo gravado com sucesso na Nota PM'
+          lv_objkey
+          INTO ls_return-message
+          SEPARATED BY space.
+
+      ELSE.
+
+        CONCATENATE
+          'Anexo gravado com sucesso na Ordem PM'
+          lv_objkey
+          INTO ls_return-message
+          SEPARATED BY space.
+
       ENDIF.
 
-      lv_extnumber = im_objkey.
-      lv_user      = im_user.
+      APPEND ls_return TO et_return.
 
-* Instancia objeto de Log
+    ELSE.
+
+***********************************************************************
+* Erro no relacionamento
+***********************************************************************
+      CLEAR ls_return.
+      CLEAR lv_subrc.
+      WRITE sy-subrc TO lv_subrc.
+
+      ls_return-type      = 'E'.
+      ls_return-type_desc = 'Error'.
+
+
+
+      CONCATENATE
+        'Erro ao criar relacionamento GOS.'
+        'Objeto:'
+        lv_objtype
+        'Chave:'
+        lv_objkey
+        'SUBRC:'
+        lv_subrc
+        INTO ls_return-message
+        SEPARATED BY space.
+
+      APPEND ls_return TO et_return.
+
+    ENDIF.
+
+  ENDLOOP.
+
+***********************************************************************
+* Log
+***********************************************************************
+  IF et_return[] IS NOT INITIAL.
+
+*---------------------------------------------------------------------*
+* Determinação do subobjeto de log
+*
+* Mantemos IM_OBJTYP como fallback.
+* Como cada anexo agora possui TIPO_DOCUMENTO, utilizamos o último
+* LV_OBJTYPE processado quando disponível.
+*---------------------------------------------------------------------*
+    IF lv_objtype = 'BUS2007'.
+
+      lv_subobject = '/PTLOMS/ORDEM'.
+
+    ELSEIF lv_objtype = 'BUS2038'.
+
+      lv_subobject = '/PTLOMS/NOTA'.
+
+    ELSEIF im_objtyp = 'BUS2007'.
+
+      lv_subobject = '/PTLOMS/ORDEM'.
+
+    ELSEIF im_objtyp = 'BUS2038'.
+
+      lv_subobject = '/PTLOMS/NOTA'.
+
+    ENDIF.
+
+    lv_extnumber = im_objkey.
+    lv_user      = im_user.
+
+*---------------------------------------------------------------------*
+* Instancia objeto de Log somente se existir subobjeto
+*---------------------------------------------------------------------*
+    IF lv_subobject IS NOT INITIAL.
+
       CREATE OBJECT o_log
         EXPORTING
           i_subobject = lv_subobject
           i_extnumber = lv_extnumber
           i_user      = lv_user.
 
-* Grava mensagens de retorno
+*---------------------------------------------------------------------*
+* Grava mensagens
+*---------------------------------------------------------------------*
       LOOP AT et_return INTO ls_return.
+
         lv_type_log = ls_return-type.
         lv_msg      = ls_return-message.
-        o_log->add( EXPORTING i_type = lv_type_log
-                              i_text = lv_msg ).
+
+        o_log->add(
+          EXPORTING
+            i_type = lv_type_log
+            i_text = lv_msg ).
+
       ENDLOOP.
+
     ENDIF.
-  ENDMETHOD.
+
+  ENDIF.
+
+ENDMETHOD.
 
 
   METHOD in_anexar_rastreamento_usuario.
@@ -4526,40 +4943,65 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
 ***  INICIO - Nádia Rodrigues
 *********************************************************************************************************
 
-* Declaração de objeto
-    DATA: o_log             TYPE REF TO /ptloms/cl004,
-* Declaração de estrutura
-          ls_return         LIKE LINE OF et_return,
-          ls_bapiret2       TYPE bapiret2,
-          ls_ordem_catalogo TYPE /ptloms/et128,
-          ls_return_aux     TYPE bapiret2,
-* Declaração de variáveis para Log
-          lv_number         TYPE bapi2080_nothdre-notif_no,
-          lt_return	        TYPE TABLE OF bapiret2,
-          lt_item           TYPE TABLE OF bapi2080_notiteme,
-          lt_cause          TYPE TABLE OF bapi2080_notcause,
-          lt_task           TYPE TABLE OF bapi2080_nottaske,
-          ls_header         TYPE bapi2080_nothdre.
-
-    IF iv_usuario_app IS INITIAL.
-      RETURN.
-    ENDIF.
-
 *--- Definição das Estruturas ---*
     TYPES: BEGIN OF ty_temp_z,
              aufnr TYPE afko-aufnr,
              vornr TYPE afvc-vornr,
-           END OF ty_temp_z.
+           END OF ty_temp_z,
 
-    DATA: lt_z_data TYPE TABLE OF ty_temp_z,
-          ls_z_data TYPE ty_temp_z.
-
-    TYPES: BEGIN OF ty_tb026,
+           BEGIN OF ty_tb026,
              aufnr TYPE afko-aufnr,
              vornr TYPE afvc-vornr,
-           END OF ty_tb026.
+           END OF ty_tb026,
 
-    DATA: lt_tb026 TYPE TABLE OF ty_tb026.
+           BEGIN OF ty_aufk,
+             aufnr TYPE viaufks-aufnr,
+             equnr TYPE viaufks-equnr,
+             tplnr TYPE viaufks-tplnr,
+             auart TYPE viaufks-auart,
+             ktext TYPE viaufks-ktext,
+             pltxt TYPE iflotx-pltxt,
+           END OF ty_aufk,
+
+           BEGIN OF ty_eqkt,
+             equnr TYPE eqkt-equnr,
+             eqktx TYPE eqkt-eqktx,
+           END OF ty_eqkt.
+
+    DATA: ls_return         LIKE LINE OF et_return,
+          ls_bapiret2       TYPE bapiret2,
+          ls_ordem_catalogo TYPE /ptloms/et128,
+          ls_return_aux     TYPE bapiret2,                    " Declaração de variáveis para Log
+          lv_number         TYPE bapi2080_nothdre-notif_no,   " Declaração de variáveis para Log
+          lt_return         TYPE TABLE OF bapiret2,           " Declaração de variáveis para Log
+          lt_item           TYPE TABLE OF bapi2080_notiteme,  " Declaração de variáveis para Log
+          lt_cause          TYPE TABLE OF bapi2080_notcause,  " Declaração de variáveis para Log
+          lt_task           TYPE TABLE OF bapi2080_nottaske,  " Declaração de variáveis para Log
+          ls_header         TYPE bapi2080_nothdre,            " Declaração de variáveis para Log
+          lt_z_data         TYPE TABLE OF ty_temp_z,
+          ls_z_data         TYPE ty_temp_z,
+          lt_tb026          TYPE TABLE OF ty_tb026,
+          lt_qmel           TYPE TABLE OF qmel,
+          lt_aufk           TYPE TABLE OF ty_aufk,
+          lt_eqkt           TYPE TABLE OF ty_eqkt,
+          lv_sintoma_dano   TYPE string,
+          lv_parte_objeto   TYPE string,
+          lv_causa          TYPE string.
+
+    FIELD-SYMBOLS:
+          <fs_qmel> TYPE qmel,
+          <fs_aufk> TYPE ty_aufk,
+          <fs_eqkt> TYPE ty_eqkt,
+          <fs_item> TYPE bapi2080_notiteme,
+          <fs_cause> TYPE bapi2080_notcause,
+          <fs_task> TYPE bapi2080_nottaske.
+
+*--- Declaração de objeto
+    DATA: o_log             TYPE REF TO /ptloms/cl004.
+
+    IF iv_usuario_app IS INITIAL.
+      RETURN.
+    ENDIF.
 
 *--- 1. Busca os dados brutos da sua tabela Z ---*
     SELECT aufnr vornr
@@ -4567,7 +5009,7 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
       INTO TABLE lt_z_data
       WHERE uname = iv_usuario_app.
 
-    IF lt_z_data IS NOT INITIAL.
+    IF lt_z_data[] IS NOT INITIAL.
 
 *--- 2. normalização (crucial para o sucesso do join/for all entries) ---*
 * como a aufnr na z não tem zeros, preenchemos aqui para igualar à afko
@@ -4581,37 +5023,44 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
         MODIFY lt_z_data FROM ls_z_data TRANSPORTING aufnr.
       ENDLOOP.
 
+*IA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
 *--- 3. preenchimento da lt_tb026 via banco de dados ---*
 * usamos as chaves da lt_z_data (já corrigidas) para buscar na afko/afvc
-      SELECT b~aufnr,
-             c~vornr
+***      SELECT b~aufnr,
+***             c~vornr
+***        FROM afko AS b
+***        INNER JOIN afvc AS c ON c~aufpl = b~aufpl
+***        INNER JOIN afvv AS d ON d~aufpl = c~aufpl
+***                            AND d~aplzl = c~aplzl
+***        FOR ALL ENTRIES IN @lt_z_data
+***        WHERE b~aufnr = @lt_z_data-aufnr
+***          AND c~vornr = @lt_z_data-vornr
+***          AND c~phflg = @space " Garante que não venham sub-operações
+***        INTO TABLE @lt_tb026.
+      SELECT b~aufnr c~vornr
+        INTO TABLE lt_tb026
         FROM afko AS b
-        INNER JOIN afvc AS c ON c~aufpl = b~aufpl
-        INNER JOIN afvv AS d ON d~aufpl = c~aufpl
-                            AND d~aplzl = c~aplzl
-        FOR ALL ENTRIES IN @lt_z_data
-        WHERE b~aufnr = @lt_z_data-aufnr
-          AND c~vornr = @lt_z_data-vornr
-          AND c~phflg = @space " Garante que não venham sub-operações
-        INTO TABLE @lt_tb026.
+        INNER JOIN afvc AS c
+          ON c~aufpl = b~aufpl
+        FOR ALL ENTRIES IN lt_z_data
+        WHERE b~aufnr = lt_z_data-aufnr
+          AND c~vornr = lt_z_data-vornr
+          AND c~phflg = space.
+*IA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
 
-    ENDIF.
+      IF lt_tb026[] IS NOT INITIAL.
 
-
-    IF sy-subrc IS INITIAL.
-
-      SORT lt_tb026 BY aufnr.
-      DELETE ADJACENT DUPLICATES FROM lt_tb026 COMPARING aufnr.
+        SORT lt_tb026 BY aufnr.
+        DELETE ADJACENT DUPLICATES FROM lt_tb026 COMPARING aufnr.
 
 *      SELECT * FROM
 *        qmel INTO TABLE @DATA(lt_qmel)
 *        FOR ALL ENTRIES IN @lt_tb026
 *        WHERE aufnr = @lt_tb026-aufnr.
-      DATA lt_qmel TYPE TABLE OF qmel.
-      SELECT * FROM
-        qmel INTO TABLE lt_qmel
-        FOR ALL ENTRIES IN lt_tb026
-        WHERE aufnr = lt_tb026-aufnr.
+        SELECT * FROM
+          qmel INTO TABLE lt_qmel
+          FOR ALL ENTRIES IN lt_tb026
+          WHERE aufnr = lt_tb026-aufnr.
 
 *      SELECT a~aufnr, a~equnr, a~tplnr, a~auart, a~ktext, b~pltxt
 *        FROM viaufks AS a LEFT OUTER JOIN iflotx AS b
@@ -4619,144 +5068,122 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
 *        INTO TABLE @DATA(lt_aufk)
 *        FOR ALL ENTRIES IN @lt_tb026
 *        WHERE aufnr = @lt_tb026-aufnr.
-      TYPES: BEGIN OF ty_aufk,
-               aufnr TYPE viaufks-aufnr,
-               equnr TYPE viaufks-equnr,
-               tplnr TYPE viaufks-tplnr,
-               auart TYPE viaufks-auart,
-               ktext TYPE viaufks-ktext,
-               pltxt TYPE iflotx-pltxt,
-             END OF ty_aufk.
-      DATA lt_aufk TYPE TABLE OF ty_aufk.
-      SELECT a~aufnr a~equnr a~tplnr a~auart a~ktext b~pltxt
-        FROM viaufks AS a LEFT OUTER JOIN iflotx AS b
-        ON a~tplnr = b~tplnr
-        INTO TABLE lt_aufk
-        FOR ALL ENTRIES IN lt_tb026
-        WHERE aufnr = lt_tb026-aufnr.
+        SELECT a~aufnr a~equnr a~tplnr a~auart a~ktext b~pltxt
+          FROM viaufks AS a LEFT OUTER JOIN iflotx AS b
+          ON a~tplnr = b~tplnr
+          INTO TABLE lt_aufk
+          FOR ALL ENTRIES IN lt_tb026
+          WHERE aufnr = lt_tb026-aufnr.
 
 *      SELECT equnr, eqktx
 *        FROM eqkt
 *        INTO TABLE @DATA(lt_eqkt)
 *        FOR ALL ENTRIES IN @lt_aufk
 *        WHERE equnr = @lt_aufk-equnr.
-      TYPES: BEGIN OF ty_eqkt,
-               equnr TYPE eqkt-equnr,
-               eqktx TYPE eqkt-eqktx,
-             END OF ty_eqkt.
-      DATA lt_eqkt TYPE TABLE OF ty_eqkt.
-      SELECT equnr eqktx
-        FROM eqkt
-        INTO TABLE lt_eqkt
-        FOR ALL ENTRIES IN lt_aufk
-        WHERE equnr = lt_aufk-equnr.
+        SELECT equnr eqktx
+          FROM eqkt
+          INTO TABLE lt_eqkt
+          FOR ALL ENTRIES IN lt_aufk
+          WHERE equnr = lt_aufk-equnr.
 
-      SORT lt_aufk BY aufnr.
+        SORT lt_aufk BY aufnr.
 
-      "Renato
-      DATA: lt_causes_processed TYPE STANDARD TABLE OF string WITH DEFAULT KEY. "Tabela para armazenar causas processadas
-
-      FIELD-SYMBOLS: <fs_cause> LIKE LINE OF lt_cause.
+        "Tabela para armazenar causas processadas
+        DATA: lt_causes_processed TYPE STANDARD TABLE OF string WITH DEFAULT KEY.
 
 *       LOOP AT lt_qmel ASSIGNING FIELD-SYMBOL(<fs_qmel>).
-      FIELD-SYMBOLS: <fs_qmel> LIKE LINE OF lt_qmel.
-      LOOP AT lt_qmel ASSIGNING <fs_qmel>.
+        LOOP AT lt_qmel ASSIGNING <fs_qmel>.
 
 *        lv_number = |{ <fs_qmel>-qmnum ALPHA = IN }|.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-          EXPORTING
-            input  = <fs_qmel>-qmnum
-          IMPORTING
-            output = lv_number.
+          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+            EXPORTING
+              input  = <fs_qmel>-qmnum
+            IMPORTING
+              output = lv_number.
 
-        CALL FUNCTION 'BAPI_ALM_NOTIF_GET_DETAIL'
-          EXPORTING
-            number             = lv_number
-          IMPORTING
-            notifheader_export = ls_header
-          TABLES
-            notitem            = lt_item
-            notifcaus          = lt_cause
-            notiftask          = lt_task
-            return             = lt_return.
+          CALL FUNCTION 'BAPI_ALM_NOTIF_GET_DETAIL'
+            EXPORTING
+              number             = lv_number
+            IMPORTING
+              notifheader_export = ls_header
+            TABLES
+              notitem            = lt_item
+              notifcaus          = lt_cause
+              notiftask          = lt_task
+              return             = lt_return.
 
-        ls_ordem_catalogo-qmtxt                = ls_header-short_text.
-        ls_ordem_catalogo-qmart                = ls_header-notif_type.
+          ls_ordem_catalogo-qmtxt                = ls_header-short_text.
+          ls_ordem_catalogo-qmart                = ls_header-notif_type.
 
 *        ls_ordem_catalogo-notifno              = |{ lv_number ALPHA = OUT }|.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
-          EXPORTING
-            input  = lv_number
-          IMPORTING
-            output = ls_ordem_catalogo-notifno.
+          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+            EXPORTING
+              input  = lv_number
+            IMPORTING
+              output = ls_ordem_catalogo-notifno.
 
 *        READ TABLE lt_aufk ASSIGNING FIELD-SYMBOL(<fs_aufk>) WITH KEY aufnr = <fs_qmel>-aufnr BINARY SEARCH.
-        FIELD-SYMBOLS: <fs_aufk> LIKE LINE OF lt_aufk.
-        READ TABLE lt_aufk ASSIGNING <fs_aufk> WITH KEY aufnr = <fs_qmel>-aufnr BINARY SEARCH.
-
-        IF sy-subrc IS INITIAL.
-
-          ls_ordem_catalogo-ordertype = <fs_aufk>-auart.
-*          ls_ordem_catalogo-orderid   = |{ <fs_qmel>-aufnr ALPHA = OUT }|.
-          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
-            EXPORTING
-              input  = <fs_qmel>-aufnr
-            IMPORTING
-              output = ls_ordem_catalogo-orderid.
-
-*          ls_ordem_catalogo-equipment = |{ <fs_aufk>-equnr ALPHA = OUT }|.
-          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
-            EXPORTING
-              input  = <fs_aufk>-equnr
-            IMPORTING
-              output = ls_ordem_catalogo-equipment.
-
-          ls_ordem_catalogo-functloc  = <fs_aufk>-tplnr.
-          ls_ordem_catalogo-pltxt     = <fs_aufk>-pltxt.
-          ls_ordem_catalogo-shorttext = <fs_aufk>-ktext.
-
-*          READ TABLE lt_eqkt ASSIGNING FIELD-SYMBOL(<fs_eqkt>) WITH KEY equnr = <fs_aufk>-equnr BINARY SEARCH.
-          FIELD-SYMBOLS: <fs_eqkt> LIKE LINE OF lt_eqkt.
-          READ TABLE lt_eqkt ASSIGNING <fs_eqkt> WITH KEY equnr = <fs_aufk>-equnr BINARY SEARCH.
+          SORT lt_aufk BY aufnr.
+          READ TABLE lt_aufk ASSIGNING <fs_aufk> WITH KEY aufnr = <fs_qmel>-aufnr BINARY SEARCH.
 
           IF sy-subrc IS INITIAL.
 
-            ls_ordem_catalogo-eqktx = <fs_eqkt>-eqktx.
+            ls_ordem_catalogo-ordertype = <fs_aufk>-auart.
+*          ls_ordem_catalogo-orderid   = |{ <fs_qmel>-aufnr ALPHA = OUT }|.
+            CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+              EXPORTING
+                input  = <fs_qmel>-aufnr
+              IMPORTING
+                output = ls_ordem_catalogo-orderid.
+
+*          ls_ordem_catalogo-equipment = |{ <fs_aufk>-equnr ALPHA = OUT }|.
+            CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+              EXPORTING
+                input  = <fs_aufk>-equnr
+              IMPORTING
+                output = ls_ordem_catalogo-equipment.
+
+            ls_ordem_catalogo-functloc  = <fs_aufk>-tplnr.
+            ls_ordem_catalogo-pltxt     = <fs_aufk>-pltxt.
+            ls_ordem_catalogo-shorttext = <fs_aufk>-ktext.
+
+*          READ TABLE lt_eqkt ASSIGNING FIELD-SYMBOL(<fs_eqkt>) WITH KEY equnr = <fs_aufk>-equnr BINARY SEARCH.
+            SORT lt_eqkt BY equnr.
+            READ TABLE lt_eqkt ASSIGNING <fs_eqkt> WITH KEY equnr = <fs_aufk>-equnr BINARY SEARCH.
+
+            IF sy-subrc IS INITIAL.
+
+              ls_ordem_catalogo-eqktx = <fs_eqkt>-eqktx.
+
+            ENDIF.
 
           ENDIF.
 
-        ENDIF.
-
-        DATA: lv_item  TYPE string.
+          DATA: lv_item  TYPE string.
 
 *          LOOP AT lt_item ASSIGNING FIELD-SYMBOL(<fs_item>) WHERE notif_no = lv_number.
-        FIELD-SYMBOLS: <fs_item> LIKE LINE OF lt_item.
-        LOOP AT lt_item ASSIGNING <fs_item> WHERE notif_no = lv_number.
+          LOOP AT lt_item ASSIGNING <fs_item> WHERE notif_no = lv_number.
 
-          ls_ordem_catalogo-sintomadanodescricao = <fs_item>-txt_probcd.
-          ls_ordem_catalogo-sintomadanocode      = <fs_item>-d_code.
-          ls_ordem_catalogo-sintomadanocodegroup = <fs_item>-d_codegrp.
-          ls_ordem_catalogo-textoitem            = <fs_item>-descript.
-          ls_ordem_catalogo-parteobjetocode      = <fs_item>-dl_code.
-          ls_ordem_catalogo-parteobjetocodegroup = <fs_item>-dl_codegrp.
-          ls_ordem_catalogo-parteobjetodescricao = <fs_item>-txt_objptcd.
+            ls_ordem_catalogo-sintomadanodescricao = <fs_item>-txt_probcd.
+            ls_ordem_catalogo-sintomadanocode      = <fs_item>-d_code.
+            ls_ordem_catalogo-sintomadanocodegroup = <fs_item>-d_codegrp.
+            ls_ordem_catalogo-textoitem            = <fs_item>-descript.
+            ls_ordem_catalogo-parteobjetocode      = <fs_item>-dl_code.
+            ls_ordem_catalogo-parteobjetocodegroup = <fs_item>-dl_codegrp.
+            ls_ordem_catalogo-parteobjetodescricao = <fs_item>-txt_objptcd.
 
-          " Verificar se os campos de Sintoma de Dano e Parte do Objeto estão preenchidos
-          DATA: lv_sintoma_dano TYPE string.
-          DATA: lv_parte_objeto TYPE string.
-          DATA: lv_causa        TYPE string.
+            " Verifica se os campos de Sintoma de Dano e Parte do Objeto estão preenchidos
+            IF <fs_item>-txt_probcd IS NOT INITIAL.
+              lv_sintoma_dano = <fs_item>-txt_probcd.
+            ELSE.
+              lv_sintoma_dano = ''. " Sintoma de dano vazio
+            ENDIF.
 
-          IF <fs_item>-txt_probcd IS NOT INITIAL.
-            lv_sintoma_dano = <fs_item>-txt_probcd.
-          ELSE.
-            lv_sintoma_dano = ''. " Sintoma de dano vazio
-          ENDIF.
-
-          IF <fs_item>-txt_objptcd IS NOT INITIAL.
-            lv_parte_objeto = <fs_item>-txt_objptcd.
-          ELSE.
-            lv_parte_objeto = ''. " Parte do objeto vazio
-          ENDIF.
+            IF <fs_item>-txt_objptcd IS NOT INITIAL.
+              lv_parte_objeto = <fs_item>-txt_objptcd.
+            ELSE.
+              lv_parte_objeto = ''. " Parte do objeto vazio
+            ENDIF.
 
 *----------------------Inicio CAUSA -------------------
 *          LOOP AT lt_cause ASSIGNING FIELD-SYMBOL(<fs_cause>) WHERE notif_no = <fs_item>-notif_no AND
@@ -4764,34 +5191,34 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
 
 **          LOOP AT lt_cause ASSIGNING <fs_cause> WHERE notif_no = <fs_item>-notif_no
 **                                                  AND item_key = <fs_item>-item_key.
-          lv_causa = ''.
-          " Caso a causa não esteja preenchida, adiciona a linha sem os campos de causa
-          ls_ordem_catalogo-causacodegroup = ''.
-          ls_ordem_catalogo-causacode      = ''.
-          ls_ordem_catalogo-textocausa     = ''.
-          ls_ordem_catalogo-causadescricao = ''.
+            lv_causa = ''.
+            " Caso a causa não esteja preenchida, adiciona a linha sem os campos de causa
+            ls_ordem_catalogo-causacodegroup = ''.
+            ls_ordem_catalogo-causacode      = ''.
+            ls_ordem_catalogo-textocausa     = ''.
+            ls_ordem_catalogo-causadescricao = ''.
 
-          READ TABLE lt_cause ASSIGNING <fs_cause> WITH KEY notif_no = <fs_item>-notif_no
-                                                            item_key = <fs_item>-item_key.
-          IF  sy-subrc      EQ 0.
+            READ TABLE lt_cause ASSIGNING <fs_cause> WITH KEY notif_no = <fs_item>-notif_no
+                                                              item_key = <fs_item>-item_key.
+            IF  sy-subrc      EQ 0.
 
-            " Adiciona o código da causa à tabela de causas processadas
+              " Adiciona o código da causa à tabela de causas processadas
 
-            " Verifica se a causa está preenchida
-            IF <fs_cause>-cause_code IS NOT INITIAL.
+              " Verifica se a causa está preenchida
+              IF <fs_cause>-cause_code IS NOT INITIAL.
 
-              lv_causa = <fs_cause>-cause_codegrp.
-              " Adiciona a linha com a causa preenchida
-              ls_ordem_catalogo-causacodegroup = <fs_cause>-cause_codegrp.
-              ls_ordem_catalogo-causacode      = <fs_cause>-cause_code.
-              ls_ordem_catalogo-textocausa     = <fs_cause>-causetext.
-              ls_ordem_catalogo-causadescricao = <fs_cause>-txt_causecd.
+                lv_causa = <fs_cause>-cause_codegrp.
+                " Adiciona a linha com a causa preenchida
+                ls_ordem_catalogo-causacodegroup = <fs_cause>-cause_codegrp.
+                ls_ordem_catalogo-causacode      = <fs_cause>-cause_code.
+                ls_ordem_catalogo-textocausa     = <fs_cause>-causetext.
+                ls_ordem_catalogo-causadescricao = <fs_cause>-txt_causecd.
 
-            ENDIF.
+              ENDIF.
 
-            " Preenche os dados de Sintoma de Dano e Parte do Objeto
-            ls_ordem_catalogo-sintomadanodescricao = lv_sintoma_dano.
-            ls_ordem_catalogo-parteobjetodescricao = lv_parte_objeto.
+              " Preenche os dados de Sintoma de Dano e Parte do Objeto
+              ls_ordem_catalogo-sintomadanodescricao = lv_sintoma_dano.
+              ls_ordem_catalogo-parteobjetodescricao = lv_parte_objeto.
 
 *            " Adiciona a linha na tabela de resultado
 *            APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
@@ -4806,42 +5233,41 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
 *            APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
 *
 *          ENDIF.
-          ENDIF.
+            ENDIF.
 *-------------------------------------------FIm CAUSA -----------
 
 *------------------------Início TASK
-          CLEAR:
-          ls_ordem_catalogo-task_codegrp    ,
-          ls_ordem_catalogo-task_code       ,
-          ls_ordem_catalogo-task_text       ,
-          ls_ordem_catalogo-task_description.
+            CLEAR:
+            ls_ordem_catalogo-task_codegrp    ,
+            ls_ordem_catalogo-task_code       ,
+            ls_ordem_catalogo-task_text       ,
+            ls_ordem_catalogo-task_description.
 
-          FIELD-SYMBOLS: <fs_task> LIKE LINE OF lt_task.
-          IF  lt_task[]  IS NOT INITIAL.
+            IF  lt_task[]  IS NOT INITIAL.
 
 *            LOOP AT lt_task ASSIGNING <fs_task> WHERE notif_no = <fs_item>-notif_no
 *                                                  AND task_key = <fs_item>-item_key.
-            READ TABLE lt_task ASSIGNING <fs_task> WITH KEY notif_no = <fs_item>-notif_no
-                                                  task_key = <fs_item>-item_key.
-            IF  sy-subrc   EQ 0.
+              READ TABLE lt_task ASSIGNING <fs_task> WITH KEY notif_no = <fs_item>-notif_no
+                                                    task_key = <fs_item>-item_key.
+              IF  sy-subrc   EQ 0.
 
-              ls_ordem_catalogo-task_codegrp     = <fs_task>-task_codegrp.
-              ls_ordem_catalogo-task_code        = <fs_task>-task_code.
-              ls_ordem_catalogo-task_text        = <fs_task>-task_text.
-              ls_ordem_catalogo-task_description = <fs_task>-txt_taskcd.
+                ls_ordem_catalogo-task_codegrp     = <fs_task>-task_codegrp.
+                ls_ordem_catalogo-task_code        = <fs_task>-task_code.
+                ls_ordem_catalogo-task_text        = <fs_task>-task_text.
+                ls_ordem_catalogo-task_description = <fs_task>-txt_taskcd.
 
 *              APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
 
 *            ENDLOOP.
+              ENDIF.
+
             ENDIF.
 
-          ENDIF.
-
-          APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
+            APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
 *------------------ fim TASK ----------
-        ENDLOOP.
+          ENDLOOP.
 
-      ENDLOOP.
+        ENDLOOP.
 
 **      FIELD-SYMBOLS: <fs_task> LIKE LINE OF lt_task.
 **      IF  lt_task[]  IS NOT INITIAL.
@@ -4863,25 +5289,28 @@ CLASS /PTLOMS/CL003 IMPLEMENTATION.
 *********************************************************************************************************
 ***  Fim - Nádia Rodrigues
 *********************************************************************************************************
-      IF sy-subrc IS NOT INITIAL.
+        IF sy-subrc IS NOT INITIAL.
 
-        APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
+          APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
+
+        ENDIF.
+
+        "ENDLOOP.
+
+        IF sy-subrc IS NOT INITIAL.
+
+          APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
+
+        ENDIF.
+
+        "ENDLOOP.
 
       ENDIF.
-
-      "ENDLOOP.
-
-      IF sy-subrc IS NOT INITIAL.
-
-        APPEND ls_ordem_catalogo TO ex_ordem_catalogo.
-
-      ENDIF.
-
-      "ENDLOOP.
 
     ENDIF.
 
     CLEAR: ls_ordem_catalogo, lt_item, lt_cause, lt_return, ls_header.
+    UNASSIGN: <fs_qmel>, <fs_aufk>, <fs_eqkt>, <fs_item>, <fs_cause>, <fs_task>.
 
   ENDMETHOD.
 ENDCLASS.

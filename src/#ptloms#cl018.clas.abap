@@ -53,9 +53,13 @@ CLASS /PTLOMS/CL018 IMPLEMENTATION.
 
     LOOP AT i_respostas INTO ls_respostas.
 
+      CLEAR ls_tb076.
+
       MOVE-CORRESPONDING ls_respostas TO ls_tb076.
 
-      CLEAR: ls_tb076-ordem, ls_tb076-operacao.
+*     Conversão da ordem
+      CLEAR ls_tb076-ordem.
+
       CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
         EXPORTING
           input  = ls_respostas-ordem
@@ -63,6 +67,9 @@ CLASS /PTLOMS/CL018 IMPLEMENTATION.
           output = ls_tb076-ordem.
 
       CONDENSE ls_tb076-ordem NO-GAPS.
+
+*     Conversão da operação
+      CLEAR ls_tb076-operacao.
 
       CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
         EXPORTING
@@ -72,46 +79,72 @@ CLASS /PTLOMS/CL018 IMPLEMENTATION.
 
       CONDENSE ls_tb076-operacao NO-GAPS.
 
-      ls_tb076-mandt = sy-mandt.
-      ls_tb076-erdat = sy-datum.
-      ls_tb076-ernam = sy-uname.
+*     Dados de controle
+      ls_tb076-mandt  = sy-mandt.
+
+      ls_tb076-erdat  = sy-datum.
+      ls_tb076-ernam  = sy-uname.
       ls_tb076-erzeit = sy-uzeit.
-      ls_tb076-aedat = sy-datum.
-      ls_tb076-aenam = sy-uname.
+
+      ls_tb076-aedat  = sy-datum.
+      ls_tb076-aenam  = sy-uname.
       ls_tb076-aezeit = sy-uzeit.
+
       ls_tb076-status = 'SUCESSO'.
+
       APPEND ls_tb076 TO lt_tb076.
 
     ENDLOOP.
 
     IF lt_tb076 IS NOT INITIAL.
 
-      MODIFY /ptloms/tb076 FROM TABLE lt_tb076.
-      COMMIT WORK AND WAIT.
+      MODIFY /ptloms/tb076
+        FROM TABLE lt_tb076.
+
       IF sy-subrc = 0.
+
+        COMMIT WORK AND WAIT.
+
+        CLEAR ls_retorno.
+
         ls_retorno-chave   = 'X'.
         ls_retorno-type    = 'S'.
-        ls_retorno-message = 'Tab. /PTLOMS/TB076 atualizada com sucesso'.
+        ls_retorno-message =
+          'Tab. /PTLOMS/TB076 atualizada com sucesso'.
+
         APPEND ls_retorno TO e_retorno.
 
         LOOP AT i_respostas INTO ls_respostas.
+
           ls_respostas-chave  = 'X'.
           ls_respostas-status = 'SUCESSO'.
+
           APPEND ls_respostas TO e_respostas.
+
         ENDLOOP.
 
       ELSE.
 
+        ROLLBACK WORK.
+
         LOOP AT i_respostas INTO ls_respostas.
+
           ls_respostas-chave  = 'X'.
           ls_respostas-status = 'ERRO'.
+
           APPEND ls_respostas TO e_respostas.
+
         ENDLOOP.
+
+        CLEAR ls_retorno.
 
         ls_retorno-chave   = 'X'.
         ls_retorno-type    = 'W'.
-        ls_retorno-message = 'Erro ao atualizar Tab. /PTLOMS/TB076'.
+        ls_retorno-message =
+          'Erro ao atualizar Tab. /PTLOMS/TB076'.
+
         APPEND ls_retorno TO e_retorno.
+
       ENDIF.
 
     ENDIF.
@@ -137,6 +170,14 @@ METHOD pesquisar_respostas.
         lt_erdat_rng      TYPE RANGE OF /ptloms/tb076-erdat,
         wa_erdat_rng      LIKE LINE OF lt_erdat_rng.
 
+* Tabelas para recuperacao das descricoes dos dominios
+  DATA: lt_dm038 TYPE TABLE OF dd07v,
+        ls_dm038 TYPE dd07v,
+        lt_dm022 TYPE TABLE OF dd07v,
+        ls_dm022 TYPE dd07v,
+        lt_dm023 TYPE TABLE OF dd07v,
+        ls_dm023 TYPE dd07v.
+
   FIELD-SYMBOLS: <fs_dados> LIKE LINE OF et_dados.
 
   CLEAR et_dados.
@@ -147,7 +188,10 @@ METHOD pesquisar_respostas.
   lv_erdat_ini  = iv_erdat_ini.
   lv_erdat_fim  = iv_erdat_fim.
 
-  "Evita pesquisa totalmente aberta
+
+*---------------------------------------------------------------------*
+* Evita pesquisa totalmente aberta
+*---------------------------------------------------------------------*
   IF lv_ordem IS INITIAL
      AND lv_usuario IS INITIAL
      AND lv_formulario IS INITIAL
@@ -156,7 +200,10 @@ METHOD pesquisar_respostas.
     RETURN.
   ENDIF.
 
-  "Ordem
+
+*---------------------------------------------------------------------*
+* Ordem
+*---------------------------------------------------------------------*
   IF lv_ordem IS NOT INITIAL.
 
     CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
@@ -181,7 +228,10 @@ METHOD pesquisar_respostas.
 
   ENDIF.
 
-  "Usuário
+
+*---------------------------------------------------------------------*
+* Usuario
+*---------------------------------------------------------------------*
   IF lv_usuario IS NOT INITIAL.
 
     TRANSLATE lv_usuario TO UPPER CASE.
@@ -202,7 +252,10 @@ METHOD pesquisar_respostas.
 
   ENDIF.
 
-  "Formulário
+
+*---------------------------------------------------------------------*
+* Formulario
+*---------------------------------------------------------------------*
   IF lv_formulario IS NOT INITIAL.
 
     TRANSLATE lv_formulario TO UPPER CASE.
@@ -223,7 +276,10 @@ METHOD pesquisar_respostas.
 
   ENDIF.
 
-  "Validação das datas de entrada
+
+*---------------------------------------------------------------------*
+* Validacao das datas de entrada
+*---------------------------------------------------------------------*
   IF lv_erdat_ini IS NOT INITIAL
      AND lv_erdat_ini NE '00000000'.
 
@@ -239,6 +295,7 @@ METHOD pesquisar_respostas.
     ENDIF.
 
   ENDIF.
+
 
   IF lv_erdat_fim IS NOT INITIAL
      AND lv_erdat_fim NE '00000000'.
@@ -256,7 +313,10 @@ METHOD pesquisar_respostas.
 
   ENDIF.
 
-  "Se início maior que fim, inverte
+
+*---------------------------------------------------------------------*
+* Se inicio maior que fim, inverte
+*---------------------------------------------------------------------*
   IF lv_erdat_ini IS NOT INITIAL
      AND lv_erdat_fim IS NOT INITIAL
      AND lv_erdat_ini GT lv_erdat_fim.
@@ -267,7 +327,10 @@ METHOD pesquisar_respostas.
 
   ENDIF.
 
-  "Range de ERDAT
+
+*---------------------------------------------------------------------*
+* Range de ERDAT
+*---------------------------------------------------------------------*
   CLEAR wa_erdat_rng.
   wa_erdat_rng-sign = 'I'.
 
@@ -298,6 +361,10 @@ METHOD pesquisar_respostas.
 
   APPEND wa_erdat_rng TO lt_erdat_rng.
 
+
+*---------------------------------------------------------------------*
+* Pesquisa das respostas
+*---------------------------------------------------------------------*
   SELECT *
     FROM /ptloms/tb076
     INTO CORRESPONDING FIELDS OF TABLE et_dados
@@ -306,17 +373,148 @@ METHOD pesquisar_respostas.
       AND formulario IN lt_formulario_rng
       AND erdat      IN lt_erdat_rng.
 
-  "Saneamento final para evitar erro no Gateway com Edm.DateTime
+
+*---------------------------------------------------------------------*
+* Recupera descricoes dos dominios
+*---------------------------------------------------------------------*
+
+* Tipo de Uso
+* Dominio: /PTLOMS/DM038
+  CALL FUNCTION 'DD_DOMVALUES_GET'
+    EXPORTING
+      domname        = '/PTLOMS/DM038'
+      text           = 'X'
+      langu          = sy-langu
+    TABLES
+      dd07v_tab      = lt_dm038
+    EXCEPTIONS
+      wrong_textflag = 1
+      OTHERS         = 2.
+
+  IF sy-subrc EQ 0.
+    SORT lt_dm038 BY domvalue_l.
+  ELSE.
+    CLEAR lt_dm038.
+  ENDIF.
+
+
+* Tipo de Vinculo
+* Dominio: /PTLOMS/DM022
+  CALL FUNCTION 'DD_DOMVALUES_GET'
+    EXPORTING
+      domname        = '/PTLOMS/DM022'
+      text           = 'X'
+      langu          = sy-langu
+    TABLES
+      dd07v_tab      = lt_dm022
+    EXCEPTIONS
+      wrong_textflag = 1
+      OTHERS         = 2.
+
+  IF sy-subrc EQ 0.
+    SORT lt_dm022 BY domvalue_l.
+  ELSE.
+    CLEAR lt_dm022.
+  ENDIF.
+
+
+* Tipo de Resposta
+* Dominio: /PTLOMS/DM023
+  CALL FUNCTION 'DD_DOMVALUES_GET'
+    EXPORTING
+      domname        = '/PTLOMS/DM023'
+      text           = 'X'
+      langu          = sy-langu
+    TABLES
+      dd07v_tab      = lt_dm023
+    EXCEPTIONS
+      wrong_textflag = 1
+      OTHERS         = 2.
+
+  IF sy-subrc EQ 0.
+    SORT lt_dm023 BY domvalue_l.
+  ELSE.
+    CLEAR lt_dm023.
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Tratamento dos dados retornados
+*---------------------------------------------------------------------*
   LOOP AT et_dados ASSIGNING <fs_dados>.
 
+
+*---------------------------------------------------------------------*
+* Descricao do Tipo de Uso
+*---------------------------------------------------------------------*
+    CLEAR <fs_dados>-descr_tipo_uso.
+
+    IF <fs_dados>-tipo_uso IS NOT INITIAL.
+
+      READ TABLE lt_dm038 INTO ls_dm038
+        WITH KEY domvalue_l = <fs_dados>-tipo_uso
+        BINARY SEARCH.
+
+      IF sy-subrc EQ 0.
+        <fs_dados>-descr_tipo_uso = ls_dm038-ddtext.
+      ENDIF.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Descricao do Tipo de Vinculo
+*---------------------------------------------------------------------*
+    CLEAR <fs_dados>-descr_tp_vinculo.
+
+    IF <fs_dados>-tp_vinculo IS NOT INITIAL.
+
+      READ TABLE lt_dm022 INTO ls_dm022
+        WITH KEY domvalue_l = <fs_dados>-tp_vinculo
+        BINARY SEARCH.
+
+      IF sy-subrc EQ 0.
+        <fs_dados>-descr_tp_vinculo = ls_dm022-ddtext.
+      ENDIF.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Descricao do Tipo de Resposta
+*---------------------------------------------------------------------*
+    CLEAR <fs_dados>-descr_resposta.
+
+    IF <fs_dados>-resposta IS NOT INITIAL.
+
+      READ TABLE lt_dm023 INTO ls_dm023
+        WITH KEY domvalue_l = <fs_dados>-resposta
+        BINARY SEARCH.
+
+      IF sy-subrc EQ 0.
+        <fs_dados>-descr_resposta = ls_dm023-ddtext.
+      ENDIF.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Conversao da ordem para formato externo
+*---------------------------------------------------------------------*
     IF <fs_dados>-ordem IS NOT INITIAL.
+
       CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
         EXPORTING
           input  = <fs_dados>-ordem
         IMPORTING
           output = <fs_dados>-ordem.
+
     ENDIF.
 
+
+*---------------------------------------------------------------------*
+* Saneamento ERDAT
+*---------------------------------------------------------------------*
     IF <fs_dados>-erdat IS NOT INITIAL
        AND <fs_dados>-erdat NE '00000000'.
 
@@ -332,9 +530,15 @@ METHOD pesquisar_respostas.
       ENDIF.
 
     ELSE.
+
       CLEAR <fs_dados>-erdat.
+
     ENDIF.
 
+
+*---------------------------------------------------------------------*
+* Saneamento AEDAT
+*---------------------------------------------------------------------*
     IF <fs_dados>-aedat IS NOT INITIAL
        AND <fs_dados>-aedat NE '00000000'.
 
@@ -350,11 +554,17 @@ METHOD pesquisar_respostas.
       ENDIF.
 
     ELSE.
+
       CLEAR <fs_dados>-aedat.
+
     ENDIF.
 
   ENDLOOP.
 
+
+*---------------------------------------------------------------------*
+* Ordenacao final
+*---------------------------------------------------------------------*
   SORT et_dados BY ordem
                    operacao
                    formulario

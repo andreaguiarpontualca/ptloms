@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/PTLOMS/CL029</CLSNAME>
+    <LANGU>P</LANGU>
+    <DESCRIPT>OMS - Notificações</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_CLASS>
+    <SEOCLASSTX>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Notificações</DESCRIPT>
+    </SEOCLASSTX>
+   </DESCRIPTIONS_CLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Criar destinatário com snapshot de contato e status</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>ENVIAR_EMAIL</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Enviar por CL_BCS</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>ENVIAR_WHATSAPP</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Reservado para evolução futura</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>MARCAR_LIDO</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Atualizar leitura por ID_NOTIFICACAO + USUARIO]</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>OBTER_NAO_LIDAS</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Preparação para contador/filtro</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Preparação para futura Central</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Processar pendências do job</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Gerar ID e persistir cabeçalho/destinatários</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>ES_DESTINATARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Destinatários das Notificações</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>EV_ERRO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Erro de validação, duplicidade ou persistência</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Erro de Envio</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>IV_EMAIL_ATIVO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Habilitar Canal e-mail</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>IV_ID_NOTIFICACAO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - ID Notificação</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>IV_SOMENTE_PREPARAR</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>X monta retorno sem gravar; uso interno de REGISTRAR</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>IV_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nome do usuário no mestre de usuários</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ADICIONAR_DESTINATARIO</CMPNAME>
+     <SCONAME>IV_WHATS_ATIVO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Habilitar WhatsApp</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_EMAIL</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Mensagem técnica/controlada</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_EMAIL</CMPNAME>
+     <SCONAME>EV_SUCESSO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>X quando o BCS aceitar a solicitação</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_EMAIL</CMPNAME>
+     <SCONAME>IV_ID_NOTIFICACAO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Identifica a notificação</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_EMAIL</CMPNAME>
+     <SCONAME>IV_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Identifica o destinatário</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_WHATSAPP</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Canal reservado para evolução futura</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_WHATSAPP</CMPNAME>
+     <SCONAME>EV_SUCESSO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Sempre em branco nesta versão</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_WHATSAPP</CMPNAME>
+     <SCONAME>IV_ID_NOTIFICACAO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Chave de contexto para evolução futura</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>ENVIAR_WHATSAPP</CMPNAME>
+     <SCONAME>IV_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>ID de usuário</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>MARCAR_LIDO</CMPNAME>
+     <SCONAME>EV_ERRO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Falha de acesso, inexistência ou persistência.</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>MARCAR_LIDO</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Erro de Envio</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>MARCAR_LIDO</CMPNAME>
+     <SCONAME>IV_ID_NOTIFICACAO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Notificação que o usuário acessou</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>MARCAR_LIDO</CMPNAME>
+     <SCONAME>IV_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Usuário OMS autenticado pelo serviço</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NAO_LIDAS</CMPNAME>
+     <SCONAME>EV_ERRO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Distingue falha de consulta de quantidade zero</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NAO_LIDAS</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Distingue falha de consulta de quantidade zero</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NAO_LIDAS</CMPNAME>
+     <SCONAME>EV_QUANTIDADE</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Total de TB105 com USUARIO informado e LIDO em branco</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NAO_LIDAS</CMPNAME>
+     <SCONAME>IV_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Usuário OMS autenticado; obrigatório</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>ET_NOTIFICACOES</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Cabeçalho TB104 com leitura TB105; ordem decrescente</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>EV_ERRO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Validação de filtros ou erro de consulta</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Validação de filtros ou erro de consulta</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>IV_DATA_ATE</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Período inclusivo da criação; limites iniciais são abertos</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>IV_DATA_DE</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Período inclusivo da criação; limites iniciais são abertos</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>IV_LEITURA</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>SPACE = todas; X= lidas; N= não lidas (seletor de interface)</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>IV_LIMITE</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Tamanho máximo do resultado; positivo</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>IV_TIPO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>A ou D; inicial não restringe origem</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>OBTER_NOTIFICACOES</CMPNAME>
+     <SCONAME>IV_USUARIO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Filtro obrigatório</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>ET_LOG</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Resultado por destinatário, incl. bloqueios e falhas técnica</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>EV_ERRO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Falha de infraestrutura/configuração que interrompe o lote</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Erro de Envio</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>EV_PROCESSADOS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Destinatários com atualização de canal confirmada</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>IV_ALERTAS_ATIVOS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Alertas</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>IV_FM_DEQUEUE</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nomes exatos gerados para /PTLOMS/ENOTIF</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>IV_FM_ENQUEUE</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nomes exatos gerados para /PTLOMS/ENOTIF</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>PROCESSAR_PENDENTES</CMPNAME>
+     <SCONAME>IV_MAX</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Máximo de candidatos por execução; deve ser positivo.</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>EV_ERRO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Campo de seleção</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>EV_ID_NOTIFICACAO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - ID Notificação</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>EV_MENSAGEM</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Mensagem de retorno</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>IS_NOTIFICACAO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>OMS - Notificações</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>IT_DESTINATARIOS</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Usuários únicos, com flags de canal. Obrigatório ao menos um</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>IV_ANO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Exercício: ano</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>IV_INTERVALO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Nº do intervalo de numeração</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REGISTRAR</CMPNAME>
+     <SCONAME>IV_SUBOBJETO</SCONAME>
+     <LANGU>P</LANGU>
+     <DESCRIPT>Valor do subobjeto do objeto de intervalo de numeração</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

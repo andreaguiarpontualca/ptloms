@@ -9,6 +9,7 @@
    <FUNCTIONS>
     <item>
      <FUNCNAME>/PTLOMS/MF001</FUNCNAME>
+     <SHORT_TEXT>OMS - Notas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_NOTA</PARAMETER>
@@ -63,43 +64,53 @@
       <RSFDO>
        <PARAMETER>IM_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - IN Nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET044</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET045</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_CAUSA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET046</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_ATIVIDADE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET047</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_TAREFA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET048</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_MEDIDAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET024</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_NOTIF_NO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº da nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETURN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Parâmetro de retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF050</FUNCNAME>
+     <SHORT_TEXT>OMS - Marcação para Eliminação</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_NOTA</PARAMETER>
@@ -111,11 +122,13 @@
       <RSFDO>
        <PARAMETER>IM_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº da nota</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF053</FUNCNAME>
+     <SHORT_TEXT>OMS - Atualizar Fim da Avaria</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_AUFNR</PARAMETER>
@@ -142,23 +155,28 @@
       <RSFDO>
        <PARAMETER>IM_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_ENDMLFNDATE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Fim da avaria (data)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_ENDMLFNTIME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Fim da avaria (hora)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETURN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Parâmetro de retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF055</FUNCNAME>
+     <SHORT_TEXT>OMS - Monta Texto Longo</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_TEXTO_LONGO</PARAMETER>
@@ -180,12 +198,14 @@
       <RSFDO>
        <PARAMETER>IT_TEXTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Linhas de texto para BAPIs ALM</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF056</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Desassociar operação</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>AUFNR</PARAMETER>
@@ -212,18 +232,22 @@
       <RSFDO>
        <PARAMETER>AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VORNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº operação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SUBOPER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Suboperação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>

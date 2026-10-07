@@ -58,6 +58,11 @@ PROCESS AFTER INPUT.
     MODULE valida_confsenha ON CHAIN-REQUEST.
   ENDCHAIN.
 
+* Validações para Centro Manutenção
+  CHAIN.
+    FIELD: wa_usuario-swerk MODULE valida_swerk.
+  ENDCHAIN.
+
 ** Validações para Senha e Conf.Senha
 *  CHAIN.
 *    FIELD: wa_usuario-senha,

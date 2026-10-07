@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <INCLUDES>
+    <SOBJ_NAME>/PTLOMS/LGF008TOP</SOBJ_NAME>
+    <SOBJ_NAME>/PTLOMS/SAPLGF008</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>/PTLOMS/MF108</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Função para validar configuração RFC</SHORT_TEXT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>E_RFC</PARAMETER>
+       <TYP>BDBAPIDST</TYP>
+      </RSEXP>
+     </EXPORT>
+     <EXCEPTION>
+      <RSEXC>
+       <EXCEPTION>SEM_AUT_RFC</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>RFC_NAO_EXISTENTE</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>RFC_NAO_CADASTRADA</EXCEPTION>
+      </RSEXC>
+      <RSEXC>
+       <EXCEPTION>RFC_INCOMPATIVEL</EXCEPTION>
+      </RSEXC>
+     </EXCEPTION>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>E_RFC</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Destino RFC standard para chamadas BAPI sincrónicas</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>SEM_AUT_RFC</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>Usuário sem autorização para executar RFC</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_NAO_EXISTENTE</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>RFC não existe ou indisponível</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_NAO_CADASTRADA</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>RFC não cadastrada</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RFC_INCOMPATIVEL</PARAMETER>
+       <KIND>X</KIND>
+       <STEXT>RFC incompatível com modo de usuário selecionado. Rever configuração SM59</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

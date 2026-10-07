@@ -16,6 +16,7 @@ PROCESS AFTER INPUT.
       FIELD /ptloms/tb071-formulario .
       FIELD /ptloms/tb071-tp_vinculo .
       FIELD /ptloms/tb071-descr_vinculo .
+      FIELD /ptloms/tb071-tipo_uso .
       FIELD /ptloms/tb071-identificacao .
       FIELD /ptloms/tb071-ernam .
       FIELD /ptloms/tb071-erdat .
@@ -31,6 +32,7 @@ PROCESS AFTER INPUT.
       FIELD /ptloms/tb071-formulario .
       FIELD /ptloms/tb071-tp_vinculo .
       FIELD /ptloms/tb071-descr_vinculo .
+      FIELD /ptloms/tb071-tipo_uso .
       MODULE liste_update_liste.
     ENDCHAIN.
   ENDLOOP.

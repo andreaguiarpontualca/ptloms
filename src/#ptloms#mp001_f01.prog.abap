@@ -644,3 +644,58 @@ FORM f_user_command_0005 .
 
 
 ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  F_POPULA_TABLE_LICENca
+*&---------------------------------------------------------------------*
+FORM f_popula_table_licenca.
+
+  DATA: lt_alerts_aux     TYPE /ptloms/cl024=>ty_t_expiration_alert,
+        ls_alert_aux      TYPE /ptloms/cl024=>ty_expiration_alert,
+        lv_days_remaining TYPE int4.
+
+  CREATE OBJECT lo_license_service.
+
+  REFRESH:
+    lt_alerts_aux,
+    lt_alerts.
+
+  lt_alerts_aux = lo_license_service->get_expiration_alerts(
+***                  iv_days_warning    = 30
+                  iv_include_expired = abap_true
+  ).
+
+  LOOP AT lt_alerts_aux INTO ls_alert_aux.
+
+    CLEAR: ls_alert, lv_days_remaining.
+
+*    ls_alert-license_id = ls_alert_aux-license_id.
+    ls_alert-werks = ls_alert_aux-werks.
+    ls_alert-valid_to = ls_alert_aux-valid_to.
+
+    lv_days_remaining = ls_alert_aux-days_remaining.
+
+    IF lv_days_remaining <= 0.
+      ls_alert-days_remaining = 0.
+    ELSE.
+      ls_alert-days_remaining = lv_days_remaining.
+    ENDIF.
+
+    ls_alert-status = ls_alert_aux-status.
+    ls_alert-message = ls_alert_aux-message.
+
+    APPEND ls_alert TO lt_alerts.
+
+  ENDLOOP.
+
+  DESCRIBE TABLE lt_alerts LINES /ptloms/tc001-lines.
+
+***  IF lt_alerts[] IS INITIAL.
+***    MESSAGE e011(/ptloms/cm001) WITH '/PTLOMS/01'.
+***  ENDIF.
+  IF lt_alerts[] IS INITIAL.
+    MESSAGE s011(/ptloms/cm001)
+      WITH '/PTLOMS/01'
+      DISPLAY LIKE 'E'.
+  ENDIF.
+
+ENDFORM.

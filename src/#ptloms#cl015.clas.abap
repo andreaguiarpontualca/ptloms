@@ -96,6 +96,13 @@ public section.
       value(I_DETALHE) type /PTLOMS/CT144
     exporting
       value(E_DETALHE) type /PTLOMS/CT142 .
+  methods BUSCA_LISTA_OPERACOES_DETALHE
+    importing
+      value(ORIGEM) type CHAR3 optional
+      value(RT_AUFNR) type /IWBEP/T_COD_SELECT_OPTIONS optional
+    exporting
+      value(IT_DESPACHO) type /PTLOMS/CT119
+      value(IT_FILTRO) type /PTLOMS/CT103 .
 protected section.
 private section.
 
@@ -176,569 +183,1402 @@ ENDCLASS.
 CLASS /PTLOMS/CL015 IMPLEMENTATION.
 
 
-  METHOD busca_detalhes_ordem.
-*********************************************************************************************************
-***  Trecho do código abaixo REVISADO em 11/12/2025 em função da incompatibilidade de versão com a SOLAR.
-*********************************************************************************************************
-***  INICIO - Iury Silva
-*********************************************************************************************************
-*    DATA: w_detalhe                LIKE LINE OF i_detalhe,
-*          v_aufnr                  TYPE aufnr,
-*          ls_header                TYPE bapi_alm_order_header_e,
-*          lt_operations            TYPE TABLE OF bapi_alm_order_operation_e,
-*          lt_components            TYPE TABLE OF bapi_alm_order_component_e,
-*          lt_text_lines            TYPE TABLE OF bapi_alm_text_lines,
-*          ls_text_lines            LIKE LINE OF  lt_text_lines,
-*          lt_retorno               TYPE bapiret2_t,
-*          ls_retorno               TYPE bapiret2,
-*          lt_texts                 TYPE STANDARD TABLE OF bapi_alm_text,
-*          ls_texts                 LIKE LINE OF lt_texts,
-*          ls_equimaster            TYPE bapi_equi,
-*          ls_equitext              TYPE bapi_eqkt,
-*          ls_return                TYPE bapireturn,
-*          ls_general_exp           TYPE bapi_itob,
-*          detalhe_ordem            TYPE /ptloms/et158,
-*          lt_viaufks               TYPE TABLE OF viaufks,
-*          ls_viaufks               LIKE LINE OF lt_viaufks,
-*          lt_034                   TYPE TABLE OF /ptloms/tb034,
-*          ls_034                   LIKE LINE OF lt_034,
-*          lv_data_referencia_verde TYPE sy-datum,
-*          lv_data_referencia_verme TYPE sy-datum.
-
-    DATA: w_detalhe                LIKE LINE OF i_detalhe,
-          v_aufnr                  TYPE aufnr,
-          ls_header                TYPE bapi_alm_order_header_e,
-          lt_operations            TYPE STANDARD TABLE OF bapi_alm_order_operation_e,
-          lt_components            TYPE STANDARD TABLE OF bapi_alm_order_component_e,
-          lt_text_lines            TYPE STANDARD TABLE OF bapi_alm_text_lines,
-          ls_text_lines            LIKE LINE OF  lt_text_lines,
-          lt_retorno               TYPE bapiret2_t,
-          ls_retorno               TYPE bapiret2,
-          lt_texts                 TYPE STANDARD TABLE OF bapi_alm_text,
-          ls_texts                 LIKE LINE OF lt_texts,
-          ls_equimaster            TYPE bapi_equi,
-          ls_equitext              TYPE bapi_eqkt,
-          ls_return                TYPE bapireturn,
-          ls_general_exp           TYPE bapi_itob,
-          detalhe_ordem            TYPE /ptloms/et158,
-          lt_viaufks               TYPE TABLE OF viaufks,
-          ls_viaufks               LIKE LINE OF lt_viaufks,
-          lt_034                   TYPE TABLE OF /ptloms/tb034,
-          ls_034                   LIKE LINE OF lt_034,
-          lv_data_referencia_verde TYPE sy-datum,
-          lv_data_referencia_verme TYPE sy-datum.
-
-
-    FIELD-SYMBOLS: <fs_operations> TYPE /ptloms/et147.
-
-    "Declarações necessária para compatibilidade
-    DATA: ls_operations  TYPE /ptloms/et147,
-          ls_retorno_aux TYPE /ptloms/et060.
-    FIELD-SYMBOLS: <fs_operation> TYPE bapi_alm_order_operation_e,
-                   <fs_component> TYPE bapi_alm_order_component_e,
-                   <fs_retorno>   TYPE bapiret2.
-
-    LOOP AT i_detalhe INTO w_detalhe.
-
-      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-        EXPORTING
-          input  = w_detalhe-aufnr
-        IMPORTING
-          output = v_aufnr.
-
-
-*----------------------------------*
-*   Busca informações da ordem     *
-*----------------------------------*
-      CALL FUNCTION 'BAPI_ALM_ORDER_GET_DETAIL'
-        EXPORTING
-          number        = v_aufnr
-        IMPORTING
-          es_header     = ls_header
-        TABLES
-          et_operations = lt_operations
-          et_components = lt_components
-          et_text_lines = lt_text_lines
-          et_texts      = lt_texts
-          return        = lt_retorno.
-
-      MOVE-CORRESPONDING ls_header TO detalhe_ordem.
-
-      detalhe_ordem-aufnr = w_detalhe-aufnr.
-*      detalhe_ordem-vornr = w_detalhe-vornr.
-      detalhe_ordem-short_text_ordem = ls_header-short_text.
-
-      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
-        EXPORTING
-          input  = ls_header-task_list_group
-        IMPORTING
-          output = detalhe_ordem-task_list_group.
-
-      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
-        EXPORTING
-          input  = detalhe_ordem-group_counter
-        IMPORTING
-          output = ls_header-group_counter.
-
-      detalhe_ordem-task_list_type   = ls_header-task_list_type.
-
-*      MOVE-CORRESPONDING lt_operations TO detalhe_ordem-operacoesordemset[].
-
-      LOOP AT lt_operations ASSIGNING <fs_operation>.
-        CLEAR ls_operations.
-        MOVE-CORRESPONDING <fs_operation> TO ls_operations.
-        APPEND ls_operations TO detalhe_ordem-operacoesordemset.
-      ENDLOOP.
-
-      LOOP AT detalhe_ordem-operacoesordemset ASSIGNING <fs_operations>.
-        <fs_operations>-aufnr = detalhe_ordem-aufnr.
-        <fs_operations>-vornr = <fs_operations>-activity.
-      ENDLOOP.
-
-      DATA: lt_saldo_material TYPE /ptloms/ct064.
-      DATA: ls_components     TYPE /ptloms/et155,
-            ls_saldo_material LIKE LINE OF lt_saldo_material.
-      DATA: rt_matnr TYPE /iwbep/t_cod_select_options,
-            rt_werks TYPE /iwbep/t_cod_select_options,
-            rt_lgort TYPE /iwbep/t_cod_select_options,
-            ls_matnr LIKE LINE OF rt_matnr,
-            ls_werks LIKE LINE OF rt_werks,
-            ls_lgort LIKE LINE OF rt_lgort.
-
-      DATA: o_oms TYPE REF TO /ptloms/cl001.
-
-      CREATE OBJECT o_oms.
-
-*      MOVE-CORRESPONDING lt_components TO detalhe_ordem-componentesordemset[].
-
-      LOOP AT lt_components ASSIGNING <fs_component>.
-        IF <fs_component>-delete_ind IS NOT INITIAL.
-          CONTINUE.
-        ENDIF.
-        CLEAR ls_components.
-        MOVE-CORRESPONDING <fs_component> TO ls_components.
-        APPEND ls_components TO detalhe_ordem-componentesordemset.
-      ENDLOOP.
-
-      LOOP AT detalhe_ordem-componentesordemset INTO ls_components.
-        SHIFT ls_components-reserv_no LEFT DELETING LEADING '0'.
-        SHIFT ls_components-res_item  LEFT DELETING LEADING '0'.
-        SHIFT ls_components-orderid  LEFT DELETING LEADING '0'.
-        SHIFT ls_components-material  LEFT DELETING LEADING '0'.
-*        SHIFT ls_components-activity  LEFT DELETING LEADING '0'.
-
-* Busca estoque do Material do Componente
-        IF ls_components-material IS NOT INITIAL.
-          CLEAR:  ls_matnr, rt_matnr.
-          ls_matnr-sign = 'I'.
-          ls_matnr-option = 'EQ'.
-          ls_matnr-low = ls_components-material.
-          APPEND ls_matnr TO rt_matnr.
-
-          IF ls_components-plant IS NOT INITIAL.
-            CLEAR:  ls_werks, rt_werks.
-            ls_werks-sign = 'I'.
-            ls_werks-option = 'EQ'.
-            ls_werks-low = ls_components-plant.
-            APPEND ls_werks TO rt_werks.
-
-            IF ls_components-stge_loc IS NOT INITIAL.
-              CLEAR: ls_lgort, rt_lgort.
-              ls_lgort-sign = 'I'.
-              ls_lgort-option = 'EQ'.
-              ls_lgort-low = ls_components-stge_loc.
-              APPEND ls_lgort TO rt_lgort.
-            ENDIF.
-
-            REFRESH lt_saldo_material[].
-            o_oms->out_estoque_material(
-              EXPORTING
-                rt_matnr = rt_matnr
-                rt_werks = rt_werks
-                rt_lgort = rt_lgort
-              IMPORTING
-                et_saldo = lt_saldo_material ).
-
-            READ TABLE lt_saldo_material INTO ls_saldo_material INDEX 1.
-            ls_components-labst = ls_saldo_material-labst.
-          ENDIF.
-        ENDIF.
-
-* Converte Unidade de Medida
-        CALL FUNCTION 'CONVERSION_EXIT_CUNIT_OUTPUT'
-          EXPORTING
-            input          = ls_components-requirement_quantity_unit
-            language       = sy-langu
-          IMPORTING
-            output         = ls_components-requirement_quantity_unit
-          EXCEPTIONS
-            unit_not_found = 1
-            OTHERS         = 2.
-
-        MODIFY detalhe_ordem-componentesordemset FROM ls_components.
-
-      ENDLOOP.
-
-*      MOVE-CORRESPONDING lt_retorno TO detalhe_ordem-retornoset[].
-
-      LOOP AT lt_retorno ASSIGNING <fs_retorno>.
-        CLEAR ls_retorno_aux.
-        MOVE-CORRESPONDING <fs_retorno> TO ls_retorno_aux.
-        APPEND ls_retorno_aux TO detalhe_ordem-retornoset.
-      ENDLOOP.
-
-      LOOP AT lt_text_lines INTO ls_text_lines.
-        CONCATENATE detalhe_ordem-texto_longo_ordem ls_text_lines-tdline INTO detalhe_ordem-texto_longo_ordem.
-      ENDLOOP.
-
-
-*----------------------------------*
-*   Busca descrição do equipamento *
-*----------------------------------*
-      IF ls_header-equipment IS NOT INITIAL.
-
-        CALL FUNCTION 'BAPI_EQMT_DETAIL'
-          EXPORTING
-            equipment  = ls_header-equipment
-          IMPORTING
-            equimaster = ls_equimaster
-            equitext   = ls_equitext
-            return     = ls_return.
-
-        detalhe_ordem-eqktx = ls_equitext-equidescr.
-        detalhe_ordem-invnr = ls_equimaster-inventory.
-
-        SELECT SINGLE ile~kostl
-          FROM equz AS eqz
-          LEFT OUTER JOIN iloa AS ile ON ile~iloan = eqz~iloan
-         WHERE eqz~datbi = '99991231'
-           AND eqz~equnr = @ls_header-equipment
-          INTO @detalhe_ordem-kostl_equnr.
-
-        detalhe_ordem-kostl_equnr = |{ detalhe_ordem-kostl_equnr ALPHA = OUT }|.
-
-      ENDIF.
-
-*------------------------------------------*
-*  Busca descrição do local de instalação  *
-*------------------------------------------*
-      IF ls_header-funct_loc IS NOT INITIAL.
-
-        CALL FUNCTION 'BAPI_FUNCLOC_GETDETAIL'
-          EXPORTING
-            functlocation    = ls_header-funct_loc
-          IMPORTING
-            data_general_exp = ls_general_exp.
-
-        detalhe_ordem-pltxt = ls_general_exp-descript.
-
-        SELECT SINGLE ifl~kostl
-          FROM iflo AS ifl
-         WHERE ifl~tplnr = @ls_header-funct_loc
-          INTO @detalhe_ordem-kostl_funcl.
-
-        detalhe_ordem-kostl_funcl = |{ detalhe_ordem-kostl_funcl ALPHA = OUT }|.
-
-        CALL FUNCTION 'CONVERSION_EXIT_TPLNR_OUTPUT'
-          EXPORTING
-            input  = ls_header-funct_loc
-          IMPORTING
-            output = detalhe_ordem-funct_loc.
-
-      ENDIF.
-
-*------------------------------------------*
-*  Busca detalhes da nota                  *
-*------------------------------------------*
-      IF detalhe_ordem-notif_no IS NOT INITIAL.
-
-        DATA: ls_header_nota TYPE bapi2080_nothdre.
-
-        CALL FUNCTION 'BAPI_ALM_NOTIF_GET_DETAIL'
-          EXPORTING
-            number             = detalhe_ordem-notif_no
-            clear_buffer       = 'X'
-          IMPORTING
-            notifheader_export = ls_header_nota.
-
-        detalhe_ordem-qmart = ls_header_nota-notif_type.
-        detalhe_ordem-qmtxt = ls_header_nota-short_text.
-
-      ENDIF.
-
-*----------------------------------*
-*   Lógica para semáforo           *
-*----------------------------------*
-      SELECT SINGLE *
-       INTO ls_034
-       FROM /ptloms/tb034
-       WHERE auart = detalhe_ordem-order_type AND
-             priok = detalhe_ordem-priority.
-
-      IF sy-subrc EQ 0.
-        IF ls_034-urgente = 'X'.
-          " Vermelho
-          detalhe_ordem-semaforo_icone = 'sap-icon://status-error'.
-          detalhe_ordem-semaforo_cor   = 'Error'.
-          detalhe_ordem-semaforo_descricao = 'Alerta Vermelho'(001).
-        ELSE.
-
-          IF ls_034-verde IS INITIAL AND ls_034-vermelho IS INITIAL AND ls_034-amarelo IS INITIAL.
-            detalhe_ordem-semaforo_cor = 'None'.
-            detalhe_ordem-semaforo_descricao = 'Sem Alerta'(002).
-          ELSE.
-            lv_data_referencia_verde = detalhe_ordem-start_date(4) && detalhe_ordem-start_date+4(2) && detalhe_ordem-start_date+6(4).
-            lv_data_referencia_verde = lv_data_referencia_verde + ls_034-verde.
-
-            lv_data_referencia_verme = detalhe_ordem-start_date(4) && detalhe_ordem-start_date+4(2) && detalhe_ordem-start_date+6(4).
-            lv_data_referencia_verme = lv_data_referencia_verme + ls_034-vermelho.
-            " Verde
-            IF sy-datum <= lv_data_referencia_verde.
-              detalhe_ordem-semaforo_icone = 'sap-icon://status-completed'.
-              detalhe_ordem-semaforo_cor   = 'Success'.
-              detalhe_ordem-semaforo_descricao = 'Alerta Verde'(003).
-              " Vermelho
-            ELSEIF sy-datum >= lv_data_referencia_verme.
-              detalhe_ordem-semaforo_icone = 'sap-icon://status-error'.
-              detalhe_ordem-semaforo_cor   = 'Error'.
-              detalhe_ordem-semaforo_descricao = 'Alerta Vermelho'(001).
-              " Amarelo
-            ELSE.
-              detalhe_ordem-semaforo_icone = 'sap-icon://status-critical'.
-              detalhe_ordem-semaforo_cor   = 'Warning'.
-              detalhe_ordem-semaforo_descricao = 'Alerta Amarelo'(004).
-            ENDIF.
-          ENDIF.
-        ENDIF.
-      ELSE.
-        detalhe_ordem-semaforo_cor = 'None'.
-        detalhe_ordem-semaforo_descricao = 'Sem Alerta'(002).
-      ENDIF.
-
-*------------------------------------------*
-*  Busca Texto referente à prioridade      *
-*------------------------------------------*
-      IF detalhe_ordem-priotype IS NOT INITIAL AND detalhe_ordem-priority IS NOT INITIAL.
-        SELECT SINGLE priokx
-          FROM t356_t INTO detalhe_ordem-priokx
-          WHERE spras = sy-langu AND
-                artpr = detalhe_ordem-priotype AND
-                priok = detalhe_ordem-priority.
-      ENDIF.
-
-*---------------------------------------------------------*
-*  Busca Nome do grupo de planejamento de manutenção      *
-*---------------------------------------------------------*
-      IF detalhe_ordem-plangroup IS NOT INITIAL.
-        SELECT SINGLE innam
-           FROM t024i INTO detalhe_ordem-innam
-           WHERE ingrp = detalhe_ordem-plangroup.
-      ENDIF.
-
-*---------------------------------------------------------*
-*  Busca Denominação breve do Centro de trabalho          *
-*---------------------------------------------------------*
-      IF ls_header-mn_wk_ctr IS NOT INITIAL AND ls_header-plant IS NOT INITIAL.
-        SELECT SINGLE ktext
-          INTO detalhe_ordem-mn_wkctr_descricao
-          FROM  ld_crhd
-               WHERE  spras  = sy-langu
-               AND    arbpl  = ls_header-mn_wk_ctr
-               AND    werks  = ls_header-plant.
-
-      ENDIF.
-
-*---------------------------------------------------------*
-*  Busca Nome Centro                                      *
-*---------------------------------------------------------*
-      SELECT SINGLE name1
-          INTO detalhe_ordem-desc_planplant
-          FROM t001w
-          WHERE werks = detalhe_ordem-planplant.
-
-*---------------------------------------------------------*
-*  Busca Centro de Trabalho                               *
-*---------------------------------------------------------*
-      IF detalhe_ordem-mn_wkctr_id IS NOT INITIAL.
-        SELECT SINGLE arbpl FROM crhd INTO detalhe_ordem-arbpl WHERE objid = detalhe_ordem-mn_wkctr_id.
-      ENDIF.
-
-      APPEND detalhe_ordem TO e_detalhe.
-
-      CLEAR: w_detalhe,ls_header,detalhe_ordem,ls_equimaster,ls_equitext,ls_return.
-
-      REFRESH: lt_operations,lt_components,lt_text_lines,lt_texts,lt_retorno.
+METHOD busca_detalhes_ordem.
+
+*---------------------------------------------------------------------*
+* Declarações
+*---------------------------------------------------------------------*
+  DATA:
+    w_detalhe                LIKE LINE OF i_detalhe,
+    v_aufnr                  TYPE aufnr,
+
+    ls_header                TYPE bapi_alm_order_header_e,
+
+    lt_operations            TYPE STANDARD TABLE OF
+                                   bapi_alm_order_operation_e,
+    lt_components            TYPE STANDARD TABLE OF
+                                   bapi_alm_order_component_e,
+    lt_text_lines            TYPE STANDARD TABLE OF
+                                   bapi_alm_text_lines,
+    ls_text_lines            LIKE LINE OF lt_text_lines,
+
+    lt_retorno               TYPE bapiret2_t,
+
+    lt_texts                 TYPE STANDARD TABLE OF bapi_alm_text,
+
+    ls_equimaster            TYPE bapi_equi,
+    ls_equitext              TYPE bapi_eqkt,
+    ls_return                TYPE bapireturn,
+    ls_general_exp           TYPE bapi_itob,
+
+    detalhe_ordem            TYPE /ptloms/et158,
+
+    ls_034                   TYPE /ptloms/tb034,
+
+    lv_data_referencia_verde TYPE sy-datum,
+    lv_data_referencia_verme TYPE sy-datum,
+
+    ls_operations            TYPE /ptloms/et147,
+    ls_retorno_aux           TYPE /ptloms/et060,
+
+    ls_header_nota           TYPE bapi2080_nothdre.
+
+
+*---------------------------------------------------------------------*
+* Dados complementares do equipamento
+*
+* KOSTL -> ILOA
+* RBNR  -> EQUZ
+*---------------------------------------------------------------------*
+  DATA:
+    BEGIN OF ls_equipment_data,
+      kostl TYPE iloa-kostl,
+      rbnr  TYPE equz-rbnr,
+    END OF ls_equipment_data.
+
+
+*---------------------------------------------------------------------*
+* Dados complementares do local de instalação
+*
+* KOSTL -> ILOA
+* RBNR  -> IFLOT
+*---------------------------------------------------------------------*
+  DATA:
+    BEGIN OF ls_funcloc_data,
+      kostl TYPE iloa-kostl,
+      rbnr  TYPE iflot-rbnr,
+    END OF ls_funcloc_data.
+
+
+*---------------------------------------------------------------------*
+* Componentes / estoque
+*---------------------------------------------------------------------*
+  DATA:
+    lt_saldo_material TYPE /ptloms/ct064,
+    ls_components     TYPE /ptloms/et155,
+
+    rt_matnr          TYPE /iwbep/t_cod_select_options,
+    rt_werks          TYPE /iwbep/t_cod_select_options,
+    rt_lgort          TYPE /iwbep/t_cod_select_options,
+
+    ls_saldo_material LIKE LINE OF lt_saldo_material,
+    ls_matnr          LIKE LINE OF rt_matnr,
+    ls_werks          LIKE LINE OF rt_werks,
+    ls_lgort          LIKE LINE OF rt_lgort,
+
+    o_oms             TYPE REF TO /ptloms/cl001.
+
+
+*---------------------------------------------------------------------*
+* Field-symbols
+*---------------------------------------------------------------------*
+  FIELD-SYMBOLS:
+    <fs_operations> TYPE /ptloms/et147,
+    <fs_operation>  TYPE bapi_alm_order_operation_e,
+    <fs_component>  TYPE bapi_alm_order_component_e,
+    <fs_retorno>    TYPE bapiret2.
+
+
+*---------------------------------------------------------------------*
+* Cria objeto uma única vez
+*---------------------------------------------------------------------*
+  CREATE OBJECT o_oms.
+
+
+*---------------------------------------------------------------------*
+* Processamento das ordens
+*---------------------------------------------------------------------*
+  LOOP AT i_detalhe INTO w_detalhe.
+
+
+*---------------------------------------------------------------------*
+* Limpeza
+*---------------------------------------------------------------------*
+    CLEAR:
+      v_aufnr,
+      ls_header,
+      detalhe_ordem,
+      ls_equimaster,
+      ls_equitext,
+      ls_return,
+      ls_general_exp,
+      ls_equipment_data,
+      ls_funcloc_data,
+      ls_header_nota,
+      ls_034,
+      lv_data_referencia_verde,
+      lv_data_referencia_verme.
+
+    REFRESH:
+      lt_operations,
+      lt_components,
+      lt_text_lines,
+      lt_texts,
+      lt_retorno,
+      lt_saldo_material,
+      rt_matnr,
+      rt_werks,
+      rt_lgort.
+
+
+*---------------------------------------------------------------------*
+* Converte número da ordem para formato interno
+*---------------------------------------------------------------------*
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+      EXPORTING
+        input  = w_detalhe-aufnr
+      IMPORTING
+        output = v_aufnr.
+
+
+*---------------------------------------------------------------------*
+* Busca informações da ordem
+*---------------------------------------------------------------------*
+    CALL FUNCTION 'BAPI_ALM_ORDER_GET_DETAIL'
+      EXPORTING
+        number        = v_aufnr
+      IMPORTING
+        es_header     = ls_header
+      TABLES
+        et_operations = lt_operations
+        et_components = lt_components
+        et_text_lines = lt_text_lines
+        et_texts      = lt_texts
+        return        = lt_retorno.
+
+
+*---------------------------------------------------------------------*
+* Cabeçalho
+*---------------------------------------------------------------------*
+    MOVE-CORRESPONDING ls_header
+      TO detalhe_ordem.
+
+    detalhe_ordem-aufnr =
+      w_detalhe-aufnr.
+
+    detalhe_ordem-short_text_ordem =
+      ls_header-short_text.
+
+    detalhe_ordem-task_list_type =
+      ls_header-task_list_type.
+
+
+*---------------------------------------------------------------------*
+* Conversões do cabeçalho
+*---------------------------------------------------------------------*
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+      EXPORTING
+        input  = detalhe_ordem-aufnr
+      IMPORTING
+        output = detalhe_ordem-aufnr.
+
+
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+      EXPORTING
+        input  = detalhe_ordem-orderid
+      IMPORTING
+        output = detalhe_ordem-orderid.
+
+
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+      EXPORTING
+        input  = ls_header-task_list_group
+      IMPORTING
+        output = detalhe_ordem-task_list_group.
+
+
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+      EXPORTING
+        input  = detalhe_ordem-group_counter
+      IMPORTING
+        output = detalhe_ordem-group_counter.
+
+
+*---------------------------------------------------------------------*
+* Operações
+*---------------------------------------------------------------------*
+    LOOP AT lt_operations
+      ASSIGNING <fs_operation>.
+
+      CLEAR ls_operations.
+
+      MOVE-CORRESPONDING <fs_operation>
+        TO ls_operations.
+
+      APPEND ls_operations
+        TO detalhe_ordem-operacoesordemset.
 
     ENDLOOP.
 
 
-*********************************************************************************************************
-***  FIM - Iury Silva
-*********************************************************************************************************
-  ENDMETHOD.
+*---------------------------------------------------------------------*
+* Complementa ordem/operação
+*---------------------------------------------------------------------*
+    LOOP AT detalhe_ordem-operacoesordemset
+      ASSIGNING <fs_operations>.
+
+      <fs_operations>-aufnr =
+        detalhe_ordem-aufnr.
+
+      <fs_operations>-vornr =
+        <fs_operations>-activity.
+
+    ENDLOOP.
 
 
-  METHOD busca_historico_associacoes.
+*---------------------------------------------------------------------*
+* Componentes
+*---------------------------------------------------------------------*
+    LOOP AT lt_components
+      ASSIGNING <fs_component>.
 
-    DATA: ti_tb066       TYPE TABLE OF /ptloms/tb066,
-          wa_tb066       TYPE /ptloms/tb066,
-          ti_associacoes TYPE /ptloms/ct061,
-          associacao     LIKE LINE OF associacoes,
-          ti_retorno     TYPE /ptloms/ct060,
-          wa_retorno     LIKE LINE OF ti_retorno,
-          wa_aufnr       TYPE /iwbep/s_cod_select_option.
+      IF <fs_component>-delete_ind IS NOT INITIAL.
+        CONTINUE.
+      ENDIF.
 
-    SELECT *
-      FROM /ptloms/tb066
-      INTO TABLE ti_tb066
-      WHERE guid          IN rt_guid AND
-            aufnr         IN rt_aufnr AND
-            vornr         IN rt_vornr AND
-            uname         IN rt_uname AND
-            criadopor     IN rt_criadopor AND
-            datacriacao   IN rt_datacriacao AND
-            horacriacao   IN rt_horacriacao AND
-            alteradopor   IN rt_alteradopor AND
-            datadessac    IN rt_datadessac AND
-            horadessac    IN rt_horadessac AND
-            motivo        IN rt_motivo.
+      CLEAR ls_components.
 
-    IF sy-subrc IS INITIAL.
+      MOVE-CORRESPONDING <fs_component>
+        TO ls_components.
 
-      DATA: ti_status_operacao      TYPE TABLE OF /ptloms/et187,
-            wa_187                  TYPE /ptloms/et187,
-            ti_motivos_deassociacao TYPE TABLE OF /ptloms/et186,
-            wa_186                  TYPE /ptloms/et186.
-      DATA(ti_dd07v_tab) = VALUE dd07v_tab( ).
-      DATA(lv_rc)        = VALUE sy-subrc( ).
+      APPEND ls_components
+        TO detalhe_ordem-componentesordemset.
 
-      "Busca Descrição dos Status Operação
-      CALL FUNCTION 'DD_DOMVALUES_GET'
+    ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* Processamento dos componentes
+*---------------------------------------------------------------------*
+    LOOP AT detalhe_ordem-componentesordemset
+      INTO ls_components.
+
+
+*---------------------------------------------------------------------*
+* Reserva
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
         EXPORTING
-          domname        = '/PTLOMS/DM008'
-          text           = abap_true
+          input  = ls_components-reserv_no
         IMPORTING
-          rc             = lv_rc
-        TABLES
-          dd07v_tab      = ti_dd07v_tab
-        EXCEPTIONS
-          wrong_textflag = 1
-          OTHERS         = 2.
+          output = ls_components-reserv_no.
 
-      LOOP AT ti_dd07v_tab INTO DATA(linha).
-        wa_187-status = linha-domvalue_l.
-        wa_187-descr_status = linha-ddtext.
-        APPEND wa_187 TO ti_status_operacao.
-      ENDLOOP.
 
-      CLEAR: ti_dd07v_tab[], lv_rc, linha.
-
-      "Busca Descrição dos Motivos da deassociação
-      CALL FUNCTION 'DD_DOMVALUES_GET'
+*---------------------------------------------------------------------*
+* Item da reserva
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
         EXPORTING
-          domname        = '/PTLOMS/DM006'
-          text           = abap_true
+          input  = ls_components-res_item
         IMPORTING
-          rc             = lv_rc
-        TABLES
-          dd07v_tab      = ti_dd07v_tab
-        EXCEPTIONS
-          wrong_textflag = 1
-          OTHERS         = 2.
+          output = ls_components-res_item.
 
-      LOOP AT ti_dd07v_tab INTO linha.
-        wa_186-motivo = linha-domvalue_l.
-        wa_186-descr_motivo = linha-ddtext.
-        APPEND wa_186 TO ti_motivos_deassociacao.
-      ENDLOOP.
 
-      SORT: ti_status_operacao ASCENDING BY status,
-            ti_motivos_deassociacao ASCENDING BY motivo.
+*---------------------------------------------------------------------*
+* Ordem
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = ls_components-orderid
+        IMPORTING
+          output = ls_components-orderid.
 
-      DELETE ADJACENT DUPLICATES FROM ti_status_operacao.
-      DELETE ADJACENT DUPLICATES FROM ti_motivos_deassociacao.
 
-      DATA: data TYPE char20.
-      DATA: hora TYPE char20.
+*---------------------------------------------------------------------*
+* Material
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = ls_components-material
+        IMPORTING
+          output = ls_components-material.
 
-      LOOP AT ti_tb066 INTO wa_tb066.
 
-        associacao-guid         = wa_tb066-guid.
-        associacao-aufnr        = wa_tb066-aufnr.
-        associacao-vornr        = wa_tb066-vornr.
-        associacao-uname        = wa_tb066-uname.
-        associacao-criadopor    = wa_tb066-criadopor.
-        associacao-datacriacao  = wa_tb066-datacriacao.
-        associacao-horacriacao  = wa_tb066-horacriacao.
+*---------------------------------------------------------------------*
+* Estoque do material
+*---------------------------------------------------------------------*
+      IF ls_components-material IS NOT INITIAL.
 
-        CONCATENATE wa_tb066-datacriacao+6(2) '/'
-                    wa_tb066-datacriacao+4(2) '/'
-                    wa_tb066-datacriacao(4)
-                    INTO data.
+        REFRESH:
+          rt_matnr,
+          rt_werks,
+          rt_lgort,
+          lt_saldo_material.
 
-        CONCATENATE wa_tb066-horacriacao(2) ':'
-                    wa_tb066-horacriacao+2(2) ':'
-                    wa_tb066-horacriacao+4(2)
-                    INTO hora.
+        CLEAR:
+          ls_matnr,
+          ls_werks,
+          ls_lgort,
+          ls_saldo_material.
 
-        CONCATENATE data hora INTO associacao-data_hora_cri SEPARATED BY space.
 
-        associacao-alteradopor  = wa_tb066-alteradopor.
-        associacao-datadessac   = wa_tb066-datadessac.
-        associacao-horadessac   = wa_tb066-horadessac.
+*---------------------------------------------------------------------*
+* Material
+*---------------------------------------------------------------------*
+        ls_matnr-sign   = 'I'.
+        ls_matnr-option = 'EQ'.
+        ls_matnr-low    = ls_components-material.
 
-        CLEAR: data, hora.
-        CONCATENATE wa_tb066-datadessac+6(2) '/'
-                    wa_tb066-datadessac+4(2) '/'
-                    wa_tb066-datadessac(4)
-                    INTO data.
+        APPEND ls_matnr
+          TO rt_matnr.
 
-        CONCATENATE wa_tb066-horadessac(2) ':'
-                    wa_tb066-horadessac+2(2) ':'
-                    wa_tb066-horadessac+4(2)
-                    INTO hora.
 
-        CONCATENATE data hora INTO associacao-data_hora_desa SEPARATED BY space.
+*---------------------------------------------------------------------*
+* Centro
+*---------------------------------------------------------------------*
+        IF ls_components-plant IS NOT INITIAL.
 
-        associacao-motivo       = wa_tb066-motivo.
-        associacao-status       = wa_tb066-status.
+          ls_werks-sign   = 'I'.
+          ls_werks-option = 'EQ'.
+          ls_werks-low    = ls_components-plant.
 
-        CLEAR:wa_186, wa_187.
-        READ TABLE ti_motivos_deassociacao INTO wa_186 WITH KEY motivo = wa_tb066-motivo BINARY SEARCH.
-        IF sy-subrc = 0.
-          associacao-descr_motivo = wa_186-descr_motivo.
+          APPEND ls_werks
+            TO rt_werks.
+
+
+*---------------------------------------------------------------------*
+* Depósito
+*---------------------------------------------------------------------*
+          IF ls_components-stge_loc IS NOT INITIAL.
+
+            ls_lgort-sign   = 'I'.
+            ls_lgort-option = 'EQ'.
+            ls_lgort-low    = ls_components-stge_loc.
+
+            APPEND ls_lgort
+              TO rt_lgort.
+
+          ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Consulta saldo
+*---------------------------------------------------------------------*
+          o_oms->out_estoque_material(
+            EXPORTING
+              rt_matnr = rt_matnr
+              rt_werks = rt_werks
+              rt_lgort = rt_lgort
+            IMPORTING
+              et_saldo = lt_saldo_material ).
+
+
+          READ TABLE lt_saldo_material
+            INTO ls_saldo_material
+            INDEX 1.
+
+          IF sy-subrc = 0.
+
+            ls_components-labst =
+              ls_saldo_material-labst.
+
+          ENDIF.
+
         ENDIF.
 
-        READ TABLE ti_status_operacao INTO wa_187 WITH KEY status = wa_tb066-status BINARY SEARCH.
-        IF sy-subrc = 0.
-          associacao-descr_status = wa_187-descr_status.
+      ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Unidade
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'CONVERSION_EXIT_CUNIT_OUTPUT'
+        EXPORTING
+          input          =
+                           ls_components-requirement_quantity_unit
+          language       =
+                           sy-langu
+        IMPORTING
+          output         =
+                           ls_components-requirement_quantity_unit
+        EXCEPTIONS
+          unit_not_found = 1
+          OTHERS         = 2.
+
+
+*---------------------------------------------------------------------*
+* Atualiza componente
+*---------------------------------------------------------------------*
+      MODIFY detalhe_ordem-componentesordemset
+        FROM ls_components.
+
+    ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* Retornos da BAPI
+*---------------------------------------------------------------------*
+    LOOP AT lt_retorno
+      ASSIGNING <fs_retorno>.
+
+      CLEAR ls_retorno_aux.
+
+      MOVE-CORRESPONDING <fs_retorno>
+        TO ls_retorno_aux.
+
+      APPEND ls_retorno_aux
+        TO detalhe_ordem-retornoset.
+
+    ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* Texto longo
+*---------------------------------------------------------------------*
+    LOOP AT lt_text_lines
+      INTO ls_text_lines.
+
+      CONCATENATE
+        detalhe_ordem-texto_longo_ordem
+        ls_text_lines-tdline
+        INTO detalhe_ordem-texto_longo_ordem.
+
+    ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* EQUIPAMENTO
+*---------------------------------------------------------------------*
+    IF ls_header-equipment IS NOT INITIAL.
+
+      CLEAR:
+        ls_equimaster,
+        ls_equitext,
+        ls_return.
+
+
+*---------------------------------------------------------------------*
+* Dados do equipamento
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'BAPI_EQMT_DETAIL'
+        EXPORTING
+          equipment  = ls_header-equipment
+        IMPORTING
+          equimaster = ls_equimaster
+          equitext   = ls_equitext
+          return     = ls_return.
+
+
+*---------------------------------------------------------------------*
+* Equipamento no formato externo
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = ls_header-equipment
+        IMPORTING
+          output = detalhe_ordem-equipment.
+
+
+*---------------------------------------------------------------------*
+* Descrição
+*---------------------------------------------------------------------*
+      detalhe_ordem-eqktx =
+        ls_equitext-equidescr.
+
+
+*---------------------------------------------------------------------*
+* Patrimônio
+*---------------------------------------------------------------------*
+      detalhe_ordem-invnr =
+        ls_equimaster-inventory.
+
+
+*---------------------------------------------------------------------*
+* Centro de custo + RBNR do equipamento
+*
+* EQUZ:
+*   EQUNR
+*   ILOAN
+*   RBNR
+*
+* ILOA:
+*   ILOAN
+*   KOSTL
+*---------------------------------------------------------------------*
+      CLEAR:
+        ls_equipment_data,
+        detalhe_ordem-kostl_equnr,
+        detalhe_ordem-rbnr_equipment.
+
+
+      SELECT SINGLE
+             ile~kostl
+             eqz~rbnr
+        INTO ls_equipment_data
+        FROM equz AS eqz
+        LEFT OUTER JOIN iloa AS ile
+          ON ile~iloan = eqz~iloan
+       WHERE eqz~equnr = ls_header-equipment
+         AND eqz~datbi = '99991231'.
+
+
+      IF sy-subrc = 0.
+
+        detalhe_ordem-kostl_equnr =
+          ls_equipment_data-kostl.
+
+        detalhe_ordem-rbnr_equipment =
+          ls_equipment_data-rbnr.
+
+
+*---------------------------------------------------------------------*
+* Centro de custo formato externo
+*---------------------------------------------------------------------*
+        IF detalhe_ordem-kostl_equnr IS NOT INITIAL.
+
+          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+            EXPORTING
+              input  = detalhe_ordem-kostl_equnr
+            IMPORTING
+              output = detalhe_ordem-kostl_equnr.
+
         ENDIF.
 
-        wa_retorno-chave   = 'X'.
-        wa_retorno-type    = 'S'.
-        wa_retorno-message = 'Sucesso'.
-        associacao-tiporetorno = 'S'.
-        APPEND wa_retorno TO ti_retorno.
-        APPEND LINES OF ti_retorno TO associacao-retorno.
-        APPEND associacao TO associacoes.
-        CLEAR: wa_retorno, associacao, ti_retorno[].
-
-      ENDLOOP.
-
-    ELSE.
-
-      wa_retorno-chave   = 'X'.
-      wa_retorno-type    = 'W'.
-      wa_retorno-message = 'Nenhum dado encontrado na Tab. /PTLOMS/TB0066'.
-      associacao-tiporetorno = 'W'.
-      APPEND wa_retorno TO ti_retorno.
-      APPEND LINES OF ti_retorno TO associacao-retorno.
-      APPEND associacao TO associacoes.
-      EXIT.
+      ENDIF.
 
     ENDIF.
 
-  ENDMETHOD.
+
+*---------------------------------------------------------------------*
+* LOCAL DE INSTALAÇÃO
+*---------------------------------------------------------------------*
+    IF ls_header-funct_loc IS NOT INITIAL.
+
+      CLEAR ls_general_exp.
+
+
+*---------------------------------------------------------------------*
+* Dados gerais
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'BAPI_FUNCLOC_GETDETAIL'
+        EXPORTING
+          functlocation    = ls_header-funct_loc
+        IMPORTING
+          data_general_exp = ls_general_exp.
+
+
+*---------------------------------------------------------------------*
+* Descrição
+*---------------------------------------------------------------------*
+      detalhe_ordem-pltxt =
+        ls_general_exp-descript.
+
+
+*---------------------------------------------------------------------*
+* Centro de custo + RBNR do local de instalação
+*
+* IFLOT:
+*   TPLNR
+*   ILOAN
+*   RBNR
+*
+* ILOA:
+*   ILOAN
+*   KOSTL
+*---------------------------------------------------------------------*
+      CLEAR:
+        ls_funcloc_data,
+        detalhe_ordem-kostl_funcl,
+        detalhe_ordem-rbnr_funct_loc.
+
+
+      SELECT SINGLE
+             ile~kostl
+             ift~rbnr
+        INTO ls_funcloc_data
+        FROM iflot AS ift
+        LEFT OUTER JOIN iloa AS ile
+          ON ile~iloan = ift~iloan
+       WHERE ift~tplnr = ls_header-funct_loc.
+
+
+      IF sy-subrc = 0.
+
+        detalhe_ordem-kostl_funcl =
+          ls_funcloc_data-kostl.
+
+        detalhe_ordem-rbnr_funct_loc =
+          ls_funcloc_data-rbnr.
+
+
+*---------------------------------------------------------------------*
+* Centro de custo formato externo
+*---------------------------------------------------------------------*
+        IF detalhe_ordem-kostl_funcl IS NOT INITIAL.
+
+          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+            EXPORTING
+              input  = detalhe_ordem-kostl_funcl
+            IMPORTING
+              output = detalhe_ordem-kostl_funcl.
+
+        ENDIF.
+
+      ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Local de instalação formato externo
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'CONVERSION_EXIT_TPLNR_OUTPUT'
+        EXPORTING
+          input  = ls_header-funct_loc
+        IMPORTING
+          output = detalhe_ordem-funct_loc.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* NOTA
+*---------------------------------------------------------------------*
+    IF detalhe_ordem-notif_no IS NOT INITIAL.
+
+      CLEAR ls_header_nota.
+
+
+      CALL FUNCTION 'BAPI_ALM_NOTIF_GET_DETAIL'
+        EXPORTING
+          number             = detalhe_ordem-notif_no
+          clear_buffer       = 'X'
+        IMPORTING
+          notifheader_export = ls_header_nota.
+
+
+      detalhe_ordem-qmart =
+        ls_header_nota-notif_type.
+
+      detalhe_ordem-qmtxt =
+        ls_header_nota-short_text.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* SEMÁFORO
+*---------------------------------------------------------------------*
+    CLEAR:
+      ls_034,
+      lv_data_referencia_verde,
+      lv_data_referencia_verme.
+
+
+    SELECT SINGLE *
+      INTO ls_034
+      FROM /ptloms/tb034
+     WHERE auart = detalhe_ordem-order_type
+       AND priok = detalhe_ordem-priority.
+
+
+    IF sy-subrc = 0.
+
+
+*---------------------------------------------------------------------*
+* Urgente
+*---------------------------------------------------------------------*
+      IF ls_034-urgente = 'X'.
+
+        detalhe_ordem-semaforo_icone =
+          'sap-icon://status-error'.
+
+        detalhe_ordem-semaforo_cor =
+          'Error'.
+
+        detalhe_ordem-semaforo_descricao =
+          'Alerta Vermelho'(001).
+
+
+      ELSE.
+
+
+*---------------------------------------------------------------------*
+* Sem parametrização
+*---------------------------------------------------------------------*
+        IF ls_034-verde    IS INITIAL AND
+           ls_034-vermelho IS INITIAL AND
+           ls_034-amarelo  IS INITIAL.
+
+          CLEAR detalhe_ordem-semaforo_icone.
+
+          detalhe_ordem-semaforo_cor =
+            'None'.
+
+          detalhe_ordem-semaforo_descricao =
+            'Sem Alerta'(002).
+
+
+        ELSE.
+
+
+*---------------------------------------------------------------------*
+* Verifica data base
+*---------------------------------------------------------------------*
+          IF detalhe_ordem-start_date IS NOT INITIAL.
+
+
+*---------------------------------------------------------------------*
+* Data verde
+*---------------------------------------------------------------------*
+            CONCATENATE
+              detalhe_ordem-start_date(4)
+              detalhe_ordem-start_date+4(2)
+              detalhe_ordem-start_date+6(2)
+              INTO lv_data_referencia_verde.
+
+
+            lv_data_referencia_verde =
+              lv_data_referencia_verde +
+              ls_034-verde.
+
+
+*---------------------------------------------------------------------*
+* Data vermelha
+*---------------------------------------------------------------------*
+            CONCATENATE
+              detalhe_ordem-start_date(4)
+              detalhe_ordem-start_date+4(2)
+              detalhe_ordem-start_date+6(2)
+              INTO lv_data_referencia_verme.
+
+
+            lv_data_referencia_verme =
+              lv_data_referencia_verme +
+              ls_034-vermelho.
+
+
+*---------------------------------------------------------------------*
+* Verde
+*---------------------------------------------------------------------*
+            IF sy-datum <= lv_data_referencia_verde.
+
+              detalhe_ordem-semaforo_icone =
+                'sap-icon://status-completed'.
+
+              detalhe_ordem-semaforo_cor =
+                'Success'.
+
+              detalhe_ordem-semaforo_descricao =
+                'Alerta Verde'(003).
+
+
+*---------------------------------------------------------------------*
+* Vermelho
+*---------------------------------------------------------------------*
+            ELSEIF sy-datum >= lv_data_referencia_verme.
+
+              detalhe_ordem-semaforo_icone =
+                'sap-icon://status-error'.
+
+              detalhe_ordem-semaforo_cor =
+                'Error'.
+
+              detalhe_ordem-semaforo_descricao =
+                'Alerta Vermelho'(001).
+
+
+*---------------------------------------------------------------------*
+* Amarelo
+*---------------------------------------------------------------------*
+            ELSE.
+
+              detalhe_ordem-semaforo_icone =
+                'sap-icon://status-critical'.
+
+              detalhe_ordem-semaforo_cor =
+                'Warning'.
+
+              detalhe_ordem-semaforo_descricao =
+                'Alerta Amarelo'(004).
+
+            ENDIF.
+
+
+          ELSE.
+
+            CLEAR detalhe_ordem-semaforo_icone.
+
+            detalhe_ordem-semaforo_cor =
+              'None'.
+
+            detalhe_ordem-semaforo_descricao =
+              'Sem Alerta'(002).
+
+          ENDIF.
+
+        ENDIF.
+
+      ENDIF.
+
+
+    ELSE.
+
+      CLEAR detalhe_ordem-semaforo_icone.
+
+      detalhe_ordem-semaforo_cor =
+        'None'.
+
+      detalhe_ordem-semaforo_descricao =
+        'Sem Alerta'(002).
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* TEXTO DA PRIORIDADE
+*---------------------------------------------------------------------*
+    IF detalhe_ordem-priotype IS NOT INITIAL AND
+       detalhe_ordem-priority IS NOT INITIAL.
+
+      CLEAR detalhe_ordem-priokx.
+
+      SELECT SINGLE priokx
+        INTO detalhe_ordem-priokx
+        FROM t356_t
+       WHERE spras = sy-langu
+         AND artpr = detalhe_ordem-priotype
+         AND priok = detalhe_ordem-priority.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* GRUPO DE PLANEJAMENTO
+*---------------------------------------------------------------------*
+    IF detalhe_ordem-plangroup IS NOT INITIAL.
+
+      CLEAR detalhe_ordem-innam.
+
+      SELECT SINGLE innam
+        INTO detalhe_ordem-innam
+        FROM t024i
+       WHERE ingrp = detalhe_ordem-plangroup.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* DESCRIÇÃO DO CENTRO DE TRABALHO
+*---------------------------------------------------------------------*
+    IF ls_header-mn_wk_ctr IS NOT INITIAL AND
+       ls_header-plant     IS NOT INITIAL.
+
+      CLEAR detalhe_ordem-mn_wkctr_descricao.
+
+      SELECT SINGLE ktext
+        INTO detalhe_ordem-mn_wkctr_descricao
+        FROM ld_crhd
+       WHERE spras = sy-langu
+         AND arbpl = ls_header-mn_wk_ctr
+         AND werks = ls_header-plant.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* NOME DO CENTRO
+*---------------------------------------------------------------------*
+    IF detalhe_ordem-planplant IS NOT INITIAL.
+
+      CLEAR detalhe_ordem-desc_planplant.
+
+      SELECT SINGLE name1
+        INTO detalhe_ordem-desc_planplant
+        FROM t001w
+       WHERE werks = detalhe_ordem-planplant.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* CENTRO DE TRABALHO
+*---------------------------------------------------------------------*
+    IF detalhe_ordem-mn_wkctr_id IS NOT INITIAL.
+
+      CLEAR detalhe_ordem-arbpl.
+
+      SELECT SINGLE arbpl
+        INTO detalhe_ordem-arbpl
+        FROM crhd
+       WHERE objid = detalhe_ordem-mn_wkctr_id.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Resultado
+*---------------------------------------------------------------------*
+    APPEND detalhe_ordem
+      TO e_detalhe.
+
+
+*---------------------------------------------------------------------*
+* Limpeza para próxima ordem
+*---------------------------------------------------------------------*
+    CLEAR:
+      w_detalhe,
+      ls_header,
+      detalhe_ordem,
+      ls_equimaster,
+      ls_equitext,
+      ls_return,
+      ls_general_exp,
+      ls_equipment_data,
+      ls_funcloc_data.
+
+    REFRESH:
+      lt_operations,
+      lt_components,
+      lt_text_lines,
+      lt_texts,
+      lt_retorno,
+      lt_saldo_material,
+      rt_matnr,
+      rt_werks,
+      rt_lgort.
+
+  ENDLOOP.
+
+ENDMETHOD.
+
+
+METHOD busca_historico_associacoes.
+*********************************************************************************************************
+***  Trecho do código abaixo REVISADO em 20/07/2026 em função da incompatibilidade de versão com a SOLAR.
+*********************************************************************************************************
+***  INICIO - Iury Silva
+*********************************************************************************************************
+
+
+*--------------------------------------------------------------------*
+* Declarações
+*--------------------------------------------------------------------*
+  DATA: ti_tb066       TYPE TABLE OF /ptloms/tb066,
+        wa_tb066       TYPE /ptloms/tb066,
+        ti_associacoes TYPE /ptloms/ct061,
+        associacao     LIKE LINE OF associacoes,
+        ti_retorno     TYPE /ptloms/ct060,
+        wa_retorno     LIKE LINE OF ti_retorno,
+        wa_aufnr       TYPE /iwbep/s_cod_select_option.
+
+  DATA: ti_status_operacao      TYPE TABLE OF /ptloms/et187,
+        wa_187                  TYPE /ptloms/et187,
+        ti_motivos_deassociacao TYPE TABLE OF /ptloms/et186,
+        wa_186                  TYPE /ptloms/et186.
+
+  DATA: ti_dd07v_tab TYPE dd07v_tab,
+        linha        TYPE dd07v,
+        lv_rc        TYPE sy-subrc,
+        data         TYPE char20,
+        hora         TYPE char20.
+
+*--------------------------------------------------------------------*
+* Busca histórico de associações
+*--------------------------------------------------------------------*
+  SELECT *
+    FROM /ptloms/tb066
+    INTO TABLE ti_tb066
+    WHERE guid        IN rt_guid
+      AND aufnr       IN rt_aufnr
+      AND vornr       IN rt_vornr
+      AND uname       IN rt_uname
+      AND criadopor   IN rt_criadopor
+      AND datacriacao IN rt_datacriacao
+      AND horacriacao IN rt_horacriacao
+      AND alteradopor IN rt_alteradopor
+      AND datadessac  IN rt_datadessac
+      AND horadessac  IN rt_horadessac
+      AND motivo      IN rt_motivo.
+
+  IF sy-subrc IS INITIAL.
+
+*--------------------------------------------------------------------*
+* Busca descrição dos status de operação
+*--------------------------------------------------------------------*
+    CLEAR lv_rc.
+    REFRESH ti_dd07v_tab.
+
+    CALL FUNCTION 'DD_DOMVALUES_GET'
+      EXPORTING
+        domname        = '/PTLOMS/DM008'
+        text           = abap_true
+      IMPORTING
+        rc             = lv_rc
+      TABLES
+        dd07v_tab      = ti_dd07v_tab
+      EXCEPTIONS
+        wrong_textflag = 1
+        OTHERS         = 2.
+
+    LOOP AT ti_dd07v_tab INTO linha.
+
+      CLEAR wa_187.
+
+      wa_187-status       = linha-domvalue_l.
+      wa_187-descr_status = linha-ddtext.
+
+      APPEND wa_187 TO ti_status_operacao.
+
+    ENDLOOP.
+
+    REFRESH ti_dd07v_tab.
+    CLEAR: lv_rc,
+           linha.
+
+*--------------------------------------------------------------------*
+* Busca descrição dos motivos da desassociação
+*--------------------------------------------------------------------*
+    CALL FUNCTION 'DD_DOMVALUES_GET'
+      EXPORTING
+        domname        = '/PTLOMS/DM006'
+        text           = abap_true
+      IMPORTING
+        rc             = lv_rc
+      TABLES
+        dd07v_tab      = ti_dd07v_tab
+      EXCEPTIONS
+        wrong_textflag = 1
+        OTHERS         = 2.
+
+    LOOP AT ti_dd07v_tab INTO linha.
+
+      CLEAR wa_186.
+
+      wa_186-motivo       = linha-domvalue_l.
+      wa_186-descr_motivo = linha-ddtext.
+
+      APPEND wa_186 TO ti_motivos_deassociacao.
+
+    ENDLOOP.
+
+*--------------------------------------------------------------------*
+* Ordenação necessária para BINARY SEARCH
+*--------------------------------------------------------------------*
+    SORT ti_status_operacao
+      ASCENDING BY status.
+
+    SORT ti_motivos_deassociacao
+      ASCENDING BY motivo.
+
+    DELETE ADJACENT DUPLICATES
+      FROM ti_status_operacao.
+
+    DELETE ADJACENT DUPLICATES
+      FROM ti_motivos_deassociacao.
+
+*--------------------------------------------------------------------*
+* Montagem das associações
+*--------------------------------------------------------------------*
+    LOOP AT ti_tb066 INTO wa_tb066.
+
+      CLEAR associacao.
+
+      associacao-guid        = wa_tb066-guid.
+      associacao-aufnr       = wa_tb066-aufnr.
+      associacao-vornr       = wa_tb066-vornr.
+      associacao-uname       = wa_tb066-uname.
+      associacao-criadopor   = wa_tb066-criadopor.
+      associacao-datacriacao = wa_tb066-datacriacao.
+      associacao-horacriacao = wa_tb066-horacriacao.
+
+*--------------------------------------------------------------------*
+* Formata data e hora de criação
+*--------------------------------------------------------------------*
+      CLEAR: data,
+             hora.
+
+      CONCATENATE wa_tb066-datacriacao+6(2)
+                  '/'
+                  wa_tb066-datacriacao+4(2)
+                  '/'
+                  wa_tb066-datacriacao(4)
+             INTO data.
+
+      CONCATENATE wa_tb066-horacriacao(2)
+                  ':'
+                  wa_tb066-horacriacao+2(2)
+                  ':'
+                  wa_tb066-horacriacao+4(2)
+             INTO hora.
+
+      CONCATENATE data
+                  hora
+             INTO associacao-data_hora_cri
+             SEPARATED BY space.
+
+      associacao-alteradopor = wa_tb066-alteradopor.
+      associacao-datadessac  = wa_tb066-datadessac.
+      associacao-horadessac  = wa_tb066-horadessac.
+
+*--------------------------------------------------------------------*
+* Formata data e hora de desassociação
+*--------------------------------------------------------------------*
+      CLEAR: data,
+             hora.
+
+      CONCATENATE wa_tb066-datadessac+6(2)
+                  '/'
+                  wa_tb066-datadessac+4(2)
+                  '/'
+                  wa_tb066-datadessac(4)
+             INTO data.
+
+      CONCATENATE wa_tb066-horadessac(2)
+                  ':'
+                  wa_tb066-horadessac+2(2)
+                  ':'
+                  wa_tb066-horadessac+4(2)
+             INTO hora.
+
+      CONCATENATE data
+                  hora
+             INTO associacao-data_hora_desa
+             SEPARATED BY space.
+
+      associacao-motivo = wa_tb066-motivo.
+      associacao-status = wa_tb066-status.
+
+*--------------------------------------------------------------------*
+* Obtém descrição do motivo
+*--------------------------------------------------------------------*
+      CLEAR wa_186.
+
+      READ TABLE ti_motivos_deassociacao
+        INTO wa_186
+        WITH KEY motivo = wa_tb066-motivo
+        BINARY SEARCH.
+
+      IF sy-subrc = 0.
+        associacao-descr_motivo = wa_186-descr_motivo.
+      ENDIF.
+
+*--------------------------------------------------------------------*
+* Obtém descrição do status
+*--------------------------------------------------------------------*
+      CLEAR wa_187.
+
+      READ TABLE ti_status_operacao
+        INTO wa_187
+        WITH KEY status = wa_tb066-status
+        BINARY SEARCH.
+
+      IF sy-subrc = 0.
+        associacao-descr_status = wa_187-descr_status.
+      ENDIF.
+
+*--------------------------------------------------------------------*
+* Retorno de sucesso
+*--------------------------------------------------------------------*
+      CLEAR wa_retorno.
+      REFRESH ti_retorno.
+
+      wa_retorno-chave   = 'X'.
+      wa_retorno-type    = 'S'.
+      wa_retorno-message = 'Sucesso'.
+
+      associacao-tiporetorno = 'S'.
+
+      APPEND wa_retorno TO ti_retorno.
+      APPEND LINES OF ti_retorno TO associacao-retorno.
+      APPEND associacao TO associacoes.
+
+      CLEAR: wa_retorno,
+             associacao.
+
+      REFRESH ti_retorno.
+
+    ENDLOOP.
+
+*--------------------------------------------------------------------*
+* Nenhum registro encontrado
+*--------------------------------------------------------------------*
+  ELSE.
+
+    CLEAR: wa_retorno,
+           associacao.
+
+    REFRESH ti_retorno.
+
+    wa_retorno-chave   = 'X'.
+    wa_retorno-type    = 'W'.
+    wa_retorno-message =
+      'Nenhum dado encontrado na Tab. /PTLOMS/TB0066'.
+
+    associacao-tiporetorno = 'W'.
+
+    APPEND wa_retorno TO ti_retorno.
+    APPEND LINES OF ti_retorno TO associacao-retorno.
+    APPEND associacao TO associacoes.
+
+    EXIT.
+
+  ENDIF.
+
+ENDMETHOD.
+
+***  METHOD busca_historico_associacoes.
+***
+***    DATA: ti_tb066       TYPE TABLE OF /ptloms/tb066,
+***          wa_tb066       TYPE /ptloms/tb066,
+***          ti_associacoes TYPE /ptloms/ct061,
+***          associacao     LIKE LINE OF associacoes,
+***          ti_retorno     TYPE /ptloms/ct060,
+***          wa_retorno     LIKE LINE OF ti_retorno,
+***          wa_aufnr       TYPE /iwbep/s_cod_select_option.
+***
+***    SELECT *
+***      FROM /ptloms/tb066
+***      INTO TABLE ti_tb066
+***      WHERE guid          IN rt_guid AND
+***            aufnr         IN rt_aufnr AND
+***            vornr         IN rt_vornr AND
+***            uname         IN rt_uname AND
+***            criadopor     IN rt_criadopor AND
+***            datacriacao   IN rt_datacriacao AND
+***            horacriacao   IN rt_horacriacao AND
+***            alteradopor   IN rt_alteradopor AND
+***            datadessac    IN rt_datadessac AND
+***            horadessac    IN rt_horadessac AND
+***            motivo        IN rt_motivo.
+***
+***    IF sy-subrc IS INITIAL.
+***
+***      DATA: ti_status_operacao      TYPE TABLE OF /ptloms/et187,
+***            wa_187                  TYPE /ptloms/et187,
+***            ti_motivos_deassociacao TYPE TABLE OF /ptloms/et186,
+***            wa_186                  TYPE /ptloms/et186.
+***      DATA(ti_dd07v_tab) = VALUE dd07v_tab( ).
+***      DATA(lv_rc)        = VALUE sy-subrc( ).
+***
+***      "Busca Descrição dos Status Operação
+***      CALL FUNCTION 'DD_DOMVALUES_GET'
+***        EXPORTING
+***          domname        = '/PTLOMS/DM008'
+***          text           = abap_true
+***        IMPORTING
+***          rc             = lv_rc
+***        TABLES
+***          dd07v_tab      = ti_dd07v_tab
+***        EXCEPTIONS
+***          wrong_textflag = 1
+***          OTHERS         = 2.
+***
+***      LOOP AT ti_dd07v_tab INTO DATA(linha).
+***        wa_187-status = linha-domvalue_l.
+***        wa_187-descr_status = linha-ddtext.
+***        APPEND wa_187 TO ti_status_operacao.
+***      ENDLOOP.
+***
+***      CLEAR: ti_dd07v_tab[], lv_rc, linha.
+***
+***      "Busca Descrição dos Motivos da deassociação
+***      CALL FUNCTION 'DD_DOMVALUES_GET'
+***        EXPORTING
+***          domname        = '/PTLOMS/DM006'
+***          text           = abap_true
+***        IMPORTING
+***          rc             = lv_rc
+***        TABLES
+***          dd07v_tab      = ti_dd07v_tab
+***        EXCEPTIONS
+***          wrong_textflag = 1
+***          OTHERS         = 2.
+***
+***      LOOP AT ti_dd07v_tab INTO linha.
+***        wa_186-motivo = linha-domvalue_l.
+***        wa_186-descr_motivo = linha-ddtext.
+***        APPEND wa_186 TO ti_motivos_deassociacao.
+***      ENDLOOP.
+***
+***      SORT: ti_status_operacao ASCENDING BY status,
+***            ti_motivos_deassociacao ASCENDING BY motivo.
+***
+***      DELETE ADJACENT DUPLICATES FROM ti_status_operacao.
+***      DELETE ADJACENT DUPLICATES FROM ti_motivos_deassociacao.
+***
+***      DATA: data TYPE char20.
+***      DATA: hora TYPE char20.
+***
+***      LOOP AT ti_tb066 INTO wa_tb066.
+***
+***        associacao-guid         = wa_tb066-guid.
+***        associacao-aufnr        = wa_tb066-aufnr.
+***        associacao-vornr        = wa_tb066-vornr.
+***        associacao-uname        = wa_tb066-uname.
+***        associacao-criadopor    = wa_tb066-criadopor.
+***        associacao-datacriacao  = wa_tb066-datacriacao.
+***        associacao-horacriacao  = wa_tb066-horacriacao.
+***
+***        CONCATENATE wa_tb066-datacriacao+6(2) '/'
+***                    wa_tb066-datacriacao+4(2) '/'
+***                    wa_tb066-datacriacao(4)
+***                    INTO data.
+***
+***        CONCATENATE wa_tb066-horacriacao(2) ':'
+***                    wa_tb066-horacriacao+2(2) ':'
+***                    wa_tb066-horacriacao+4(2)
+***                    INTO hora.
+***
+***        CONCATENATE data hora INTO associacao-data_hora_cri SEPARATED BY space.
+***
+***        associacao-alteradopor  = wa_tb066-alteradopor.
+***        associacao-datadessac   = wa_tb066-datadessac.
+***        associacao-horadessac   = wa_tb066-horadessac.
+***
+***        CLEAR: data, hora.
+***        CONCATENATE wa_tb066-datadessac+6(2) '/'
+***                    wa_tb066-datadessac+4(2) '/'
+***                    wa_tb066-datadessac(4)
+***                    INTO data.
+***
+***        CONCATENATE wa_tb066-horadessac(2) ':'
+***                    wa_tb066-horadessac+2(2) ':'
+***                    wa_tb066-horadessac+4(2)
+***                    INTO hora.
+***
+***        CONCATENATE data hora INTO associacao-data_hora_desa SEPARATED BY space.
+***
+***        associacao-motivo       = wa_tb066-motivo.
+***        associacao-status       = wa_tb066-status.
+***
+***        CLEAR:wa_186, wa_187.
+***        READ TABLE ti_motivos_deassociacao INTO wa_186 WITH KEY motivo = wa_tb066-motivo BINARY SEARCH.
+***        IF sy-subrc = 0.
+***          associacao-descr_motivo = wa_186-descr_motivo.
+***        ENDIF.
+***
+***        READ TABLE ti_status_operacao INTO wa_187 WITH KEY status = wa_tb066-status BINARY SEARCH.
+***        IF sy-subrc = 0.
+***          associacao-descr_status = wa_187-descr_status.
+***        ENDIF.
+***
+***        wa_retorno-chave   = 'X'.
+***        wa_retorno-type    = 'S'.
+***        wa_retorno-message = 'Sucesso'.
+***        associacao-tiporetorno = 'S'.
+***        APPEND wa_retorno TO ti_retorno.
+***        APPEND LINES OF ti_retorno TO associacao-retorno.
+***        APPEND associacao TO associacoes.
+***        CLEAR: wa_retorno, associacao, ti_retorno[].
+***
+***      ENDLOOP.
+***
+***    ELSE.
+***
+***      wa_retorno-chave   = 'X'.
+***      wa_retorno-type    = 'W'.
+***      wa_retorno-message = 'Nenhum dado encontrado na Tab. /PTLOMS/TB0066'.
+***      associacao-tiporetorno = 'W'.
+***      APPEND wa_retorno TO ti_retorno.
+***      APPEND LINES OF ti_retorno TO associacao-retorno.
+***      APPEND associacao TO associacoes.
+***      EXIT.
+***
+***    ENDIF.
+***
+***  ENDMETHOD.
+*********************************************************************************************************
+***  FIM - Iury Silva
+*********************************************************************************************************
 
 
   METHOD busca_historico_confirmacao.
@@ -1079,7 +1919,8 @@ CLASS /PTLOMS/CL015 IMPLEMENTATION.
                 horadessac  = sy-uzeit
                 motivo      = '05'
                 status      = 5
-            WHERE aufnr = wa_tb065-aufnr.
+            WHERE aufnr      = wa_tb065-aufnr
+              AND datadessac = '00000000'.
 
           COMMIT WORK.
 
@@ -1101,8 +1942,9 @@ CLASS /PTLOMS/CL015 IMPLEMENTATION.
                     horadessac  = sy-uzeit
                     motivo      = '05'
                     status      = 5
-                WHERE aufnr = wa_tb065-aufnr
-                  AND vornr = wa_oper-activity .
+                WHERE aufnr      = wa_tb065-aufnr
+                  AND vornr      = wa_oper-activity
+                  AND datadessac = '00000000'.
 
               COMMIT WORK.
 
@@ -1150,265 +1992,1769 @@ CLASS /PTLOMS/CL015 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD busca_lista_operacoes.
+METHOD busca_lista_operacoes.
 
-    TYPES:
-      BEGIN OF ty_et140,
-        werks       TYPE /ptloms/et140-werks,
-        aufnr       TYPE /ptloms/et140-aufnr,
-        vornr       TYPE /ptloms/et140-vornr,
-        auart       TYPE /ptloms/et140-auart,
-        qmnum       TYPE /ptloms/et140-qmnum,
-        priok       TYPE /ptloms/et140-priok,
-        tplnr       TYPE /ptloms/et140-tplnr,
-        equnr       TYPE /ptloms/et140-equnr,
-        iwerk       TYPE /ptloms/et140-iwerk,
-        ernam       TYPE /ptloms/et140-usuario,
-        ingpr       TYPE /ptloms/et140-ingpr,
-        ilart       TYPE /ptloms/et140-ilart,
-        gewrk       TYPE /ptloms/et140-gewrk,
-        gstrp       TYPE d,
-        gstri       TYPE d,
-        gltrp       TYPE d,
-        gltri       TYPE d,
-        ktsch       TYPE /ptloms/et140-vlsch,
-        kostl_equnr TYPE /ptloms/et140-kostl_equnr,
-        kostl_funcl TYPE /ptloms/et140-kostl_funcl,
-      END OF ty_et140.
+*---------------------------------------------------------------------*
+* Tipos locais
+*---------------------------------------------------------------------*
+  TYPES: BEGIN OF ty_et140,
+           werks                 TYPE /ptloms/et140-werks,
+           aufnr                 TYPE /ptloms/et140-aufnr,
+           vornr                 TYPE /ptloms/et140-vornr,
+           auart                 TYPE /ptloms/et140-auart,
+           qmnum                 TYPE /ptloms/et140-qmnum,
+           priok                 TYPE /ptloms/et140-priok,
+           equnr                 TYPE /ptloms/et140-equnr,
+           iwerk                 TYPE /ptloms/et140-iwerk,
+           ernam                 TYPE /ptloms/et140-usuario,
+           ingpr                 TYPE /ptloms/et140-ingpr,
+           ilart                 TYPE /ptloms/et140-ilart,
+           gewrk                 TYPE /ptloms/et140-gewrk,
+           artpr                 TYPE viaufks-artpr,
+           gstrp                 TYPE d,
+           gstri                 TYPE d,
+           gltrp                 TYPE d,
+           gltri                 TYPE d,
+           data_base_ini         TYPE d,
+           data_base_fim         TYPE d,
+           iloan                 TYPE equz-iloan,
+           tplnr                 TYPE viaufks-tplnr,
+           ktsch                 TYPE /ptloms/et140-vlsch,
+           kostl_equnr           TYPE /ptloms/et140-kostl_equnr,
+           kostl_funcl           TYPE /ptloms/et140-kostl_funcl,
+           ktext                 TYPE /ptloms/et140-short_text_ordem,
+           ltxa1                 TYPE /ptloms/et140-description,
+           invnr                 TYPE /ptloms/et140-invnr,
+           eqktx                 TYPE /ptloms/et140-eqktx,
+           pltxt                 TYPE /ptloms/et140-pltxt,
+           late_sched_start_date TYPE /ptloms/et140-late_sched_start_date,
+           late_sched_fin_date   TYPE /ptloms/et140-late_sched_fin_date,
+           system_status_text    TYPE /ptloms/et140-system_status_text,
+           objnr                 TYPE viaufks-objnr,
+         END OF ty_et140,
 
-* Declaração de range
-    DATA:
-      lt_et140                 TYPE TABLE OF ty_et140,
-      ls_et140                 TYPE ty_et140,
-      lt_centro_trabalho       TYPE TABLE OF /ptloms/tb005,
-      ls_centro_trabalho       LIKE LINE OF lt_centro_trabalho,
-      ls_despacho              LIKE LINE OF it_despacho,
-      r_ordens_associadas_tot  TYPE RANGE OF aufnr,
-      ls_ordens_associadas_tot LIKE LINE OF r_ordens_associadas_tot,
-      lr_gewrk                 TYPE RANGE OF gewrk,
-      lv_aufnr                 TYPE aufnr,
-      lv_qmnum                 TYPE qmnum,
-      lv_equnr                 TYPE equnr,
-      lv_kostl                 TYPE kostl.
+         BEGIN OF ty_assoc_usuario,
+           aufnr TYPE /ptloms/tb065-aufnr,
+           vornr TYPE /ptloms/tb065-vornr,
+           uname TYPE /ptloms/tb065-uname,
+         END OF ty_assoc_usuario,
 
-    DATA: ls_gewrk LIKE LINE OF lr_gewrk.
+         BEGIN OF ty_associacao,
+           aufnr     TYPE /ptloms/tb065-aufnr,
+           vornr     TYPE /ptloms/tb065-vornr,
+           tot_assoc TYPE i,
+         END OF ty_associacao,
 
-    IF rt_gewrk[] IS NOT INITIAL AND rt_werks[] IS NOT INITIAL.
-      SELECT * FROM /ptloms/tb005
-        INTO TABLE lt_centro_trabalho
-        WHERE arbpl IN rt_gewrk[]
-          AND werks IN rt_werks[].
+         BEGIN OF ty_cc_eq,
+           iloan         TYPE iloa-iloan,
+           kostl_equnr   TYPE cskt-kostl,
+           kostl_equnr_t TYPE cskt-ltext,
+         END OF ty_cc_eq,
 
-      IF lt_centro_trabalho[] IS NOT INITIAL.
+         BEGIN OF ty_cc_lc,
+           tplnr         TYPE viaufks-tplnr,
+           kostl_funcl   TYPE iflo-kostl,
+           kostl_funcl_t TYPE cskt-ltext,
+         END OF ty_cc_lc,
 
-        LOOP AT lt_centro_trabalho INTO ls_centro_trabalho.
+         BEGIN OF ty_status_ordem,
+           objnr TYPE jest-objnr,
+           stat  TYPE jest-stat,
+           txt04 TYPE tj02t-txt04,
+           txt30 TYPE tj02t-txt30,
+         END OF ty_status_ordem,
 
-          ls_gewrk-sign = 'I'.
-          ls_gewrk-option = 'EQ'.
-          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-            EXPORTING
-              input  = ls_centro_trabalho-objid
-            IMPORTING
-              output = ls_gewrk-low.
-*          ls_gewrk-low = ls_centro_trabalho-objid.
-          APPEND ls_gewrk TO lr_gewrk.
-          CLEAR ls_centro_trabalho.
+         BEGIN OF ty_status_texto,
+           objnr              TYPE jest-objnr,
+           system_status_text TYPE string,
+           system_status_ext  TYPE string,
+         END OF ty_status_texto,
 
-        ENDLOOP.
+         BEGIN OF ty_semaforo_cfg,
+           auart    TYPE /ptloms/tb034-auart,
+           priok    TYPE /ptloms/tb034-priok,
+           urgente  TYPE /ptloms/tb034-urgente,
+           verde    TYPE /ptloms/tb034-verde,
+           amarelo  TYPE /ptloms/tb034-amarelo,
+           vermelho TYPE /ptloms/tb034-vermelho,
+         END OF ty_semaforo_cfg.
+
+
+*---------------------------------------------------------------------*
+* Dados principais
+*---------------------------------------------------------------------*
+  DATA:
+    lt_et140           TYPE TABLE OF ty_et140,
+    ls_et140           TYPE ty_et140,
+
+    lt_centro_trabalho TYPE TABLE OF /ptloms/tb005,
+    ls_centro_trabalho LIKE LINE OF lt_centro_trabalho,
+
+    ls_despacho        LIKE LINE OF it_despacho,
+
+    lr_gewrk           TYPE RANGE OF gewrk,
+    ls_gewrk           LIKE LINE OF lr_gewrk,
+
+    lv_aufnr           TYPE aufnr,
+    lv_qmnum           TYPE qmnum,
+    lv_equnr           TYPE equnr,
+    lv_kostl           TYPE kostl,
+    lv_tplnr           TYPE tplnr.
+
+
+*---------------------------------------------------------------------*
+* Associações
+*---------------------------------------------------------------------*
+  DATA:
+    lt_assoc_usuario TYPE STANDARD TABLE OF ty_assoc_usuario,
+    ls_assoc_usuario TYPE ty_assoc_usuario,
+
+    lt_associacoes   TYPE STANDARD TABLE OF ty_associacao,
+    ls_associacao    TYPE ty_associacao.
+
+
+*---------------------------------------------------------------------*
+* Centros de custo
+*---------------------------------------------------------------------*
+  DATA:
+    lt_cc_eq TYPE STANDARD TABLE OF ty_cc_eq,
+    ls_cc_eq TYPE ty_cc_eq,
+
+    lt_cc_lc TYPE STANDARD TABLE OF ty_cc_lc,
+    ls_cc_lc TYPE ty_cc_lc.
+
+
+*---------------------------------------------------------------------*
+* Status
+*---------------------------------------------------------------------*
+  DATA:
+    lt_status_ordem TYPE STANDARD TABLE OF ty_status_ordem,
+    ls_status_ordem TYPE ty_status_ordem,
+
+    lt_status_texto TYPE STANDARD TABLE OF ty_status_texto,
+    ls_status_texto TYPE ty_status_texto.
+
+
+*---------------------------------------------------------------------*
+* Semáforo
+*---------------------------------------------------------------------*
+  DATA:
+    lt_semaforo_cfg          TYPE STANDARD TABLE OF ty_semaforo_cfg,
+    ls_semaforo_cfg          TYPE ty_semaforo_cfg,
+
+    lv_data_base             TYPE sy-datum,
+    lv_data_referencia_verde TYPE sy-datum,
+    lv_data_referencia_verme TYPE sy-datum,
+
+    lv_dias_verde            TYPE i,
+    lv_dias_vermelho         TYPE i.
+
+
+*---------------------------------------------------------------------*
+* Range genérico vindo do OData
+*---------------------------------------------------------------------*
+  FIELD-SYMBOLS:
+    <fs_range> TYPE /iwbep/s_cod_select_option.
+
+
+*---------------------------------------------------------------------*
+* 1. Centro de trabalho
+*
+* RT_GEWRK contém ARBPL.
+* VIAUFKS-GEWRK trabalha com o objeto interno.
+*
+* Portanto buscamos OBJID na tabela de parametrização.
+*---------------------------------------------------------------------*
+  IF rt_gewrk[] IS NOT INITIAL.
+
+    REFRESH:
+      lt_centro_trabalho,
+      lr_gewrk.
+
+*---------------------------------------------------------------------*
+* Com filtro de centro
+*---------------------------------------------------------------------*
+    IF rt_werks[] IS NOT INITIAL.
+
+      SELECT arbpl
+             werks
+             objid
+        FROM /ptloms/tb005
+        INTO CORRESPONDING FIELDS OF TABLE lt_centro_trabalho
+        WHERE arbpl IN rt_gewrk
+          AND werks IN rt_werks.
+
+*---------------------------------------------------------------------*
+* Sem filtro de centro
+*---------------------------------------------------------------------*
+    ELSE.
+
+      SELECT arbpl
+             werks
+             objid
+        FROM /ptloms/tb005
+        INTO CORRESPONDING FIELDS OF TABLE lt_centro_trabalho
+        WHERE arbpl IN rt_gewrk.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Converte OBJID para o formato de GEWRK
+*---------------------------------------------------------------------*
+    LOOP AT lt_centro_trabalho
+      INTO ls_centro_trabalho.
+
+      IF ls_centro_trabalho-objid IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+      CLEAR ls_gewrk.
+
+      ls_gewrk-sign   = 'I'.
+      ls_gewrk-option = 'EQ'.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = ls_centro_trabalho-objid
+        IMPORTING
+          output = ls_gewrk-low.
+
+      APPEND ls_gewrk TO lr_gewrk.
+
+    ENDLOOP.
+
+
+    SORT lr_gewrk BY
+      sign
+      option
+      low
+      high.
+
+    DELETE ADJACENT DUPLICATES
+      FROM lr_gewrk
+      COMPARING
+        sign
+        option
+        low
+        high.
+
+
+*---------------------------------------------------------------------*
+* Filtro foi informado, mas nenhuma correspondência foi encontrada.
+*
+* Não podemos continuar com LR_GEWRK vazio, pois isso equivaleria a
+* não aplicar filtro no SELECT.
+*---------------------------------------------------------------------*
+    IF lr_gewrk[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 2. Conversão de ordem
+*---------------------------------------------------------------------*
+  LOOP AT rt_aufnr ASSIGNING <fs_range>.
+
+    IF <fs_range>-low IS NOT INITIAL.
+
+      CLEAR lv_aufnr.
+
+      lv_aufnr = <fs_range>-low.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_aufnr
+        IMPORTING
+          output = lv_aufnr.
+
+      <fs_range>-low = lv_aufnr.
+
+    ENDIF.
+
+
+    IF <fs_range>-high IS NOT INITIAL.
+
+      CLEAR lv_aufnr.
+
+      lv_aufnr = <fs_range>-high.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_aufnr
+        IMPORTING
+          output = lv_aufnr.
+
+      <fs_range>-high = lv_aufnr.
+
+    ENDIF.
+
+  ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* 3. Conversão de nota
+*---------------------------------------------------------------------*
+  LOOP AT rt_qmnum ASSIGNING <fs_range>.
+
+    IF <fs_range>-low IS NOT INITIAL.
+
+      CLEAR lv_qmnum.
+
+      lv_qmnum = <fs_range>-low.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_qmnum
+        IMPORTING
+          output = lv_qmnum.
+
+      <fs_range>-low = lv_qmnum.
+
+    ENDIF.
+
+
+    IF <fs_range>-high IS NOT INITIAL.
+
+      CLEAR lv_qmnum.
+
+      lv_qmnum = <fs_range>-high.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_qmnum
+        IMPORTING
+          output = lv_qmnum.
+
+      <fs_range>-high = lv_qmnum.
+
+    ENDIF.
+
+  ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* 4. Conversão de equipamento
+*---------------------------------------------------------------------*
+  LOOP AT rt_equnr ASSIGNING <fs_range>.
+
+    IF <fs_range>-low IS NOT INITIAL.
+
+      CLEAR lv_equnr.
+
+      lv_equnr = <fs_range>-low.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_equnr
+        IMPORTING
+          output = lv_equnr.
+
+      <fs_range>-low = lv_equnr.
+
+    ENDIF.
+
+
+    IF <fs_range>-high IS NOT INITIAL.
+
+      CLEAR lv_equnr.
+
+      lv_equnr = <fs_range>-high.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_equnr
+        IMPORTING
+          output = lv_equnr.
+
+      <fs_range>-high = lv_equnr.
+
+    ENDIF.
+
+  ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* 5. Conversão do local de instalação
+*---------------------------------------------------------------------*
+  LOOP AT rt_tplnr ASSIGNING <fs_range>.
+
+    IF <fs_range>-low IS NOT INITIAL.
+
+      CLEAR lv_tplnr.
+
+      lv_tplnr = <fs_range>-low.
+
+      CALL FUNCTION 'CONVERSION_EXIT_TPLNR_INPUT'
+        EXPORTING
+          input  = lv_tplnr
+        IMPORTING
+          output = lv_tplnr.
+
+      <fs_range>-low = lv_tplnr.
+
+    ENDIF.
+
+
+    IF <fs_range>-high IS NOT INITIAL.
+
+      CLEAR lv_tplnr.
+
+      lv_tplnr = <fs_range>-high.
+
+      CALL FUNCTION 'CONVERSION_EXIT_TPLNR_INPUT'
+        EXPORTING
+          input  = lv_tplnr
+        IMPORTING
+          output = lv_tplnr.
+
+      <fs_range>-high = lv_tplnr.
+
+    ENDIF.
+
+  ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* 6. Conversão do centro de custo do equipamento
+*---------------------------------------------------------------------*
+  LOOP AT rt_kostlequnr ASSIGNING <fs_range>.
+
+    IF <fs_range>-low IS NOT INITIAL.
+
+      CLEAR lv_kostl.
+
+      lv_kostl = <fs_range>-low.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_kostl
+        IMPORTING
+          output = lv_kostl.
+
+      <fs_range>-low = lv_kostl.
+
+    ENDIF.
+
+
+    IF <fs_range>-high IS NOT INITIAL.
+
+      CLEAR lv_kostl.
+
+      lv_kostl = <fs_range>-high.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_kostl
+        IMPORTING
+          output = lv_kostl.
+
+      <fs_range>-high = lv_kostl.
+
+    ENDIF.
+
+  ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* 7. Conversão do centro de custo do local
+*---------------------------------------------------------------------*
+  LOOP AT rt_kostlfuncl ASSIGNING <fs_range>.
+
+    IF <fs_range>-low IS NOT INITIAL.
+
+      CLEAR lv_kostl.
+
+      lv_kostl = <fs_range>-low.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_kostl
+        IMPORTING
+          output = lv_kostl.
+
+      <fs_range>-low = lv_kostl.
+
+    ENDIF.
+
+
+    IF <fs_range>-high IS NOT INITIAL.
+
+      CLEAR lv_kostl.
+
+      lv_kostl = <fs_range>-high.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = lv_kostl
+        IMPORTING
+          output = lv_kostl.
+
+      <fs_range>-high = lv_kostl.
+
+    ENDIF.
+
+  ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* 8. Busca principal
+*---------------------------------------------------------------------*
+  SELECT a~werks
+         a~aufnr
+         c~vornr
+         a~auart
+         a~qmnum
+         a~priok
+         a~equnr
+         q~invnr
+         t~eqktx
+         a~iwerk
+         a~ernam
+         a~ingpr
+         a~ilart
+         a~gewrk
+         a~gstrp
+         a~gstri
+         a~gltrp
+         a~gltri
+         c~ktsch
+         a~gstrp AS data_base_ini
+         a~gltrp AS data_base_fim
+         e~iloan
+         a~tplnr
+         a~ktext
+         c~ltxa1
+         d~ssavd AS late_sched_start_date
+         d~ssedd AS late_sched_fin_date
+         a~objnr
+         a~artpr
+
+    INTO CORRESPONDING FIELDS OF TABLE lt_et140
+
+    FROM viaufks AS a
+
+    INNER JOIN afvc AS c
+      ON c~aufpl = a~aufpl
+
+    INNER JOIN afvv AS d
+      ON d~aufpl = c~aufpl
+     AND d~aplzl = c~aplzl
+
+    LEFT OUTER JOIN equi AS q
+      ON q~equnr = a~equnr
+
+    LEFT OUTER JOIN eqkt AS t
+      ON t~equnr = a~equnr
+     AND t~spras = sy-langu
+
+    LEFT OUTER JOIN equz AS e
+      ON e~equnr = a~equnr
+     AND e~datbi = '99991231'
+
+   WHERE a~aufnr IN rt_aufnr
+     AND c~vornr IN rt_vornr
+     AND a~auart IN rt_auart
+     AND a~priok IN rt_priok
+     AND a~qmnum IN rt_qmnum
+     AND a~tplnr IN rt_tplnr
+     AND a~equnr IN rt_equnr
+     AND a~iwerk IN rt_iwerk
+     AND a~ingpr IN rt_ingpr
+     AND a~ilart IN rt_ilart
+     AND d~fsavd IN rt_datope_ini
+     AND a~swerk IN rt_werks
+     AND a~gewrk IN lr_gewrk
+     AND a~ernam IN rt_usuapp
+     AND c~ktsch IN rt_vlsch
+     AND c~phflg = space
+     AND a~idat3 = '00000000'
+     AND a~idat2 = '00000000'
+     AND a~loekz = space
+     AND a~getri = '00000000'
+     AND a~objnr NOT IN
+       ( SELECT objnr
+           FROM jest
+          WHERE objnr LIKE 'OR%'
+            AND ( stat = 'I0190'
+               OR stat = 'I0009' )
+            AND inact = space ).
+
+
+  IF lt_et140[] IS INITIAL.
+
+    IF <fs_range> IS ASSIGNED.
+      UNASSIGN <fs_range>.
+    ENDIF.
+
+    RETURN.
+
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 9. Centro de custo do equipamento
+*
+* Se RT_KOSTLEQUNR estiver preenchido, carregamos somente os ILOANs
+* cujo centro de custo atende ao filtro.
+*---------------------------------------------------------------------*
+  REFRESH lt_cc_eq.
+
+
+  IF rt_kostlequnr[] IS INITIAL.
+
+*---------------------------------------------------------------------*
+* Sem filtro
+*---------------------------------------------------------------------*
+    SELECT iloa~iloan
+           iloa~kostl
+           cskt~ltext
+
+      INTO TABLE lt_cc_eq
+
+      FROM iloa
+
+      LEFT OUTER JOIN cskt
+        ON cskt~kostl = iloa~kostl
+       AND cskt~spras = sy-langu
+       AND cskt~datbi = '99991231'
+
+      FOR ALL ENTRIES IN lt_et140
+
+     WHERE iloa~iloan = lt_et140-iloan
+       AND iloa~iloan <> space.
+
+  ELSE.
+
+*---------------------------------------------------------------------*
+* Com filtro
+*---------------------------------------------------------------------*
+    SELECT iloa~iloan
+           iloa~kostl
+           cskt~ltext
+
+      INTO TABLE lt_cc_eq
+
+      FROM iloa
+
+      LEFT OUTER JOIN cskt
+        ON cskt~kostl = iloa~kostl
+       AND cskt~spras = sy-langu
+       AND cskt~datbi = '99991231'
+
+      FOR ALL ENTRIES IN lt_et140
+
+     WHERE iloa~iloan = lt_et140-iloan
+       AND iloa~iloan <> space
+       AND iloa~kostl IN rt_kostlequnr.
+
+  ENDIF.
+
+
+  IF lt_cc_eq[] IS NOT INITIAL.
+
+    SORT lt_cc_eq BY iloan.
+
+    DELETE ADJACENT DUPLICATES
+      FROM lt_cc_eq
+      COMPARING iloan.
+
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 10. Centro de custo do local de instalação
+*
+* Se RT_KOSTLFUNCL estiver preenchido, carregamos somente os locais
+* cujo centro de custo atende ao filtro.
+*---------------------------------------------------------------------*
+  REFRESH lt_cc_lc.
+
+
+  IF rt_kostlfuncl[] IS INITIAL.
+
+*---------------------------------------------------------------------*
+* Sem filtro
+*---------------------------------------------------------------------*
+    SELECT iflo~tplnr
+           iflo~kostl
+           cskt~ltext
+
+      INTO TABLE lt_cc_lc
+
+      FROM iflo
+
+      LEFT OUTER JOIN cskt
+        ON cskt~kostl = iflo~kostl
+       AND cskt~spras = sy-langu
+       AND cskt~datbi = '99991231'
+
+      FOR ALL ENTRIES IN lt_et140
+
+     WHERE iflo~tplnr = lt_et140-tplnr
+       AND iflo~tplnr <> space.
+
+  ELSE.
+
+*---------------------------------------------------------------------*
+* Com filtro
+*---------------------------------------------------------------------*
+    SELECT iflo~tplnr
+           iflo~kostl
+           cskt~ltext
+
+      INTO TABLE lt_cc_lc
+
+      FROM iflo
+
+      LEFT OUTER JOIN cskt
+        ON cskt~kostl = iflo~kostl
+       AND cskt~spras = sy-langu
+       AND cskt~datbi = '99991231'
+
+      FOR ALL ENTRIES IN lt_et140
+
+     WHERE iflo~tplnr = lt_et140-tplnr
+       AND iflo~tplnr <> space
+       AND iflo~kostl IN rt_kostlfuncl.
+
+  ENDIF.
+
+
+  IF lt_cc_lc[] IS NOT INITIAL.
+
+    SORT lt_cc_lc BY tplnr.
+
+    DELETE ADJACENT DUPLICATES
+      FROM lt_cc_lc
+      COMPARING tplnr.
+
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 11. Configurações de semáforo
+*---------------------------------------------------------------------*
+  REFRESH lt_semaforo_cfg.
+
+  SELECT auart
+         priok
+         urgente
+         verde
+         amarelo
+         vermelho
+
+    INTO TABLE lt_semaforo_cfg
+
+    FROM /ptloms/tb034
+
+    FOR ALL ENTRIES IN lt_et140
+
+   WHERE auart = lt_et140-auart
+     AND priok = lt_et140-priok.
+
+
+  IF lt_semaforo_cfg[] IS NOT INITIAL.
+
+    SORT lt_semaforo_cfg BY
+      auart
+      priok.
+
+    DELETE ADJACENT DUPLICATES
+      FROM lt_semaforo_cfg
+      COMPARING
+        auart
+        priok.
+
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 12. Status
+*
+* Executado uma única vez.
+*---------------------------------------------------------------------*
+  REFRESH:
+    lt_status_ordem,
+    lt_status_texto.
+
+
+  SELECT j~objnr
+         j~stat
+         t~txt04
+         t~txt30
+
+    INTO TABLE lt_status_ordem
+
+    FROM jest AS j
+
+    INNER JOIN tj02t AS t
+      ON t~istat = j~stat
+
+    FOR ALL ENTRIES IN lt_et140
+
+   WHERE j~objnr = lt_et140-objnr
+     AND j~inact = space
+     AND t~spras = sy-langu.
+
+
+  IF lt_status_ordem[] IS NOT INITIAL.
+
+    SORT lt_status_ordem BY
+      objnr
+      stat.
+
+
+    DELETE ADJACENT DUPLICATES
+      FROM lt_status_ordem
+      COMPARING
+        objnr
+        stat.
+
+
+    CLEAR ls_status_texto.
+
+
+    LOOP AT lt_status_ordem
+      INTO ls_status_ordem.
+
+
+      AT NEW objnr.
+
+        CLEAR ls_status_texto.
+
+        ls_status_texto-objnr =
+          ls_status_ordem-objnr.
+
+      ENDAT.
+
+
+*---------------------------------------------------------------------*
+* Status curto
+*---------------------------------------------------------------------*
+      IF ls_status_ordem-txt04 IS NOT INITIAL.
+
+        IF ls_status_texto-system_status_text IS INITIAL.
+
+          ls_status_texto-system_status_text =
+            ls_status_ordem-txt04.
+
+        ELSE.
+
+          CONCATENATE
+            ls_status_texto-system_status_text
+            ls_status_ordem-txt04
+            INTO ls_status_texto-system_status_text
+            SEPARATED BY ', '.
+
+        ENDIF.
 
       ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Status longo
+*---------------------------------------------------------------------*
+      IF ls_status_ordem-txt30 IS NOT INITIAL.
+
+        IF ls_status_texto-system_status_ext IS INITIAL.
+
+          ls_status_texto-system_status_ext =
+            ls_status_ordem-txt30.
+
+        ELSE.
+
+          CONCATENATE
+            ls_status_texto-system_status_ext
+            ls_status_ordem-txt30
+            INTO ls_status_texto-system_status_ext
+            SEPARATED BY ', '.
+
+        ENDIF.
+
+      ENDIF.
+
+
+      AT END OF objnr.
+
+        APPEND ls_status_texto
+          TO lt_status_texto.
+
+      ENDAT.
+
+    ENDLOOP.
+
+
+    SORT lt_status_texto BY objnr.
+
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 13. Associações usuário/operação
+*
+* Executado uma única vez.
+*---------------------------------------------------------------------*
+  REFRESH:
+    lt_assoc_usuario,
+    lt_associacoes.
+
+
+  SELECT aufnr
+         vornr
+         uname
+
+    INTO TABLE lt_assoc_usuario
+
+    FROM /ptloms/tb065
+
+    FOR ALL ENTRIES IN lt_et140
+
+   WHERE aufnr = lt_et140-aufnr
+     AND vornr = lt_et140-vornr.
+
+
+  IF lt_assoc_usuario[] IS NOT INITIAL.
+
+    SORT lt_assoc_usuario BY
+      aufnr
+      vornr
+      uname.
+
+
+*---------------------------------------------------------------------*
+* Impede associação duplicada
+*---------------------------------------------------------------------*
+    DELETE ADJACENT DUPLICATES
+      FROM lt_assoc_usuario
+      COMPARING
+        aufnr
+        vornr
+        uname.
+
+
+*---------------------------------------------------------------------*
+* Contagem
+*---------------------------------------------------------------------*
+    LOOP AT lt_assoc_usuario
+      INTO ls_assoc_usuario.
+
+      CLEAR ls_associacao.
+
+      ls_associacao-aufnr =
+        ls_assoc_usuario-aufnr.
+
+      ls_associacao-vornr =
+        ls_assoc_usuario-vornr.
+
+      ls_associacao-tot_assoc =
+        1.
+
+      COLLECT ls_associacao
+        INTO lt_associacoes.
+
+    ENDLOOP.
+
+
+    SORT lt_associacoes BY
+      aufnr
+      vornr.
+
+  ENDIF.
+
+
+*---------------------------------------------------------------------*
+* Ordenação principal
+*---------------------------------------------------------------------*
+  SORT lt_et140 BY aufnr DESCENDING.
+
+
+*---------------------------------------------------------------------*
+* 14. LOOP final
+*
+* Daqui para frente não deve existir SELECT.
+*---------------------------------------------------------------------*
+  LOOP AT lt_et140 INTO ls_et140.
+
+
+*---------------------------------------------------------------------*
+* Limpeza obrigatória
+*---------------------------------------------------------------------*
+    CLEAR ls_despacho.
+
+    MOVE-CORRESPONDING
+      ls_et140
+      TO ls_despacho.
+
+
+*---------------------------------------------------------------------*
+* 14.1 Centro de custo do equipamento
+*
+* Aplicamos este filtro no início do LOOP para evitar processar
+* semáforo/status/conversões de uma operação que será descartada.
+*---------------------------------------------------------------------*
+    CLEAR ls_cc_eq.
+
+    READ TABLE lt_cc_eq
+      INTO ls_cc_eq
+      WITH KEY
+        iloan = ls_et140-iloan
+      BINARY SEARCH.
+
+
+    IF sy-subrc = 0.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = ls_cc_eq-kostl_equnr
+        IMPORTING
+          output = ls_despacho-kostl_equnr.
+
+    ELSE.
+
+*---------------------------------------------------------------------*
+* Filtro informado e equipamento não encontrado na massa filtrada:
+* operação não atende ao centro de custo solicitado.
+*---------------------------------------------------------------------*
+      IF rt_kostlequnr[] IS NOT INITIAL.
+        CONTINUE.
+      ENDIF.
+
     ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 14.2 Centro de custo do local
+*---------------------------------------------------------------------*
+    CLEAR ls_cc_lc.
+
+    READ TABLE lt_cc_lc
+      INTO ls_cc_lc
+      WITH KEY
+        tplnr = ls_et140-tplnr
+      BINARY SEARCH.
+
+
+    IF sy-subrc = 0.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = ls_cc_lc-kostl_funcl
+        IMPORTING
+          output = ls_despacho-kostl_funcl.
+
+    ELSE.
+
+*---------------------------------------------------------------------*
+* Filtro informado e local não encontrado na massa filtrada:
+* operação não atende ao centro de custo solicitado.
+*---------------------------------------------------------------------*
+      IF rt_kostlfuncl[] IS NOT INITIAL.
+        CONTINUE.
+      ENDIF.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 14.3 Determinação do semáforo
+*---------------------------------------------------------------------*
+    CLEAR:
+      ls_semaforo_cfg,
+      lv_data_base,
+      lv_data_referencia_verde,
+      lv_data_referencia_verme,
+      lv_dias_verde,
+      lv_dias_vermelho,
+      ls_despacho-semaforo_icone.
+
+
+    ls_despacho-semaforo_cor =
+      'None'.
+
+    ls_despacho-semaforo_descricao =
+      'Sem Alerta'.
+
+
+    READ TABLE lt_semaforo_cfg
+      INTO ls_semaforo_cfg
+      WITH KEY
+        auart = ls_et140-auart
+        priok = ls_et140-priok
+      BINARY SEARCH.
+
+
+    IF sy-subrc = 0.
+
+      IF ls_semaforo_cfg-urgente = 'X'.
+
+        ls_despacho-semaforo_icone =
+          'sap-icon://status-error'.
+
+        ls_despacho-semaforo_cor =
+          'Error'.
+
+        ls_despacho-semaforo_descricao =
+          'Alerta Vermelho'.
+
+      ELSE.
+
+
+        IF ls_semaforo_cfg-verde     IS INITIAL AND
+           ls_semaforo_cfg-amarelo  IS INITIAL AND
+           ls_semaforo_cfg-vermelho IS INITIAL.
+
+          CLEAR ls_despacho-semaforo_icone.
+
+        ELSE.
+
+          lv_data_base =
+            ls_et140-gstrp.
+
+
+          IF lv_data_base IS NOT INITIAL AND
+             lv_data_base <> '00000000'.
+
+
+            IF ls_semaforo_cfg-verde IS NOT INITIAL.
+
+              lv_dias_verde =
+                ls_semaforo_cfg-verde.
+
+            ENDIF.
+
+
+            IF ls_semaforo_cfg-vermelho IS NOT INITIAL.
+
+              lv_dias_vermelho =
+                ls_semaforo_cfg-vermelho.
+
+            ENDIF.
+
+
+            lv_data_referencia_verde =
+              lv_data_base.
+
+            lv_data_referencia_verme =
+              lv_data_base.
+
+
+            lv_data_referencia_verde =
+              lv_data_referencia_verde +
+              lv_dias_verde.
+
+            lv_data_referencia_verme =
+              lv_data_referencia_verme +
+              lv_dias_vermelho.
+
+
+            IF sy-datum <= lv_data_referencia_verde.
+
+              ls_despacho-semaforo_icone =
+                'sap-icon://status-completed'.
+
+              ls_despacho-semaforo_cor =
+                'Success'.
+
+              ls_despacho-semaforo_descricao =
+                'Alerta Verde'.
+
+
+            ELSEIF sy-datum >= lv_data_referencia_verme.
+
+              ls_despacho-semaforo_icone =
+                'sap-icon://status-error'.
+
+              ls_despacho-semaforo_cor =
+                'Error'.
+
+              ls_despacho-semaforo_descricao =
+                'Alerta Vermelho'.
+
+
+            ELSE.
+
+              ls_despacho-semaforo_icone =
+                'sap-icon://status-critical'.
+
+              ls_despacho-semaforo_cor =
+                'Warning'.
+
+              ls_despacho-semaforo_descricao =
+                'Alerta Amarelo'.
+
+            ENDIF.
+
+          ENDIF.
+
+        ENDIF.
+
+      ENDIF.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 14.4 Campos
+*---------------------------------------------------------------------*
+    MOVE:
+      ls_et140-ernam TO ls_despacho-usuario,
+      ls_et140-gstrp TO ls_despacho-datopeini,
+      ls_et140-gltrp TO ls_despacho-datopefim,
+      ls_et140-ktsch TO ls_despacho-vlsch,
+      ls_et140-ktext TO ls_despacho-short_text_ordem,
+      ls_et140-ltxa1 TO ls_despacho-description,
+      ls_et140-eqktx TO ls_despacho-eqktx,
+      ls_et140-invnr TO ls_despacho-invnr.
+
+
+*---------------------------------------------------------------------*
+* 14.5 Conversões
+*---------------------------------------------------------------------*
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+      EXPORTING
+        input  = ls_et140-aufnr
+      IMPORTING
+        output = ls_despacho-aufnr.
+
+
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+      EXPORTING
+        input  = ls_et140-equnr
+      IMPORTING
+        output = ls_despacho-equnr.
+
+
+    CALL FUNCTION 'CONVERSION_EXIT_TPLNR_OUTPUT'
+      EXPORTING
+        input  = ls_et140-tplnr
+      IMPORTING
+        output = ls_despacho-tplnr.
+
+
+*---------------------------------------------------------------------*
+* Mantido conforme comportamento do método existente.
+*---------------------------------------------------------------------*
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+      EXPORTING
+        input  = ls_et140-werks
+      IMPORTING
+        output = ls_despacho-werks.
+
+
+*---------------------------------------------------------------------*
+* 14.6 Associações
+*---------------------------------------------------------------------*
+    CLEAR:
+      ls_despacho-tot_assoc,
+      ls_associacao.
+
+
+    READ TABLE lt_associacoes
+      INTO ls_associacao
+      WITH KEY
+        aufnr = ls_et140-aufnr
+        vornr = ls_et140-vornr
+      BINARY SEARCH.
+
+
+    IF sy-subrc = 0.
+
+      ls_despacho-tot_assoc =
+        ls_associacao-tot_assoc.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 14.7 Status
+*---------------------------------------------------------------------*
+    CLEAR:
+      ls_status_texto,
+      ls_despacho-system_status_ext,
+      ls_despacho-system_status_text.
+
+
+    READ TABLE lt_status_texto
+      INTO ls_status_texto
+      WITH KEY
+        objnr = ls_et140-objnr
+      BINARY SEARCH.
+
+
+    IF sy-subrc = 0.
+
+      ls_despacho-system_status_ext =
+        ls_status_texto-system_status_ext.
+
+      ls_despacho-system_status_text =
+        ls_status_texto-system_status_text.
+
+    ENDIF.
+
+
+*---------------------------------------------------------------------*
+* 14.8 Resultado
+*---------------------------------------------------------------------*
+    APPEND ls_despacho
+      TO it_despacho.
+
+
+  ENDLOOP.
+
+
+*---------------------------------------------------------------------*
+* Finalização
+*---------------------------------------------------------------------*
+  IF <fs_range> IS ASSIGNED.
+    UNASSIGN <fs_range>.
+  ENDIF.
+
+
+ENDMETHOD.
+
+
+  METHOD busca_lista_operacoes_detalhe.
+
+    TYPES: BEGIN OF ty_et140,
+             werks                 TYPE /ptloms/et140-werks,
+             aufnr                 TYPE /ptloms/et140-aufnr,
+             vornr                 TYPE /ptloms/et140-vornr,
+             auart                 TYPE /ptloms/et140-auart,
+             qmnum                 TYPE /ptloms/et140-qmnum,
+             priok                 TYPE /ptloms/et140-priok,
+             equnr                 TYPE /ptloms/et140-equnr,
+             iwerk                 TYPE /ptloms/et140-iwerk,
+             ernam                 TYPE /ptloms/et140-usuario,
+             ingpr                 TYPE /ptloms/et140-ingpr,
+             ilart                 TYPE /ptloms/et140-ilart,
+             gewrk                 TYPE /ptloms/et140-gewrk,
+             artpr                 TYPE viaufks-artpr,
+             gstrp                 TYPE d,
+             gstri                 TYPE d,
+             gltrp                 TYPE d,
+             gltri                 TYPE d,
+             data_base_ini         TYPE d,
+             data_base_fim         TYPE d,
+             iloan                 TYPE equz-iloan,
+             tplnr                 TYPE viaufks-tplnr,
+             ktsch                 TYPE /ptloms/et140-vlsch,
+             kostl_equnr           TYPE /ptloms/et140-kostl_equnr,
+             kostl_funcl           TYPE /ptloms/et140-kostl_funcl,
+             ktext                 TYPE /ptloms/et140-short_text_ordem,
+             ltxa1                 TYPE /ptloms/et140-description,
+             invnr                 TYPE /ptloms/et140-invnr,
+             eqktx                 TYPE /ptloms/et140-eqktx,
+             pltxt                 TYPE /ptloms/et140-pltxt,
+             late_sched_start_date TYPE /ptloms/et140-late_sched_start_date,
+             late_sched_fin_date   TYPE /ptloms/et140-late_sched_fin_date,
+             system_status_text    TYPE /ptloms/et140-system_status_text,
+             objnr                 TYPE viaufks-objnr,
+           END OF ty_et140,
+
+           BEGIN OF ty_assoc_usuario,
+             aufnr TYPE /ptloms/tb065-aufnr,
+             vornr TYPE /ptloms/tb065-vornr,
+             uname TYPE /ptloms/tb065-uname,
+           END OF ty_assoc_usuario,
+
+           BEGIN OF ty_associacao,
+             aufnr     TYPE /ptloms/tb065-aufnr,
+             vornr     TYPE /ptloms/tb065-vornr,
+             tot_assoc TYPE i,
+           END OF ty_associacao,
+
+           BEGIN OF ty_cc_eq,
+             iloan         TYPE iloa-iloan,
+             kostl_equnr   TYPE cskt-kostl,
+             kostl_equnr_t TYPE cskt-ltext,
+           END OF ty_cc_eq,
+
+           BEGIN OF ty_cc_lc,
+             tplnr         TYPE viaufks-tplnr,
+             kostl_funcl   TYPE iflo-kostl,
+             kostl_funcl_t TYPE cskt-ltext,
+           END OF ty_cc_lc,
+
+           BEGIN OF ty_status_ordem,
+             objnr TYPE jest-objnr,
+             stat  TYPE jest-stat,
+             txt04 TYPE tj02t-txt04,
+             txt30 TYPE tj02t-txt30,
+           END OF ty_status_ordem,
+
+           BEGIN OF ty_status_texto,
+             objnr              TYPE jest-objnr,
+             system_status_text TYPE string,
+             system_status_ext  TYPE string,
+           END OF ty_status_texto,
+
+           BEGIN OF ty_semaforo_cfg,
+             auart    TYPE /ptloms/tb034-auart,
+             priok    TYPE /ptloms/tb034-priok,
+             urgente  TYPE /ptloms/tb034-urgente,
+             verde    TYPE /ptloms/tb034-verde,
+             amarelo  TYPE /ptloms/tb034-amarelo,
+             vermelho TYPE /ptloms/tb034-vermelho,
+           END OF ty_semaforo_cfg.
+
+    DATA: lt_et140                 TYPE TABLE OF ty_et140,
+          ls_et140                 TYPE ty_et140,
+          lt_centro_trabalho       TYPE TABLE OF /ptloms/tb005,
+          ls_centro_trabalho       LIKE LINE OF lt_centro_trabalho,
+          ls_despacho              LIKE LINE OF it_despacho,
+          r_ordens_associadas_tot  TYPE RANGE OF aufnr,
+          ls_ordens_associadas_tot LIKE LINE OF r_ordens_associadas_tot,
+          lr_gewrk                 TYPE RANGE OF gewrk,
+          lv_aufnr                 TYPE aufnr,
+          lv_qmnum                 TYPE qmnum,
+          lv_equnr                 TYPE equnr,
+          lv_kostl                 TYPE kostl,
+          ls_gewrk                 LIKE LINE OF lr_gewrk,
+
+          lt_assoc_usuario         TYPE STANDARD TABLE OF ty_assoc_usuario,
+          ls_assoc_usuario         TYPE ty_assoc_usuario,
+          lt_associacoes           TYPE STANDARD TABLE OF ty_associacao,
+          ls_associacao            TYPE ty_associacao,
+
+          lt_cc_eq                 TYPE STANDARD TABLE OF ty_cc_eq,
+          ls_cc_eq                 TYPE ty_cc_eq,
+          lt_cc_lc                 TYPE STANDARD TABLE OF ty_cc_lc,
+          ls_cc_lc                 TYPE ty_cc_lc,
+
+          lt_status_ordem          TYPE STANDARD TABLE OF ty_status_ordem,
+          ls_status_ordem          TYPE ty_status_ordem,
+          lt_status_texto          TYPE STANDARD TABLE OF ty_status_texto,
+          ls_status_texto          TYPE ty_status_texto,
+
+          lt_semaforo_cfg          TYPE STANDARD TABLE OF ty_semaforo_cfg,
+          ls_semaforo_cfg          TYPE ty_semaforo_cfg,
+          lv_data_base             TYPE sy-datum,
+          lv_data_referencia_verde TYPE sy-datum,
+          lv_data_referencia_verme TYPE sy-datum,
+          lv_dias_verde            TYPE i,
+          lv_dias_vermelho         TYPE i.
+
+
 
     FIELD-SYMBOLS <fs_range> TYPE /iwbep/s_cod_select_option.
 
     LOOP AT rt_aufnr ASSIGNING <fs_range>.
 
       IF <fs_range>-low IS NOT INITIAL.
-
         CLEAR lv_aufnr.
         lv_aufnr = <fs_range>-low.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-          EXPORTING
-            input  = lv_aufnr
-          IMPORTING
-            output = lv_aufnr.
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT' EXPORTING input  = lv_aufnr IMPORTING output = lv_aufnr.
         <fs_range>-low = lv_aufnr.
-
       ENDIF.
 
       IF <fs_range>-high IS NOT INITIAL.
-
         CLEAR lv_aufnr.
         lv_aufnr = <fs_range>-high.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-          EXPORTING
-            input  = lv_aufnr
-          IMPORTING
-            output = lv_aufnr.
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT' EXPORTING input  = lv_aufnr IMPORTING output = lv_aufnr.
         <fs_range>-high = lv_aufnr.
-
       ENDIF.
 
     ENDLOOP.
 
-    LOOP AT rt_qmnum ASSIGNING <fs_range>.
 
-      IF <fs_range>-low IS NOT INITIAL.
-
-        CLEAR lv_qmnum.
-        lv_qmnum = <fs_range>-low.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-          EXPORTING
-            input  = lv_qmnum
-          IMPORTING
-            output = lv_qmnum.
-        <fs_range>-low = lv_qmnum.
-
-      ENDIF.
-
-      IF <fs_range>-high IS NOT INITIAL.
-
-        CLEAR lv_qmnum.
-        lv_qmnum = <fs_range>-high.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-          EXPORTING
-            input  = lv_qmnum
-          IMPORTING
-            output = lv_qmnum.
-        <fs_range>-high = lv_qmnum.
-
-      ENDIF.
-
-    ENDLOOP.
-
-    LOOP AT rt_equnr ASSIGNING <fs_range>.
-
-      IF <fs_range>-low IS NOT INITIAL.
-
-        CLEAR lv_equnr.
-        lv_equnr = <fs_range>-low.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-          EXPORTING
-            input  = lv_equnr
-          IMPORTING
-            output = lv_equnr.
-        <fs_range>-low = lv_equnr.
-
-      ENDIF.
-
-      IF <fs_range>-high IS NOT INITIAL.
-
-        CLEAR lv_equnr.
-        lv_equnr = <fs_range>-high.
-        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-          EXPORTING
-            input  = lv_equnr
-          IMPORTING
-            output = lv_equnr.
-        <fs_range>-high = lv_equnr.
-
-      ENDIF.
-
-    ENDLOOP.
-
-    LOOP AT rt_kostlequnr ASSIGNING <fs_range>.
-      IF <fs_range>-low IS NOT INITIAL.
-        CLEAR lv_kostl.
-        lv_kostl       = <fs_range>-low.
-        <fs_range>-low = |{ lv_kostl ALPHA = IN }|.
-      ENDIF.
-
-      IF <fs_range>-high IS NOT INITIAL.
-        CLEAR lv_kostl.
-        lv_kostl        = <fs_range>-high.
-        <fs_range>-high = |{ lv_kostl ALPHA = IN }|.
-      ENDIF.
-    ENDLOOP.
-
-    LOOP AT rt_kostlfuncl ASSIGNING <fs_range>.
-      IF <fs_range>-low IS NOT INITIAL.
-        CLEAR lv_kostl.
-        lv_kostl       = <fs_range>-low.
-        <fs_range>-low = |{ lv_kostl ALPHA = IN }|.
-      ENDIF.
-
-      IF <fs_range>-high IS NOT INITIAL.
-        CLEAR lv_kostl.
-        lv_kostl        = <fs_range>-high.
-        <fs_range>-high = |{ lv_kostl ALPHA = IN }|.
-      ENDIF.
-    ENDLOOP.
-
-
-    SELECT a~werks,
-           a~aufnr,
-           c~vornr,
-           a~auart,
-           a~qmnum,
-           a~priok,
-           a~tplnr,
-           a~equnr,
-           a~iwerk,
-           a~ernam,
-           a~ingpr,
-           a~ilart,
-           a~gewrk,
-           a~gstrp,
-           a~gstri,
-           a~gltrp,
-           a~gltri,
-           c~ktsch,
-           i~kostl AS kostl_equnr,
-           l~kostl AS kostl_funcl
-      FROM viaufks         AS a
-     INNER JOIN afvc       AS c ON a~aufpl = c~aufpl
-     INNER JOIN afvv       AS d ON c~aufpl = d~aufpl AND c~aplzl   = d~aplzl
+    SELECT a~werks
+           a~aufnr
+           c~vornr
+           a~auart
+           a~qmnum
+           a~priok
+           a~equnr
+           q~invnr
+           t~eqktx
+           a~iwerk
+           a~ernam
+           a~ingpr
+           a~ilart
+           a~gewrk
+           a~gstrp "Datoperini
+           a~gstri
+           a~gltrp "Datoperfim
+           a~gltri
+           c~ktsch
+           a~gstrp AS data_base_ini
+           a~gltrp AS data_base_fim
+           e~iloan
+           a~tplnr
+           a~ktext
+           c~ltxa1
+           d~ssavd AS late_sched_start_date
+           d~ssedd AS late_sched_fin_date
+           a~objnr
+           a~artpr
+      INTO CORRESPONDING FIELDS OF TABLE lt_et140
+      FROM viaufks AS a
+     INNER JOIN afvc       AS c ON c~aufpl = a~aufpl
+     INNER JOIN afvv       AS d ON d~aufpl = c~aufpl AND d~aplzl = c~aplzl
+      LEFT OUTER JOIN equi AS q ON q~equnr = a~equnr
+      LEFT OUTER JOIN eqkt AS t ON t~equnr = a~equnr AND t~spras = sy-langu
       LEFT OUTER JOIN equz AS e ON e~equnr = a~equnr AND e~datbi = '99991231'
-      LEFT OUTER JOIN iloa AS i ON i~iloan = e~iloan
-      LEFT OUTER JOIN iflo AS l ON l~tplnr = a~tplnr
-      INTO CORRESPONDING FIELDS OF TABLE @lt_et140
-     WHERE a~aufnr IN @rt_aufnr
-       AND c~vornr IN @rt_vornr
-       AND a~auart IN @rt_auart
-       AND a~auart IN @rt_auart
-       AND a~priok IN @rt_priok
-       AND a~qmnum IN @rt_qmnum
-       AND a~tplnr IN @rt_tplnr
-       AND a~equnr IN @rt_equnr
-       AND a~iwerk IN @rt_iwerk
-       AND a~ingpr IN @rt_ingpr
-       AND a~ilart IN @rt_ilart
-       AND a~gstrp IN @rt_datope_ini
-       AND a~swerk IN @rt_werks  " Centro de manutenção obrigatório
-       AND a~gewrk IN @lr_gewrk
-       AND a~ernam IN @rt_usuapp
-       AND c~ktsch IN @rt_vlsch
-       AND c~phflg EQ @space
-
-       AND i~kostl IN @rt_kostlequnr
-       AND l~kostl IN @rt_kostlfuncl
-
-       AND a~idat3 = '00000000' " Data de encerramento
-       AND a~idat2 = '00000000' " Data de encerramento técnico
-       AND a~loekz = ''         " Marcado para eliminação
-       AND a~getri = '00000000' " Fim confirmado da ordem
-       AND a~objnr NOT IN (
-           " Excluir objetos com status BLOQ
-           SELECT objnr FROM jest WHERE objnr LIKE 'OR%' AND stat EQ 'I0190' AND inact EQ @space
-       ).
+     WHERE a~aufnr IN rt_aufnr.
 
     IF lt_et140[] IS NOT INITIAL.
+
+      "-- Centro de custo de equipamento --"
+      SELECT iloa~iloan cskt~kostl AS kostl_equnr cskt~ltext AS kostl_equnr_t
+        INTO CORRESPONDING FIELDS OF TABLE lt_cc_eq
+        FROM iloa
+        LEFT OUTER JOIN cskt ON cskt~kostl = iloa~kostl AND cskt~spras = sy-langu AND cskt~datbi = '99991231'
+         FOR ALL ENTRIES IN lt_et140
+       WHERE iloa~iloan = lt_et140-iloan
+         AND iloa~iloan <> space.
+
+      SORT lt_cc_eq BY iloan.
+      DELETE ADJACENT DUPLICATES FROM lt_cc_eq COMPARING iloan.
+
+      "-- Centro de custo de local --"
+      SELECT iflo~tplnr cskt~kostl AS kostl_funcl cskt~ltext AS kostl_funcl_t
+        INTO CORRESPONDING FIELDS OF TABLE lt_cc_lc
+        FROM iflo
+        LEFT OUTER JOIN cskt ON cskt~kostl = iflo~kostl AND cskt~spras = sy-langu AND cskt~datbi = '99991231'
+         FOR ALL ENTRIES IN lt_et140
+       WHERE iflo~tplnr = lt_et140-tplnr
+         AND iflo~tplnr <> space.
+
+      SORT lt_cc_lc BY tplnr.
+      DELETE ADJACENT DUPLICATES FROM lt_cc_lc COMPARING tplnr.
+
+
+
+*--------------------------------------------------------------------*
+* Busca das configurações de semáforo por tipo e prioridade
+*--------------------------------------------------------------------*
+      REFRESH lt_semaforo_cfg.
+
+      SELECT auart priok urgente verde amarelo vermelho
+        INTO TABLE lt_semaforo_cfg
+        FROM /ptloms/tb034
+        FOR ALL ENTRIES IN lt_et140
+        WHERE auart = lt_et140-auart
+          AND priok = lt_et140-priok.
+
+      IF lt_semaforo_cfg[] IS NOT INITIAL.
+        SORT lt_semaforo_cfg BY auart priok.
+        DELETE ADJACENT DUPLICATES FROM lt_semaforo_cfg COMPARING auart priok.
+      ENDIF.
+
 
       LOOP AT lt_et140 INTO ls_et140.
 
         MOVE-CORRESPONDING ls_et140 TO ls_despacho.
 
-        MOVE:
-          ls_et140-ernam TO ls_despacho-usuario,
-          ls_et140-gstrp TO ls_despacho-datopeini,
-          ls_et140-gltrp TO ls_despacho-datopefim,
-          ls_et140-ktsch TO ls_despacho-vlsch.
 
+*--------------------------------------------------------------------*
+* Status da ordem
+*--------------------------------------------------------------------*
+        SELECT j~objnr
+               j~stat
+               t~txt04
+               t~txt30
+          INTO TABLE lt_status_ordem
+          FROM jest AS j
+          INNER JOIN tj02t AS t
+            ON t~istat = j~stat
+          FOR ALL ENTRIES IN lt_et140
+          WHERE j~objnr = lt_et140-objnr
+            AND j~inact = space
+            AND t~spras = sy-langu.
+
+        IF lt_status_ordem[] IS NOT INITIAL.
+
+          SORT lt_status_ordem BY objnr stat.
+
+          DELETE ADJACENT DUPLICATES FROM lt_status_ordem
+            COMPARING objnr stat.
+
+          LOOP AT lt_status_ordem INTO ls_status_ordem.
+
+            AT NEW objnr.
+              CLEAR ls_status_texto.
+
+              ls_status_texto-objnr =
+                ls_status_ordem-objnr.
+
+            ENDAT.
+
+
+*--------------------------------------------------------------------*
+* Código curto dos status: LIB, ABER, ENCE etc.
+*--------------------------------------------------------------------*
+            IF ls_status_ordem-txt04 IS NOT INITIAL.
+              IF ls_status_texto-system_status_text IS INITIAL.
+                ls_status_texto-system_status_text = ls_status_ordem-txt04.
+              ELSE.
+                CONCATENATE ls_status_texto-system_status_text ls_status_ordem-txt04 INTO ls_status_texto-system_status_text SEPARATED BY ', '.
+              ENDIF.
+            ENDIF.
+
+
+*--------------------------------------------------------------------*
+* Texto longo dos status
+*--------------------------------------------------------------------*
+            IF ls_status_ordem-txt30 IS NOT INITIAL.
+
+              IF ls_status_texto-system_status_ext IS INITIAL.
+                ls_status_texto-system_status_ext = ls_status_ordem-txt30.
+              ELSE.
+                CONCATENATE ls_status_texto-system_status_ext ls_status_ordem-txt30 INTO ls_status_texto-system_status_ext SEPARATED BY ', '.
+              ENDIF.
+            ENDIF.
+
+            AT END OF objnr.
+              APPEND ls_status_texto TO lt_status_texto.
+            ENDAT.
+          ENDLOOP.
+
+          SORT lt_status_texto BY objnr.
+
+        ENDIF.
+
+        REFRESH lt_assoc_usuario.
+        REFRESH lt_associacoes.
+
+        SELECT aufnr vornr uname
+          INTO TABLE lt_assoc_usuario
+          FROM /ptloms/tb065
+          FOR ALL ENTRIES IN lt_et140
+          WHERE aufnr = lt_et140-aufnr
+            AND vornr = lt_et140-vornr.
+
+        IF lt_assoc_usuario[] IS NOT INITIAL.
+
+          SORT lt_assoc_usuario BY aufnr vornr uname.
+
+          DELETE ADJACENT DUPLICATES FROM lt_assoc_usuario COMPARING aufnr vornr uname.
+
+          LOOP AT lt_assoc_usuario INTO ls_assoc_usuario.
+            CLEAR ls_associacao.
+            ls_associacao-aufnr     = ls_assoc_usuario-aufnr.
+            ls_associacao-vornr     = ls_assoc_usuario-vornr.
+            ls_associacao-tot_assoc = 1.
+            COLLECT ls_associacao INTO lt_associacoes.
+          ENDLOOP.
+
+          SORT lt_associacoes BY aufnr vornr.
+
+        ENDIF.
+
+*--------------------------------------------------------------------*
+* Determinação do semáforo
+*--------------------------------------------------------------------*
+        CLEAR: ls_semaforo_cfg, lv_data_base, lv_data_referencia_verde, lv_data_referencia_verme, lv_dias_verde, lv_dias_vermelho, ls_despacho-semaforo_icone.
+
+        ls_despacho-semaforo_cor       = 'None'.
+        ls_despacho-semaforo_descricao = 'Sem Alerta'.
+
+        READ TABLE lt_semaforo_cfg INTO ls_semaforo_cfg WITH KEY auart = ls_et140-auart priok = ls_et140-priok BINARY SEARCH.
+
+        IF sy-subrc = 0.
+
+          IF ls_semaforo_cfg-urgente = 'X'.
+            ls_despacho-semaforo_icone     = 'sap-icon://status-error'.
+            ls_despacho-semaforo_cor       = 'Error'.
+            ls_despacho-semaforo_descricao = 'Alerta Vermelho'.
+          ELSE.
+            IF ls_semaforo_cfg-verde IS INITIAL AND ls_semaforo_cfg-amarelo  IS INITIAL AND ls_semaforo_cfg-vermelho IS INITIAL.
+              CLEAR ls_despacho-semaforo_icone.
+              ls_despacho-semaforo_cor       = 'None'.
+              ls_despacho-semaforo_descricao = 'Sem Alerta'.
+            ELSE.
+              lv_data_base = ls_et140-gstrp.
+              IF lv_data_base IS INITIAL OR lv_data_base = '00000000'.
+                CLEAR ls_despacho-semaforo_icone.
+                ls_despacho-semaforo_cor = 'None'.
+                ls_despacho-semaforo_descricao = 'Sem Alerta'.
+              ELSE.
+
+                IF ls_semaforo_cfg-verde IS NOT INITIAL.
+                  lv_dias_verde = ls_semaforo_cfg-verde.
+                ENDIF.
+
+                IF ls_semaforo_cfg-vermelho IS NOT INITIAL.
+                  lv_dias_vermelho = ls_semaforo_cfg-vermelho.
+                ENDIF.
+
+                lv_data_referencia_verde = lv_data_base.
+                lv_data_referencia_verme = lv_data_base.
+                lv_data_referencia_verde = lv_data_referencia_verde + lv_dias_verde.
+                lv_data_referencia_verme = lv_data_referencia_verme + lv_dias_vermelho.
+
+                IF sy-datum <= lv_data_referencia_verde.
+                  ls_despacho-semaforo_icone     = 'sap-icon://status-completed'.
+                  ls_despacho-semaforo_cor       = 'Success'.
+                  ls_despacho-semaforo_descricao = 'Alerta Verde'.
+
+                ELSEIF sy-datum >= lv_data_referencia_verme.
+                  ls_despacho-semaforo_icone     = 'sap-icon://status-error'.
+                  ls_despacho-semaforo_cor       = 'Error'.
+                  ls_despacho-semaforo_descricao = 'Alerta Vermelho'.
+
+                ELSE.
+                  ls_despacho-semaforo_icone     = 'sap-icon://status-critical'.
+                  ls_despacho-semaforo_cor       = 'Warning'.
+                  ls_despacho-semaforo_descricao = 'Alerta Amarelo'.
+
+                ENDIF.
+              ENDIF.
+            ENDIF.
+          ENDIF.
+        ENDIF.
+
+        MOVE: ls_et140-ernam TO ls_despacho-usuario,
+              ls_et140-gstrp TO ls_despacho-datopeini,
+              ls_et140-gltrp TO ls_despacho-datopefim,
+              ls_et140-ktsch TO ls_despacho-vlsch,
+              ls_et140-ktext TO ls_despacho-short_text_ordem,
+              ls_et140-ltxa1 TO ls_despacho-description,
+              ls_et140-eqktx TO ls_despacho-eqktx,
+              ls_et140-invnr TO ls_despacho-invnr.
+
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT' EXPORTING input  = ls_et140-aufnr       IMPORTING output = ls_despacho-aufnr.
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT' EXPORTING input  = ls_et140-equnr       IMPORTING output = ls_despacho-equnr.
+        CALL FUNCTION 'CONVERSION_EXIT_TPLNR_OUTPUT' EXPORTING input  = ls_et140-tplnr       IMPORTING output = ls_despacho-tplnr.
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT' EXPORTING input  = ls_et140-werks       IMPORTING output = ls_despacho-werks.
+
+
+        "-- Associações --"
+        CLEAR ls_despacho-tot_assoc.
+        READ TABLE lt_associacoes INTO ls_associacao WITH KEY aufnr = ls_et140-aufnr vornr = ls_et140-vornr BINARY SEARCH.
+
+        IF sy-subrc = 0.
+          ls_despacho-tot_assoc = ls_associacao-tot_assoc.
+        ENDIF.
+
+
+        "-- C.Custo Equipamento --"
+        READ TABLE lt_cc_eq INTO ls_cc_eq WITH KEY iloan = ls_et140-iloan BINARY SEARCH.
+        IF sy-subrc = 0.
+          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT' EXPORTING input  = ls_cc_eq-kostl_equnr IMPORTING output = ls_despacho-kostl_equnr.
+        ENDIF.
+
+        "-- C.Custo Local --"
+        READ TABLE lt_cc_lc INTO ls_cc_lc WITH KEY tplnr = ls_et140-tplnr BINARY SEARCH.
+        IF sy-subrc = 0.
+          CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT' EXPORTING input  = ls_cc_lc-kostl_funcl IMPORTING output = ls_despacho-kostl_funcl.
+        ENDIF.
+
+
+        "-- Status --"
+        CLEAR: ls_status_texto, ls_despacho-system_status_ext, ls_despacho-system_status_text.
+        READ TABLE lt_status_texto INTO ls_status_texto WITH KEY objnr = ls_et140-objnr BINARY SEARCH.
+
+        IF sy-subrc = 0.
+          ls_despacho-system_status_ext = ls_status_texto-system_status_ext.
+          ls_despacho-system_status_text = ls_status_texto-system_status_text.
+        ENDIF.
+
+
+        "-- Adiciona linha no resultado --"
         APPEND ls_despacho TO it_despacho.
 
       ENDLOOP.
@@ -2250,19 +4596,35 @@ CLASS /PTLOMS/CL015 IMPLEMENTATION.
       IF sy-subrc EQ 0.
 
         v_un_work = v_duration.
+
 *        IF e_operations-un_work = 'H'.
 *          e_confirmacao-act_work  = v_un_work / 3600.
 *        ELSE.
 *          e_confirmacao-act_work  = v_un_work * 60.
 *        ENDIF.
-        CASE e_operations-un_work.
 
-          WHEN 'H'.
-            e_confirmacao-act_work = v_un_work.
-          WHEN 'MIN'.
-            e_confirmacao-act_work = v_un_work / 60.
-
-        ENDCASE.
+**********************************************************************
+*  Código abaixo comentado em 06/08/2026 em função dos apontamentos
+*  estarem sendo convertidos sempre para horas.
+*  Bretz e Riveli debugaram os apontamentos
+**********************************************************************
+*  Ínício.
+**********************************************************************
+***        CASE e_operations-un_work.
+***
+***          WHEN 'H'.
+***            e_confirmacao-act_work = v_un_work.
+***          WHEN 'MIN'.
+***            e_confirmacao-act_work = v_un_work / 60.
+***
+***        ENDCASE.
+**********************************************************************
+*  Código abaixo comentado em 06/08/2026 em função dos apontamentos
+*  estarem sendo convertidos sempre para horas.
+*  Bretz e Riveli debugaram os apontamentos
+**********************************************************************
+*  Fim.
+**********************************************************************
 
       ENDIF.
 

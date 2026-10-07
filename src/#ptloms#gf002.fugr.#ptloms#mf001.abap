@@ -48,6 +48,14 @@ FUNCTION /ptloms/mf001.
         lv_texto_longo  TYPE string,
         lv_quebra_linha TYPE string VALUE cl_abap_char_utilities=>newline.
 
+  DATA: ls_tb033     TYPE /ptloms/tb033,
+        lv_documento TYPE /ptloms/ed156,
+        lv_titulo    TYPE /ptloms/ed159,
+        lv_mensagem  TYPE /ptloms/ed160.
+
+  CONSTANTS: lc_tpdoc     TYPE /ptloms/ed155 VALUE 'N',
+             lc_intervalo TYPE inri-nrrangenr value '01'.
+
 * Verifica se critério cabeçalho da NOTA foi preenchido
   IF im_nota IS INITIAL.
     RETURN.
@@ -243,8 +251,8 @@ FUNCTION /ptloms/mf001.
       ls_notiftask-item_sort_no  = 1.
       ls_notiftask-task_sort_no = 1.
 
-      ls_notiftask-TASK_CODEGRP = im_nota-task_codegrp.
-      ls_notiftask-TASK_CODE    = im_nota-TASK_CODE.
+      ls_notiftask-task_codegrp = im_nota-task_codegrp.
+      ls_notiftask-task_code    = im_nota-task_code.
       APPEND ls_notiftask TO lt_notiftask.
 
     ELSE.
@@ -327,7 +335,30 @@ FUNCTION /ptloms/mf001.
     CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
       EXPORTING
         wait = 'X'.
-  ELSE.
+
+    SELECT SINGLE * INTO ls_tb033
+      FROM tb033 CLIENT SPECIFIED.
+
+    lv_documento = ls_notifheader_save-notif_no.
+    CONCATENATE 'Nota criada' ls_notifheader_export-notif_no INTO lv_titulo SEPARATED BY space.
+    CONCATENATE 'Foi criada a nota numero' ls_notifheader_export-notif_no
+                'do tipo' ls_notifheader_export-notif_type
+                'descrição' ls_notifheader_export-short_text
+                'para o equipamento' ls_notifheader_export-equipment INTO lv_mensagem SEPARATED BY space.
+
+    CALL METHOD /ptloms/cl030=>registrar_alerta
+      EXPORTING
+        is_contexto_tb033   = ls_tb033
+        iv_tipo_evento      = /ptloms/cl030=>c_evento_nota
+        iv_tipo_documento   = lc_tpdoc
+        iv_documento        = lv_documento
+        iv_equipamento      = ls_notifheader-equipment
+        iv_local_instalacao = ls_notifheader-funct_loc
+        iv_usuario          = lv_usuario
+        iv_titulo           = lv_titulo
+        iv_mensagem         = lv_mensagem
+        iv_intervalo        = lc_intervalo.
+
 *    READ TABLE lt_return ASSIGNING FIELD-SYMBOL(<fs_return>) WITH KEY type = 'E'.
     FIELD-SYMBOLS: <fs_return> LIKE LINE OF lt_return.
     READ TABLE lt_return ASSIGNING <fs_return> WITH KEY type = 'E'.

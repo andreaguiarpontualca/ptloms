@@ -1,41 +1,50 @@
-class /PTLOMS/CL005 definition
-  public
-  final
-  create public .
+CLASS /ptloms/cl005 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
-  methods AUTENTICA
-    importing
-      !IM_USUARIO type XUBNAME
-      !IM_SENHA type CHAR32
-    exporting
-      !EX_AUTENTICADO type CHAR1 .
-  methods CRIA_SESSAO
-    importing
-      !IM_USUARIO type XUBNAME
-    exporting
-      !EX_SESSAO_CRIADA type CHAR1 .
-  methods FINALIZA_SESSAO
-    importing
-      !IM_USUARIO type XUBNAME
-    exporting
-      !EX_SESSAO_FINALIZADA type CHAR1 .
-  methods BUSCA_SESSAO
-    importing
-      !IM_USUARIO type XUBNAME
-    exporting
-      !EX_GUID type CHAR32 .
-  methods ATUALIZA_SENHA
-    importing
-      !IM_USUARIO type XUBNAME
-      !IM_SENHA type CHAR32
-      !IM_CONFSENHA type CHAR32
-    exporting
-      !EX_SENHA_ALTERADA type CHAR1 .
-protected section.
-private section.
+    METHODS constructor .
+    METHODS autentica
+      IMPORTING
+        !im_usuario     TYPE xubname
+        !im_senha       TYPE char32
+      EXPORTING
+        !ex_autenticado TYPE char1 .
+    METHODS cria_sessao
+      IMPORTING
+        !im_usuario       TYPE xubname
+      EXPORTING
+        !ex_sessao_criada TYPE char1 .
+    METHODS finaliza_sessao
+      IMPORTING
+        !im_usuario           TYPE xubname
+      EXPORTING
+        !ex_sessao_finalizada TYPE char1 .
+    METHODS busca_sessao
+      IMPORTING
+        !im_usuario TYPE xubname
+      EXPORTING
+        !ex_guid    TYPE char32 .
+    METHODS atualiza_senha
+      IMPORTING
+        !im_usuario        TYPE xubname
+        !im_senha          TYPE char32
+        !im_confsenha      TYPE char32
+      EXPORTING
+        !ex_senha_alterada TYPE char1 .
+    METHODS atualiza_senha_v2
+      IMPORTING
+        !im_usuario        TYPE xubname
+        !im_senha_atual    TYPE char32
+        !im_nova_senha     TYPE char32
+        !im_conf_senha     TYPE char32
+      EXPORTING
+        !ex_senha_alterada TYPE char1
+        !ex_mensagem       TYPE bapi_msg .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -112,6 +121,148 @@ CLASS /PTLOMS/CL005 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD atualiza_senha_v2.
+
+    DATA: lv_senha_atual_hash TYPE /ptloms/tb013-senha,
+          lv_nova_senha_hash  TYPE /ptloms/tb013-senha,
+          lv_usuario          TYPE xubname,
+          ls_usuario          TYPE /ptloms/tb013.
+
+    CLEAR: ex_senha_alterada,
+           ex_mensagem.
+
+*--------------------------------------------------------------------*
+* Validação dos parâmetros
+*--------------------------------------------------------------------*
+    IF im_usuario IS INITIAL.
+      ex_mensagem = 'Informe o usuário.'.
+      RETURN.
+    ENDIF.
+
+    IF im_senha_atual IS INITIAL.
+      ex_mensagem = 'Informe a senha atual.'.
+      RETURN.
+    ENDIF.
+
+    IF im_nova_senha IS INITIAL.
+      ex_mensagem = 'Informe a nova senha.'.
+      RETURN.
+    ENDIF.
+
+    IF im_conf_senha IS INITIAL.
+      ex_mensagem = 'Confirme a nova senha.'.
+      RETURN.
+    ENDIF.
+
+    lv_usuario = im_usuario.
+    TRANSLATE lv_usuario TO UPPER CASE.
+
+*--------------------------------------------------------------------*
+* Nova senha e confirmação
+*--------------------------------------------------------------------*
+    IF im_nova_senha NE im_conf_senha.
+      ex_mensagem = 'A nova senha e a confirmação não conferem.'.
+      RETURN.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Nova senha não pode ser igual à atual
+*--------------------------------------------------------------------*
+    IF im_senha_atual EQ im_nova_senha.
+      ex_mensagem = 'A nova senha deve ser diferente da senha atual.'.
+      RETURN.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Recupera usuário OMS
+*--------------------------------------------------------------------*
+    SELECT SINGLE *
+      FROM /ptloms/tb013
+      INTO ls_usuario
+      WHERE usuario = lv_usuario.
+
+    IF sy-subrc NE 0.
+      ex_mensagem = 'Usuário ou senha atual inválidos.'.
+      RETURN.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Situação do usuário
+*--------------------------------------------------------------------*
+    IF ls_usuario-bloqueado EQ 'X'.
+      ex_mensagem = 'Usuário bloqueado.'.
+      RETURN.
+    ENDIF.
+
+    IF ls_usuario-eliminado EQ 'X'.
+      ex_mensagem = 'Usuário não está ativo.'.
+      RETURN.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Valida senha atual
+*--------------------------------------------------------------------*
+    CALL FUNCTION 'MD5_CALCULATE_HASH_FOR_CHAR'
+      EXPORTING
+        data   = im_senha_atual
+      IMPORTING
+        hash   = lv_senha_atual_hash
+      EXCEPTIONS
+        OTHERS = 1.
+
+    IF sy-subrc NE 0.
+      ex_mensagem = 'Erro ao validar a senha atual.'.
+      RETURN.
+    ENDIF.
+
+    IF lv_senha_atual_hash NE ls_usuario-senha.
+      ex_mensagem = 'Usuário ou senha atual inválidos.'.
+      RETURN.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Calcula hash da nova senha
+*--------------------------------------------------------------------*
+    CALL FUNCTION 'MD5_CALCULATE_HASH_FOR_CHAR'
+      EXPORTING
+        data   = im_nova_senha
+      IMPORTING
+        hash   = lv_nova_senha_hash
+      EXCEPTIONS
+        OTHERS = 1.
+
+    IF sy-subrc NE 0.
+      ex_mensagem = 'Erro ao processar a nova senha.'.
+      RETURN.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Atualiza somente os campos necessários
+*--------------------------------------------------------------------*
+    UPDATE /ptloms/tb013
+      SET senha           = lv_nova_senha_hash
+          conf_senha      = lv_nova_senha_hash
+          atualizar_senha = space
+      WHERE usuario       = im_usuario.
+
+    IF sy-subrc EQ 0.
+
+      COMMIT WORK AND WAIT.
+
+      ex_senha_alterada = 'X'.
+      ex_mensagem = 'Senha alterada com sucesso.'.
+
+    ELSE.
+
+      ROLLBACK WORK.
+
+      ex_mensagem = 'Não foi possível alterar a senha.'.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD autentica.
 
 *   Declaração de Variável
@@ -181,8 +332,8 @@ CLASS /PTLOMS/CL005 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  method CONSTRUCTOR.
-  endmethod.
+  METHOD constructor.
+  ENDMETHOD.
 
 
   METHOD cria_sessao.

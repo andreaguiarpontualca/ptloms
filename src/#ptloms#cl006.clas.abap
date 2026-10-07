@@ -178,7 +178,7 @@ CLASS /PTLOMS/CL006 IMPLEMENTATION.
     DATA: lv_usuario_sap TYPE /ptloms/tb033.
 
     SELECT SINGLE usuario_sap FROM /ptloms/tb033 INTO CORRESPONDING FIELDS OF lv_usuario_sap.
-    IF lv_usuario_sap = 'X'.
+    IF lv_usuario_sap-usuario_sap = 'X'.
       rm_usuario = sy-uname.
     ELSE.
       rm_usuario = im_usuario.

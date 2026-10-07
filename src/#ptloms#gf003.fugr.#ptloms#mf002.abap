@@ -57,6 +57,14 @@ FUNCTION /ptloms/mf002.
   DATA: lv_objidext TYPE objidext VALUE '%00000000001',
         lv_ifrefnum TYPE ifrefnum VALUE 1.
 
+  DATA: ls_tb033     TYPE /ptloms/tb033,
+        lv_documento TYPE /ptloms/ed156,
+        lv_titulo    TYPE /ptloms/ed159,
+        lv_mensagem  TYPE /ptloms/ed160.
+
+  CONSTANTS: lc_tpdoc     TYPE /ptloms/ed155 VALUE 'O',
+             lc_intervalo TYPE inri-nrrangenr VALUE '01'.
+
 * Verifica se cabeçalho da ORDEM foi preenchido
   IF im_ordem IS INITIAL.
     RETURN.
@@ -423,6 +431,31 @@ FUNCTION /ptloms/mf002.
       <fs_operacao>-aufnr = ls_header-orderid.
     ENDLOOP.
     " 11/10/2023 - Novos campos para nova tela - Ordem e operação
+
+    " Registrar Alerta
+    SELECT SINGLE * INTO ls_tb033
+      FROM tb033 CLIENT SPECIFIED.
+
+    lv_documento = ls_header-orderid.
+    CONCATENATE 'Ordem criada' ls_header-orderid INTO lv_titulo SEPARATED BY space.
+    CONCATENATE 'Foi criada a ordem número' ls_header-orderid
+                'do tipo' ls_header-order_type
+                'descrição' ls_header-short_text
+                'para o equipamento' ls_header-equipment INTO lv_mensagem SEPARATED BY space.
+
+    CALL METHOD /ptloms/cl030=>registrar_alerta
+      EXPORTING
+        is_contexto_tb033   = ls_tb033
+        iv_tipo_evento      = /ptloms/cl030=>c_evento_nota
+        iv_tipo_documento   = lc_tpdoc
+        iv_documento        = lv_documento
+        iv_equipamento      = ls_header-equipment
+        iv_local_instalacao = ls_header-funct_loc
+        iv_usuario          = im_ordem-usuario_app
+        iv_titulo           = lv_titulo
+        iv_mensagem         = lv_mensagem
+        iv_intervalo        = lc_intervalo.
+
   ELSE.
 
     CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.

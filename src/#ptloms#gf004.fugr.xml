@@ -10,6 +10,7 @@
     <item>
      <FUNCNAME>/PTLOMS/MF009</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN NOTA</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_NOTA</PARAMETER>
@@ -58,48 +59,59 @@
       <RSFDO>
        <PARAMETER>WA_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - IN Nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET044</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET045</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_CAUSA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET046</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_ATIVIDADE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET047</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_MEDIDAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET024</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITEM_TAREFA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET048</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ANEXO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_NOTF_NO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº da nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETURN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET060</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF010</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_DOCUMENTO_MEDICAO</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>WA_DOCUMENTO_MEDICAO</PARAMETER>
@@ -116,16 +128,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO_DOC_MED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>WA_DOCUMENTO_MEDICAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - IN Ponto de Medição</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF011</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_CONFIRMACAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_CONFIRMACAO</PARAMETER>
@@ -146,20 +161,24 @@
       <RSFDO>
        <PARAMETER>WA_CONFIRMACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - IN Confirmação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTO_CONFIRMACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET061</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETURN_CONFIRMACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET062</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF012</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_ORDEM</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_ORDEM</PARAMETER>
@@ -205,40 +224,49 @@
       <RSFDO>
        <PARAMETER>WA_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_NOCOMMIT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET059</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ANEXO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETURN_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_OPERACAO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET058</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF013</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_OPERACAO_ORDEM</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_OPERACAO</PARAMETER>
@@ -263,16 +291,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO_OPERACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_OPERACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - IN Operação da Ordem</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF014</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_COMPONENTE_ORDEM_DELE</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
@@ -289,16 +320,19 @@
       <RSFDO>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Dados dos Componentes da Ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF015</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_COMPONENTE_ORDEM</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
@@ -315,16 +349,19 @@
       <RSFDO>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Dados dos Componentes da Ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF016</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_FINALIZAR_SESSAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -341,16 +378,19 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO_FINALIZAR_SESSAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF017</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_ANEXAR_IMAGEM</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_OBJKEY</PARAMETER>
@@ -376,28 +416,34 @@
       <RSFDO>
        <PARAMETER>IM_OBJKEY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Chave de objeto</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_USER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo do sistema ABAP: nome do usuário atual</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ANEXO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO_ANEXO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF018</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_CLASSE_CARACTERISCA</SHORT_TEXT>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF019</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_CATALOGO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_RBNR</PARAMETER>
@@ -426,12 +472,14 @@
       <RSFDO>
        <PARAMETER>IT_CATALOGOS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET002</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF020</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PONTO_MEDICAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_OBJNR</PARAMETER>
@@ -465,16 +513,19 @@
       <RSFDO>
        <PARAMETER>IT_PONTO_MEDICAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET003</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ENVIRONMENT_NOT_AVAILABLE</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Ambiente não disponível</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF021</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_DOCUMENTO_MEDICAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_POINT</PARAMETER>
@@ -503,12 +554,14 @@
       <RSFDO>
        <PARAMETER>IT_DOCUMENTO_MEDICAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET004</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF022</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PARCEIRO_NEGOCIO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_OBJNR</PARAMETER>
@@ -529,12 +582,14 @@
       <RSFDO>
        <PARAMETER>IT_PARCEIRO_NEGOCIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET005</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF023</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_DEMAIS_DADOS_MESTRES</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_EMPRESA_CENTRO</PARAMETER>
@@ -739,90 +794,112 @@
       <RSFDO>
        <PARAMETER>IM_EMPRESA_CENTRO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_GRUPO_PLANEJAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_AREA_OPERACIONAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CENTRO_TRABALHO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_PRIORIDADE_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_PRIORIDADE_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_ATV_MANUTENCAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CENTRO_CUSTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CONDICAO_INST_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_ATV_OPERACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_MATERIAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CATEGORIA_ITEM_MATERIAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_DEPOSITO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CATEGORIA_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_OBJETO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CATEGORIA_LOC_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_TIPO_ATV_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CAUSA_DESVIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_MATRICULA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CHAVE_MODELO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>RT_USUARIO_APP</PARAMETER>
@@ -831,112 +908,139 @@
       <RSFDO>
        <PARAMETER>IM_CENTRO_PLANEJAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_PRIORIDADE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_EMPRESA_CENTRO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET006</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_GRUPO_PLANEJAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET007</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_AREA_OPERACIONAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET008</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CENTRO_TRABALHO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET009</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET010</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET011</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_PRIORIDADE_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET012</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_PRIORIDADE_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET013</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_ATV_MANUTENCAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET014</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CENTRO_CUSTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET015</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CONDICAO_INST_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET016</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_ATV_OPERACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET017</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_MATERIAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET027</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CATEGORIA_ITEM_MATERIAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET028</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_DEPOSITO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET029</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CATEGORIA_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET034</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_OBJETO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET035</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CATEGORIA_LOC_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET040</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TIPO_ATV_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET049</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CAUSA_DESVIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET066</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_MATRICULA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET073</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CHAVE_MODELO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET084</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CENTRO_PLANEJAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET125</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_PRIORIDADE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET126</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF024</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LOCAL_INSTALACAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_BUKRS</PARAMETER>
@@ -1031,28 +1135,34 @@
       <RSFDO>
        <PARAMETER>IM_TOP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SKIP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_LOCAL_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET018</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_IMAGENS_LOCAL_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_QUANTIDADE_LOCAL_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF025</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_EQUIPAMENTO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_BUKRS</PARAMETER>
@@ -1163,48 +1273,59 @@
       <RSFDO>
        <PARAMETER>IM_TOP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SKIP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_IMAGEMS_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET019</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_EQUNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_EQKTX</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_INVNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_TIDNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_QUANTIDADE_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF026</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_GRUPO_CODE</SHORT_TEXT>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF027</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_NOTA</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_QMNUM</PARAMETER>
@@ -1329,36 +1450,44 @@
       <RSFDO>
        <PARAMETER>IT_NOTAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET021</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ITENS_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET022</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTOS_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET023</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_MEDIDAS_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET024</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CAUSAS_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET025</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ATIVIDADES_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET026</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_IMAGENS_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF028</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_MATERIAL</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_MTART</PARAMETER>
@@ -1417,24 +1546,29 @@
       <RSFDO>
        <PARAMETER>IM_TOP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SKIP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>RT_MATERIAIS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET030</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_QUANTIDADE_MATERIAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF029</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LISTA_TECNICA</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_EQUNR</PARAMETER>
@@ -1487,20 +1621,24 @@
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_EQUI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET031</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_LOC_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET032</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_MAT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET033</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF030</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_ORDEM</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_AUFNR</PARAMETER>
@@ -1699,104 +1837,129 @@
       <RSFDO>
        <PARAMETER>IM_TOP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SKIP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ORDENS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET036</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTOS_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET037</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTOS_OPERACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET037</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_OPERACOES_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET038</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_COMPONENTES_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET039</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CONFIRMACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET075</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_IMAGENS_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_TIPO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_INICIO_BASE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_FIM_BASE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_LOCAL_INSTALACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_GRUPO_PLANEJAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_CENTRO_TRABALHO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_CODIGO_ABC</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_PLANO_MANUTENCAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_CICLO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_TIPO_ATVD_MANUTENCAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_QUANTIDADE_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF031</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_IMAGEM</SHORT_TEXT>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF032</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_ESTOQUE_MATERIAL</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_MATNR</PARAMETER>
@@ -1842,12 +2005,14 @@
       <RSFDO>
        <PARAMETER>IT_SALDO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET064</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF033</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_HORAS_PLAN_REAL</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_USUARIO_APP</PARAMETER>
@@ -1876,12 +2041,14 @@
       <RSFDO>
        <PARAMETER>IT_HORAS_PLAN_REL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET070</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF034</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_USUARIO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_USUARIO_APP</PARAMETER>
@@ -1902,16 +2069,19 @@
       <RSFDO>
        <PARAMETER>IT_DADOS_USUARIO_APP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET106</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF035</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_MATRICULA</SHORT_TEXT>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF038</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_CONFIGURACAO_SISTEMA</SHORT_TEXT>
      <EXPORT>
       <RSEXP>
        <PARAMETER>IT_CONFIGURACAO_SISTEMA</PARAMETER>
@@ -1922,12 +2092,14 @@
       <RSFDO>
        <PARAMETER>IT_CONFIGURACAO_SISTEMA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET074</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF039</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - AUTENTICA</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -1948,20 +2120,24 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SENHA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_AUTENTICADO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF040</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - CRIA_SESSAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -1978,20 +2154,24 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_SESSAO_CRIADA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF041</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - FINALIZA_SESSAO</SHORT_TEXT>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF042</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - BUSCA_SESSAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -2008,16 +2188,19 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_GUID</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF043</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - ATUALIZA_SENHA</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -2042,24 +2225,29 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SENHA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_CONFSENHA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_SENHA_ALTERADA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF044</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - BUSCA_USUARIO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -2076,16 +2264,19 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF045</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - BUSCA_DADOS_EQUI</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_EQUNR</PARAMETER>
@@ -2106,20 +2297,24 @@
       <RSFDO>
        <PARAMETER>IM_EQUNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_SUBMT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_IWERK</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF046</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - BUSCA_DADOS_LOCL</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_TPLNR</PARAMETER>
@@ -2140,20 +2335,24 @@
       <RSFDO>
        <PARAMETER>IM_TPLNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_SUBMT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_IWERK</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF047</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - BUSCA_DADOS_MATNR</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_MATNR</PARAMETER>
@@ -2170,16 +2369,19 @@
       <RSFDO>
        <PARAMETER>IM_MATNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_MAKTX</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de comprimento 18</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF048</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - BUSCA_DADOS_USUARIO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -2196,16 +2398,19 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_NOME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome completo da pessoa</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF049</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - VERIFICA_USUARIO_SAP</SHORT_TEXT>
      <EXPORT>
       <RSEXP>
        <PARAMETER>EX_USUARIO_SAP</PARAMETER>
@@ -2216,12 +2421,14 @@
       <RSFDO>
        <PARAMETER>EX_USUARIO_SAP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag geral</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF058</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_AUTORIZACAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO</PARAMETER>
@@ -2238,16 +2445,19 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_AUTORIZACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET108</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF059</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LOG</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_DATE_FROM</PARAMETER>
@@ -2327,12 +2537,14 @@
       <RSFDO>
        <PARAMETER>ET_LOG</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET077</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF060</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_CONFIG_PERFIL</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_PERFIL</PARAMETER>
@@ -2349,16 +2561,19 @@
       <RSFDO>
        <PARAMETER>IM_PERFIL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_CONFIGURACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET108</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF061</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_ORDENS</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_WERKS</PARAMETER>
@@ -2584,16 +2799,19 @@
       <RSFDO>
        <PARAMETER>IT_DESPACHO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET078</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET115</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF062</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_USUARIOS</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_WERKS</PARAMETER>
@@ -2782,15 +3000,27 @@
       <RSFDO>
        <PARAMETER>IT_DESPACHO_TREE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET078</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF063</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_VARIANT - GET_ENTITY_SET</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
-       <PARAMETER>RT_VARIANT</PARAMETER>
+       <PARAMETER>RT_USUARIO</PARAMETER>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>RT_VAR_ID</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>RT_VAR_APP</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
        <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
       </RSIMP>
      </IMPORT>
@@ -2802,18 +3032,28 @@
      </EXPORT>
      <DOCUMENTATION>
       <RSFDO>
-       <PARAMETER>RT_VARIANT</PARAMETER>
+       <PARAMETER>RT_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RT_VAR_ID</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>RT_VAR_APP</PARAMETER>
        <KIND>P</KIND>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_VARIANT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET080</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF064</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_VARIANT_VALUES</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_VARIANT</PARAMETER>
@@ -2834,12 +3074,14 @@
       <RSFDO>
        <PARAMETER>IT_VARIANT_VALUES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET081</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF065</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_TABELA</PARAMETER>
@@ -2876,12 +3118,14 @@
       <RSFDO>
        <PARAMETER>IT_LAYOUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET082</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF066</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_ID_LAYOUT</PARAMETER>
@@ -2902,12 +3146,14 @@
       <RSFDO>
        <PARAMETER>IT_LAYOUT_VALUES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET082</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF067</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_LAYOUT</PARAMETER>
@@ -2922,16 +3168,19 @@
       <RSFDO>
        <PARAMETER>IM_LAYOUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Layout (Cabeçalho)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_LAYOUT_VALUES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET083</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF068</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_ASSOCIAR</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IT_ORDEM</PARAMETER>
@@ -2948,16 +3197,19 @@
       <RSFDO>
        <PARAMETER>IT_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET083</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET115</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF069</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_ASSOCIAR</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>IT_ORDEM</PARAMETER>
@@ -2974,16 +3226,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Table for Structure BAPIRET2</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Layout (Cabeçalho)</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF070</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_ORDENS - USUÁRIOS PARA ASSOCIAR ORDENS</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>IT_USUARIOS_ASSOCIAR</PARAMETER>
@@ -2994,12 +3249,14 @@
       <RSFDO>
        <PARAMETER>IT_USUARIOS_ASSOCIAR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET120</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF071</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_ORDENS - USUÁRIOS PARA ASSOCIAR ORDENS</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>IT_MOTIVO_DESSASSOCIAR</PARAMETER>
@@ -3010,12 +3267,14 @@
       <RSFDO>
        <PARAMETER>IT_MOTIVO_DESSASSOCIAR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET121</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF072</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_LIBERAR</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IT_ORDEM</PARAMETER>
@@ -3032,16 +3291,19 @@
       <RSFDO>
        <PARAMETER>IT_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET085</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET115</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF073</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_LIBERAR</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IT_ORDEM</PARAMETER>
@@ -3058,16 +3320,19 @@
       <RSFDO>
        <PARAMETER>IT_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET085</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET115</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF074</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_TRANSFERIR</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>IT_ORDEM</PARAMETER>
@@ -3084,16 +3349,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabela de retorno</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET085</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF075</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_VARIANT - UPDATE_ENTITY</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_VARIANT</PARAMETER>
@@ -3104,12 +3372,14 @@
       <RSFDO>
        <PARAMETER>IV_VARIANT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Variantes</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF076</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_VARIANT - DELETE_ENTITY</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_VAR_KEY</PARAMETER>
@@ -3120,12 +3390,14 @@
       <RSFDO>
        <PARAMETER>IV_VAR_KEY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Chave variant</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF077</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_VARIANT - GET_ENTITY</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_VARIANT</PARAMETER>
@@ -3146,12 +3418,14 @@
       <RSFDO>
        <PARAMETER>IT_VARIANT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET080</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF078</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_VARIANT - CREATE_ENTITY</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_VARIANT</PARAMETER>
@@ -3162,12 +3436,14 @@
       <RSFDO>
        <PARAMETER>IV_VARIANT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Variantes</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF079</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_PROGRAMACAO_ASSOCIAR - VALIDAÇÃO INICIAL</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>IT_ORDEM</PARAMETER>
@@ -3184,16 +3460,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Table for Structure BAPIRET2</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Layout (Cabeçalho)</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF080</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_ORDEM</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_USUARIO_APP</PARAMETER>
@@ -3215,12 +3494,14 @@
       <RSFDO>
        <PARAMETER>IT_ORDENS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET036</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF081</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_NOTA_PERFIL_USUARIO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_USUARIO_APP</PARAMETER>
@@ -3242,12 +3523,14 @@
       <RSFDO>
        <PARAMETER>IT_NOTAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET036</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF083</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_STATUS_ASSOCIACAO</SHORT_TEXT>
      <EXPORT>
       <RSEXP>
        <PARAMETER>IT_STATUS_ASSOCIACAO</PARAMETER>
@@ -3258,12 +3541,14 @@
       <RSFDO>
        <PARAMETER>IT_STATUS_ASSOCIACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET127</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF084</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_ORDEM_CATALOGO</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>WA_ORDEM_CATALOGO</PARAMETER>
@@ -3280,16 +3565,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO_CATALOGO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>WA_ORDEM_CATALOGO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Catálogo</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF085</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_ORDEM_CATALOGO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_USUARIO_APP</PARAMETER>
@@ -3310,20 +3598,24 @@
       <RSFDO>
        <PARAMETER>IM_USUARIO_APP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Campo de texto de comprimento 12</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO_CATALOGO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ORDEM_CATALOGO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET128</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF086</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_CONFIRMACAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_CONFIRMACAO</PARAMETER>
@@ -3345,20 +3637,24 @@
       <RSFDO>
        <PARAMETER>WA_CONFIRMACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - IN Confirmação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_USUARIO_APP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Usuário APP</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF090</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_EQUIPAMENTO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_BUKRS</PARAMETER>
@@ -3469,44 +3765,54 @@
       <RSFDO>
        <PARAMETER>IM_TOP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SKIP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_IMAGEMS_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET019</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_EQUNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_EQKTX</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_INVNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_TIDNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_QUANTIDADE_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF091</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LISTA_TECNICA_EQUIPAMENTO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_EQUNR</PARAMETER>
@@ -3527,12 +3833,14 @@
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_EQUI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET031</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF092</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LISTA_TECNICA_LOCAL_INSTALACAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_TPLNR</PARAMETER>
@@ -3553,12 +3861,14 @@
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_LOC_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET031</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF093</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LISTA_TECNICA</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_EQUNR</PARAMETER>
@@ -3611,20 +3921,24 @@
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_EQUI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET031</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_LOC_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET032</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_LISTA_TECNICA_MAT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET033</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF095</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LOCAL_INSTALACAO</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_USUARIO_APP</PARAMETER>
@@ -3659,24 +3973,29 @@
       <RSFDO>
        <PARAMETER>IM_TOP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SKIP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_LOCAL_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET018</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_QUANTIDADE_LOCAL_INST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF096</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_COMPONENTE_ORDEM</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
@@ -3693,16 +4012,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Dados da reserva</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF097</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_COMPONENTE_ORDEM_DELE</SHORT_TEXT>
      <CHANGING>
       <RSCHA>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
@@ -3719,16 +4041,19 @@
       <RSFDO>
        <PARAMETER>IT_RETORNO_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>WA_COMPONENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Dados dos Componentes da Ordem</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF100</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - OUT_LOG_RESERVA - OUT_LOG_RESERVAS_GET_ENTITYSET</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_DATUM</PARAMETER>
@@ -3757,12 +4082,14 @@
       <RSFDO>
        <PARAMETER>ET_LOG_RESERVA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET077</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF102</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Função para recuperar lista de associações</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_AUFNR</PARAMETER>
@@ -3799,12 +4126,14 @@
       <RSFDO>
        <PARAMETER>ET_ASSOCIACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Categoria de tabela para estrutura ET139</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF110</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Função da Lista de Tarefa</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_USUARIO</PARAMETER>
@@ -3825,12 +4154,14 @@
       <RSFDO>
        <PARAMETER>IT_LISTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Perfil x Lista de Tarefas</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF112</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_ORDEM_LISTA_TAREFA</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>WA_ORDEM</PARAMETER>
@@ -3869,36 +4200,44 @@
       <RSFDO>
        <PARAMETER>WA_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Ordem Lista Tarefa</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_NOTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_NOCOMMIT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_TEXTO_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET059</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_ANEXO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETURN_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET063</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF114</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Operação Simplificada</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_WERKS</PARAMETER>
@@ -4076,16 +4415,19 @@
       <RSFDO>
        <PARAMETER>IT_DESPACHO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET078</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET115</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF115</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IT_LISTA</PARAMETER>
@@ -4102,16 +4444,19 @@
       <RSFDO>
        <PARAMETER>IT_LISTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Estrutura ASSOCIAÇÃO</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_LISTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS V2 : Tipo de Tabela Associação</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF116</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_AUFNR</PARAMETER>
@@ -4132,20 +4477,24 @@
       <RSFDO>
        <PARAMETER>I_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Nr da Ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_VORNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº operação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Estrutura para Detalhes de Operação</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF120</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_CODIGO</PARAMETER>
@@ -4162,16 +4511,19 @@
       <RSFDO>
        <PARAMETER>I_CODIGO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Código</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_MOTIVO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET117</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF121</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_DETALHE</PARAMETER>
@@ -4188,16 +4540,19 @@
       <RSFDO>
        <PARAMETER>I_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Detalhe Operação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET147</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF123</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_CLIENTE</PARAMETER>
@@ -4214,16 +4569,19 @@
       <RSFDO>
        <PARAMETER>I_CLIENTE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Detalhe Clientes</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET153</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF126</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_ANEXO</PARAMETER>
@@ -4240,16 +4598,19 @@
       <RSFDO>
        <PARAMETER>I_ANEXO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Detalhe Clientes</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET153</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF128</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_ANEXO</PARAMETER>
@@ -4266,16 +4627,19 @@
       <RSFDO>
        <PARAMETER>I_ANEXO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Detalhe Local Instalação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET168</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF129</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_ANEXO</PARAMETER>
@@ -4292,16 +4656,19 @@
       <RSFDO>
        <PARAMETER>I_ANEXO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS : Detalhe Local Instalação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET168</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF131</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IT_LISTA</PARAMETER>
@@ -4318,16 +4685,19 @@
       <RSFDO>
        <PARAMETER>IT_LISTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para /PTLOMS/ET179</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_LISTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para /PTLOMS/ET173</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF137</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT - Assinaturas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_ASSINATURA_IN</PARAMETER>
@@ -4348,20 +4718,24 @@
       <RSFDO>
        <PARAMETER>I_ASSINATURA_IN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de tabela para /PTLOMS/ET182</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_ASSINATURA_OUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de tabela para /PTLOMS/ET182</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO_OUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de tabela para Mensagens de Retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF139</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT - Recupera Assinaturas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_USUARIO</PARAMETER>
@@ -4403,36 +4777,44 @@
       <RSFDO>
        <PARAMETER>I_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_OPERACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº operação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data criação APP</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data criação APP</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_HISTORICO_ASSINATURA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET184</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para Mensagens de Retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF140</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT - Recupera Assinaturas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_PERFIL</PARAMETER>
@@ -4449,16 +4831,19 @@
       <RSFDO>
        <PARAMETER>RT_PERFIL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Perfil</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_DADO_CENTRO_PERFIL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET185</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF143</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Grava Rastreamento Usuários</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_RASTREAMENTO_USUARIO_IN</PARAMETER>
@@ -4479,20 +4864,24 @@
       <RSFDO>
        <PARAMETER>I_RASTREAMENTO_USUARIO_IN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET191</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RASTREAMENTO_USUARIO_OUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET191</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO_OUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de tabela para Mensagens de Retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF144</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Recupera Historico Rastreamento Usuário (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_USUARIO</PARAMETER>
@@ -4539,40 +4928,49 @@
       <RSFDO>
        <PARAMETER>I_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data inicio</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data fim</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_MATRICULA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº pessoal</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_GUID</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Globally Unique Identifier</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_PERFIL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Perfil</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_HISTORICO_RASTREA_USR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET192</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para Mensagens de Retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF145</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Lista Associações</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_USUARIO</PARAMETER>
@@ -4600,24 +4998,29 @@
       <RSFDO>
        <PARAMETER>I_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data inicio</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data fim</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de tabela para /PTLOMS/ET164</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF146</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Recupera Dados Rastreamento Usuário (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_USUARIO</PARAMETER>
@@ -4654,32 +5057,39 @@
       <RSFDO>
        <PARAMETER>I_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data inicio</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data fim</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_MATRICULA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº pessoal</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para Mensagens de Retorno</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DADOS_RASTREA_USR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET194</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF147</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Recupera Associações Programação Desassociar (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_DATA_INI</PARAMETER>
@@ -4706,18 +5116,95 @@
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data inicio</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data fim</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_ASSOCIACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET195</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para Mensagens de Retorno</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF162</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Operação Simplificada</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>RT_AUFNR</PARAMETER>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>IT_DESPACHO</PARAMETER>
+       <TYP>/PTLOMS/CT119</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>IT_FILTRO</PARAMETER>
+       <TYP>/PTLOMS/CT103</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>RT_AUFNR</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IT_DESPACHO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET078</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IT_FILTRO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET115</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF163</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Recuperar vinculos de checklist</SHORT_TEXT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ET_VINCULOS</PARAMETER>
+       <TYP>/PTLOMS/CT175</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>ET_VINCULOS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET208</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF164</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Recuperar vinculos de checklist</SHORT_TEXT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ET_OPCOES</PARAMETER>
+       <TYP>/PTLOMS/CT087</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>ET_OPCOES</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET208</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>

@@ -14,7 +14,7 @@ FUNCTION /ptloms/mf032.
 
   CREATE OBJECT o_oms.
 
-  o_oms->out_estoque_material(
+  o_oms->out_estoque_material_v2(
     EXPORTING
       rt_matnr       = rt_matnr
       rt_werks       = rt_werks

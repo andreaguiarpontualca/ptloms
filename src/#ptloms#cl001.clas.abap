@@ -152,6 +152,17 @@ public section.
       !ET_CAUSAS_NOTA type /PTLOMS/CT025
       !ET_ATIVIDADES_NOTA type /PTLOMS/CT026
       !ET_IMAGENS_NOTA type /PTLOMS/CT072 .
+  methods OUT_MATERIAL_V2
+    importing
+      !RT_MTART type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_WERKS type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_LGORT type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_USUARIO_APP type /IWBEP/T_COD_SELECT_OPTIONS optional
+      !IM_TOP type INT4 optional
+      !IM_SKIP type INT4 optional
+    exporting
+      value(RT_MATERIAIS) type /PTLOMS/CT030
+      !EX_QUANTIDADE_MATERIAL type INT4 .
   methods OUT_MATERIAL
     importing
       !RT_MTART type /IWBEP/T_COD_SELECT_OPTIONS
@@ -217,6 +228,14 @@ public section.
       !RT_TYPEID_A type /IWBEP/T_COD_SELECT_OPTIONS
     returning
       value(RT_ANEXOS) type /PTLOMS/CT072 .
+  methods OUT_ESTOQUE_MATERIAL_V2
+    importing
+      !RT_MATNR type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_WERKS type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_LGORT type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_USUARIO_APP type /IWBEP/T_COD_SELECT_OPTIONS optional
+    exporting
+      !ET_SALDO type /PTLOMS/CT064 .
   methods OUT_ESTOQUE_MATERIAL
     importing
       !RT_MATNR type /IWBEP/T_COD_SELECT_OPTIONS
@@ -336,6 +355,8 @@ public section.
   methods OUT_VARIANT
     importing
       !RT_VAR_USUARIO type /IWBEP/T_COD_SELECT_OPTIONS
+      value(RT_VAR_ID) type /IWBEP/T_COD_SELECT_OPTIONS optional
+      value(RT_VAR_APP) type /IWBEP/T_COD_SELECT_OPTIONS optional
     exporting
       !IT_VARIANT type /PTLOMS/CT081 .
   methods OUT_LAYOUT_VALUES
@@ -3192,6 +3213,828 @@ CLASS /PTLOMS/CL001 IMPLEMENTATION.
     UNASSIGN <fs_matnr>.
 
   ENDMETHOD.
+
+
+METHOD out_estoque_material_v2.
+
+*********************************************************************************************************
+*** OUT_ESTOQUE_MATERIAL - Versão otimizada
+***
+*** Principais melhorias:
+*** - Compatibilidade com ABAP antigo
+*** - Remove variáveis/ranges não utilizados
+*** - SELECT somente dos campos necessários
+*** - Elimina duplicidades dos ranges de perfil
+*** - READ TABLE com BINARY SEARCH
+*** - Busca MARA independentemente do modo de retorno
+*** - Conversão da unidade executada apenas uma vez por unidade
+*** - Elimina duplicação dos LOOPs de montagem do retorno
+*** - Busca descrição do depósito somente quando necessária
+*********************************************************************************************************
+
+
+*********************************************************************************************************
+* Tipos auxiliares
+*********************************************************************************************************
+
+  TYPES:
+    BEGIN OF ty_unidade,
+      meins     TYPE mara-meins,
+      meins_out TYPE mara-meins,
+      msehl     TYPE t006a-msehl,
+    END OF ty_unidade.
+
+
+*********************************************************************************************************
+* Declarações - Configurações
+*********************************************************************************************************
+
+  DATA:
+    lt_tb013 TYPE TABLE OF /ptloms/tb013,
+    ls_tb013 TYPE /ptloms/tb013,
+
+    lt_tb014 TYPE TABLE OF /ptloms/tb014,
+    ls_tb014 TYPE /ptloms/tb014,
+
+    lt_tb030 TYPE TABLE OF /ptloms/tb030,
+    ls_tb030 TYPE /ptloms/tb030.
+
+
+*********************************************************************************************************
+* Ranges
+*********************************************************************************************************
+
+  DATA:
+    r_werks  TYPE RANGE OF t001w-werks,
+    r_lgort  TYPE RANGE OF t001l-lgort,
+    lt_matnr TYPE RANGE OF mard-matnr.
+
+
+*********************************************************************************************************
+* Estruturas dos ranges
+*********************************************************************************************************
+
+  DATA:
+    ls_werks LIKE LINE OF r_werks,
+    ls_lgort LIKE LINE OF r_lgort,
+    ls_matnr LIKE LINE OF lt_matnr.
+
+
+*********************************************************************************************************
+* Estoque MARD
+*********************************************************************************************************
+
+  DATA:
+    lt_mard TYPE TABLE OF mard,
+    ls_mard TYPE mard.
+
+
+*********************************************************************************************************
+* Material MARA
+*********************************************************************************************************
+
+  DATA:
+    lt_mara TYPE TABLE OF mara,
+    ls_mara TYPE mara.
+
+
+*********************************************************************************************************
+* Depósitos
+*********************************************************************************************************
+
+  DATA:
+    lt_t001l TYPE TABLE OF t001l,
+    ls_t001l TYPE t001l.
+
+
+*********************************************************************************************************
+* Unidades de medida
+*********************************************************************************************************
+
+  DATA:
+    lt_t006a    TYPE TABLE OF t006a,
+    ls_t006a    TYPE t006a,
+
+    lt_unidades TYPE TABLE OF ty_unidade,
+    ls_unidade  TYPE ty_unidade.
+
+
+*********************************************************************************************************
+* Tabela auxiliar para unidades existentes nos materiais
+*********************************************************************************************************
+
+  DATA:
+    lt_mara_unidades TYPE TABLE OF mara,
+    ls_mara_unidade  TYPE mara.
+
+
+*********************************************************************************************************
+* Retorno
+*********************************************************************************************************
+
+  DATA:
+    ls_saldo LIKE LINE OF et_saldo.
+
+
+*********************************************************************************************************
+* Variáveis
+*********************************************************************************************************
+
+  DATA:
+    lv_matnr            TYPE char18,
+    lv_detalha_deposito TYPE c,
+    lv_meins_convertida TYPE mara-meins.
+
+
+*********************************************************************************************************
+* Field-symbol material
+*********************************************************************************************************
+
+  FIELD-SYMBOLS:
+    <fs_matnr> TYPE /iwbep/s_cod_select_option.
+
+
+*********************************************************************************************************
+* Inicialização
+*********************************************************************************************************
+
+  CLEAR:
+    lv_matnr,
+    lv_detalha_deposito,
+    lv_meins_convertida.
+
+  REFRESH:
+    lt_tb013,
+    lt_tb014,
+    lt_tb030,
+    r_werks,
+    r_lgort,
+    lt_matnr,
+    lt_mard,
+    lt_mara,
+    lt_t001l,
+    lt_t006a,
+    lt_unidades,
+    lt_mara_unidades.
+
+
+*********************************************************************************************************
+* Material e centro são obrigatórios
+*********************************************************************************************************
+
+  IF rt_matnr[] IS INITIAL OR
+     rt_werks[] IS INITIAL.
+
+    RETURN.
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Busca configurações do perfil do usuário
+*********************************************************************************************************
+
+  IF rt_usuario_app[] IS NOT INITIAL.
+
+
+*********************************************************************************************************
+* Busca usuário e perfil
+*********************************************************************************************************
+
+    SELECT usuario
+           perfil
+      FROM /ptloms/tb013
+      INTO CORRESPONDING FIELDS OF TABLE lt_tb013
+      WHERE usuario IN rt_usuario_app.
+
+
+*********************************************************************************************************
+* Somente continua buscando configurações se encontrou perfil
+*********************************************************************************************************
+
+    IF lt_tb013[] IS NOT INITIAL.
+
+
+*********************************************************************************************************
+* Busca centros permitidos para o perfil
+*********************************************************************************************************
+
+      SELECT perfil
+             werks
+        FROM /ptloms/tb014
+        INTO CORRESPONDING FIELDS OF TABLE lt_tb014
+        FOR ALL ENTRIES IN lt_tb013
+        WHERE perfil = lt_tb013-perfil.
+
+
+*********************************************************************************************************
+* Monta range de centros
+*********************************************************************************************************
+
+      LOOP AT lt_tb014 INTO ls_tb014.
+
+        IF ls_tb014-werks IS INITIAL.
+          CONTINUE.
+        ENDIF.
+
+        CLEAR ls_werks.
+
+        ls_werks-sign   = 'I'.
+        ls_werks-option = 'EQ'.
+        ls_werks-low    = ls_tb014-werks.
+
+        APPEND ls_werks TO r_werks.
+
+      ENDLOOP.
+
+
+*********************************************************************************************************
+* Remove duplicidades
+*********************************************************************************************************
+
+      SORT r_werks BY
+           sign
+           option
+           low
+           high.
+
+      DELETE ADJACENT DUPLICATES
+        FROM r_werks
+        COMPARING
+          sign
+          option
+          low
+          high.
+
+
+*********************************************************************************************************
+* Busca depósitos permitidos
+*********************************************************************************************************
+
+      SELECT perfil
+             lgort
+        FROM /ptloms/tb030
+        INTO CORRESPONDING FIELDS OF TABLE lt_tb030
+        FOR ALL ENTRIES IN lt_tb013
+        WHERE perfil = lt_tb013-perfil.
+
+
+*********************************************************************************************************
+* Monta range de depósitos
+*********************************************************************************************************
+
+      LOOP AT lt_tb030 INTO ls_tb030.
+
+        IF ls_tb030-lgort IS INITIAL.
+          CONTINUE.
+        ENDIF.
+
+        CLEAR ls_lgort.
+
+        ls_lgort-sign   = 'I'.
+        ls_lgort-option = 'EQ'.
+        ls_lgort-low    = ls_tb030-lgort.
+
+        APPEND ls_lgort TO r_lgort.
+
+      ENDLOOP.
+
+
+*********************************************************************************************************
+* Remove duplicidades
+*********************************************************************************************************
+
+      SORT r_lgort BY
+           sign
+           option
+           low
+           high.
+
+      DELETE ADJACENT DUPLICATES
+        FROM r_lgort
+        COMPARING
+          sign
+          option
+          low
+          high.
+
+
+    ENDIF.
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Converte materiais para formato interno SAP
+*********************************************************************************************************
+
+  LOOP AT rt_matnr ASSIGNING <fs_matnr>.
+
+    CLEAR:
+      ls_matnr,
+      lv_matnr.
+
+    ls_matnr-sign =
+      <fs_matnr>-sign.
+
+    ls_matnr-option =
+      <fs_matnr>-option.
+
+
+*********************************************************************************************************
+* LOW
+*********************************************************************************************************
+
+    IF <fs_matnr>-low IS NOT INITIAL.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = <fs_matnr>-low
+        IMPORTING
+          output = lv_matnr.
+
+      ls_matnr-low =
+        lv_matnr.
+
+    ENDIF.
+
+
+*********************************************************************************************************
+* HIGH
+*********************************************************************************************************
+
+    CLEAR lv_matnr.
+
+    IF <fs_matnr>-high IS NOT INITIAL.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+        EXPORTING
+          input  = <fs_matnr>-high
+        IMPORTING
+          output = lv_matnr.
+
+      ls_matnr-high =
+        lv_matnr.
+
+    ENDIF.
+
+
+*********************************************************************************************************
+* Adiciona ao range
+*********************************************************************************************************
+
+    IF ls_matnr-low  IS NOT INITIAL OR
+       ls_matnr-high IS NOT INITIAL.
+
+      APPEND ls_matnr
+        TO lt_matnr.
+
+    ENDIF.
+
+  ENDLOOP.
+
+
+*********************************************************************************************************
+* Nenhum material válido
+*********************************************************************************************************
+
+  IF lt_matnr[] IS INITIAL.
+
+    UNASSIGN <fs_matnr>.
+
+    RETURN.
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Determina se retorno deverá ser detalhado por depósito
+*
+* Mantém a mesma regra existente:
+*
+* - Depósito informado
+* OU
+* - Sincronismo por usuário
+*********************************************************************************************************
+
+  IF rt_lgort[]       IS NOT INITIAL OR
+     rt_usuario_app[] IS NOT INITIAL.
+
+    lv_detalha_deposito = 'X'.
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Busca estoque
+*
+* Os ranges relativos ao perfil permanecem aplicados.
+*********************************************************************************************************
+
+  SELECT matnr
+         werks
+         lgort
+         labst
+
+    FROM mard
+
+    INTO CORRESPONDING FIELDS OF TABLE lt_mard
+
+    WHERE matnr IN lt_matnr
+      AND werks IN rt_werks
+      AND lgort IN rt_lgort
+      AND lvorm EQ space
+
+      AND werks IN r_werks
+      AND lgort IN r_lgort.
+
+
+*********************************************************************************************************
+* Nenhum estoque encontrado
+*********************************************************************************************************
+
+  IF lt_mard[] IS INITIAL.
+
+    UNASSIGN <fs_matnr>.
+
+    RETURN.
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Ordena estoque
+*********************************************************************************************************
+
+  SORT lt_mard BY
+       matnr
+       werks
+       lgort.
+
+
+*********************************************************************************************************
+* Busca unidades básicas dos materiais
+*
+* Esta leitura agora ocorre para TODOS os cenários.
+*
+* No método anterior ela estava dentro do bloco de depósito,
+* embora fosse utilizada também no ELSE.
+*********************************************************************************************************
+
+  SELECT matnr
+         meins
+
+    FROM mara
+
+    INTO CORRESPONDING FIELDS OF TABLE lt_mara
+
+    FOR ALL ENTRIES IN lt_mard
+
+    WHERE matnr = lt_mard-matnr.
+
+
+*********************************************************************************************************
+* Ordenação para BINARY SEARCH
+*********************************************************************************************************
+
+  SORT lt_mara BY matnr.
+
+
+*********************************************************************************************************
+* Garante um registro por material
+*********************************************************************************************************
+
+  DELETE ADJACENT DUPLICATES
+    FROM lt_mara
+    COMPARING matnr.
+
+
+*********************************************************************************************************
+* Prepara lista das unidades utilizadas
+*********************************************************************************************************
+
+  lt_mara_unidades[] =
+    lt_mara[].
+
+
+*********************************************************************************************************
+* Ordena por unidade
+*********************************************************************************************************
+
+  SORT lt_mara_unidades BY meins.
+
+
+*********************************************************************************************************
+* Uma ocorrência por unidade
+*********************************************************************************************************
+
+  DELETE ADJACENT DUPLICATES
+    FROM lt_mara_unidades
+    COMPARING meins.
+
+
+*********************************************************************************************************
+* Busca descrição das unidades
+*********************************************************************************************************
+
+  IF lt_mara_unidades[] IS NOT INITIAL.
+
+    SELECT msehi
+           msehl
+
+      FROM t006a
+
+      INTO CORRESPONDING FIELDS OF TABLE lt_t006a
+
+      FOR ALL ENTRIES IN lt_mara_unidades
+
+      WHERE spras = sy-langu
+        AND msehi = lt_mara_unidades-meins.
+
+
+*********************************************************************************************************
+* Ordena descrição da unidade
+*********************************************************************************************************
+
+    SORT lt_t006a BY msehi.
+
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Monta cache de unidades
+*
+* IMPORTANTE:
+*
+* A conversão CUNIT_OUTPUT agora é executada UMA VEZ POR UNIDADE,
+* e não uma vez para cada registro de estoque.
+*********************************************************************************************************
+
+  LOOP AT lt_mara_unidades
+    INTO ls_mara_unidade.
+
+    IF ls_mara_unidade-meins IS INITIAL.
+      CONTINUE.
+    ENDIF.
+
+
+    CLEAR:
+      ls_unidade,
+      ls_t006a,
+      lv_meins_convertida.
+
+
+*********************************************************************************************************
+* Unidade interna
+*********************************************************************************************************
+
+    ls_unidade-meins =
+      ls_mara_unidade-meins.
+
+
+*********************************************************************************************************
+* Busca descrição
+*********************************************************************************************************
+
+    READ TABLE lt_t006a
+      INTO ls_t006a
+      WITH KEY
+        msehi = ls_mara_unidade-meins
+      BINARY SEARCH.
+
+
+    IF sy-subrc EQ 0.
+
+      ls_unidade-msehl =
+        ls_t006a-msehl.
+
+    ENDIF.
+
+
+*********************************************************************************************************
+* Converte unidade uma única vez
+*********************************************************************************************************
+
+    CALL FUNCTION 'CONVERSION_EXIT_CUNIT_OUTPUT'
+      EXPORTING
+        input    = ls_mara_unidade-meins
+        language = sy-langu
+      IMPORTING
+        output   = lv_meins_convertida.
+
+
+    ls_unidade-meins_out =
+      lv_meins_convertida.
+
+
+    APPEND ls_unidade
+      TO lt_unidades.
+
+
+  ENDLOOP.
+
+
+*********************************************************************************************************
+* Ordenação para BINARY SEARCH
+*********************************************************************************************************
+
+  SORT lt_unidades BY meins.
+
+
+*********************************************************************************************************
+* Busca descrição dos depósitos SOMENTE quando o retorno detalha depósito
+*********************************************************************************************************
+
+  IF lv_detalha_deposito = 'X'.
+
+
+    SELECT werks
+           lgort
+           lgobe
+
+      FROM t001l
+
+      INTO CORRESPONDING FIELDS OF TABLE lt_t001l
+
+      FOR ALL ENTRIES IN lt_mard
+
+      WHERE werks = lt_mard-werks
+        AND lgort = lt_mard-lgort.
+
+
+*********************************************************************************************************
+* Ordena para BINARY SEARCH
+*********************************************************************************************************
+
+    SORT lt_t001l BY
+         werks
+         lgort.
+
+
+*********************************************************************************************************
+* Remove possíveis duplicidades
+*********************************************************************************************************
+
+    DELETE ADJACENT DUPLICATES
+      FROM lt_t001l
+      COMPARING
+        werks
+        lgort.
+
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Limpa retorno antes da montagem
+*********************************************************************************************************
+
+  REFRESH et_saldo.
+
+
+*********************************************************************************************************
+* Montagem do retorno
+*
+* Agora existe somente UM LOOP para os dois cenários.
+*********************************************************************************************************
+
+  LOOP AT lt_mard INTO ls_mard.
+
+
+    CLEAR:
+      ls_saldo,
+      ls_mara,
+      ls_unidade,
+      ls_t001l.
+
+
+*********************************************************************************************************
+* Dados básicos
+*********************************************************************************************************
+
+    ls_saldo-matnr =
+      ls_mard-matnr.
+
+    ls_saldo-werks =
+      ls_mard-werks.
+
+    ls_saldo-labst =
+      ls_mard-labst.
+
+
+*********************************************************************************************************
+* Detalhamento por depósito
+*********************************************************************************************************
+
+    IF lv_detalha_deposito = 'X'.
+
+      ls_saldo-lgort =
+        ls_mard-lgort.
+
+
+*********************************************************************************************************
+* Busca descrição do depósito
+*********************************************************************************************************
+
+      READ TABLE lt_t001l
+        INTO ls_t001l
+        WITH KEY
+          werks = ls_mard-werks
+          lgort = ls_mard-lgort
+        BINARY SEARCH.
+
+
+      IF sy-subrc EQ 0.
+
+        ls_saldo-lgobe =
+          ls_t001l-lgobe.
+
+      ENDIF.
+
+
+    ENDIF.
+
+
+*********************************************************************************************************
+* Busca unidade do material
+*********************************************************************************************************
+
+    READ TABLE lt_mara
+      INTO ls_mara
+      WITH KEY
+        matnr = ls_mard-matnr
+      BINARY SEARCH.
+
+
+    IF sy-subrc EQ 0.
+
+
+*********************************************************************************************************
+* Busca unidade convertida + descrição no cache
+*********************************************************************************************************
+
+      READ TABLE lt_unidades
+        INTO ls_unidade
+        WITH KEY
+          meins = ls_mara-meins
+        BINARY SEARCH.
+
+
+      IF sy-subrc EQ 0.
+
+        ls_saldo-meins =
+          ls_unidade-meins_out.
+
+        ls_saldo-msehl =
+          ls_unidade-msehl.
+
+      ELSE.
+
+*********************************************************************************************************
+* Segurança:
+* Caso não exista no cache, mantém unidade interna.
+*********************************************************************************************************
+
+        ls_saldo-meins =
+          ls_mara-meins.
+
+      ENDIF.
+
+
+    ENDIF.
+
+
+*********************************************************************************************************
+* Consolida saldo
+*
+* Quando lv_detalha_deposito = espaço:
+*
+* LGORT/LGOBE permanecem vazios e o COLLECT soma os depósitos
+* para MATNR + WERKS.
+*
+* Quando lv_detalha_deposito = X:
+*
+* LGORT participa da chave e o resultado permanece por depósito.
+*********************************************************************************************************
+
+    COLLECT ls_saldo
+      INTO et_saldo.
+
+
+  ENDLOOP.
+
+
+*********************************************************************************************************
+* Libera field-symbol
+*********************************************************************************************************
+
+  IF <fs_matnr> IS ASSIGNED.
+    UNASSIGN <fs_matnr>.
+  ENDIF.
+
+
+ENDMETHOD.
 
 
   METHOD out_filtro.
@@ -7715,6 +8558,902 @@ CLASS /PTLOMS/CL001 IMPLEMENTATION.
   ENDMETHOD.
 
 
+METHOD out_material_v2.
+
+*********************************************************************************************************
+*** Método OUT_MATERIAL
+***
+*** Ajustes:
+*** - Compatibilidade com versões antigas de ABAP
+*** - Otimização dos SELECTs
+*** - Redução de campos desnecessários
+*** - Correção do relacionamento MARC x MARD
+*** - Paginação otimizada com LOOP FROM / TO
+*** - Preenchimento do campo MSEHL
+*** - Preenchimento do campo USUARIOAPP
+*********************************************************************************************************
+
+
+*********************************************************************************************************
+* Declarações
+*********************************************************************************************************
+
+  DATA:
+    lt_tb013           TYPE TABLE OF /ptloms/tb013,
+    ls_tb013           TYPE /ptloms/tb013,
+
+    lt_tb023           TYPE TABLE OF /ptloms/tb023,
+    ls_tb023           TYPE /ptloms/tb023,
+
+    lt_tb028           TYPE TABLE OF /ptloms/tb028,
+    ls_tb028           TYPE /ptloms/tb028,
+
+    lt_tb030           TYPE TABLE OF /ptloms/tb030,
+    ls_tb030           TYPE /ptloms/tb030,
+
+    lt_t006a           TYPE TABLE OF t006a,
+    ls_t006a           TYPE t006a,
+
+    lt_materiais_final TYPE /ptloms/ct030,
+    ls_materiais       LIKE LINE OF rt_materiais,
+
+    ls_usuario_app     LIKE LINE OF rt_usuario_app,
+
+    lv_qtd_usu         TYPE i,
+    lv_material_saldo  TYPE c,
+
+    lv_total           TYPE i,
+    lv_inicio          TYPE i,
+    lv_fim             TYPE i,
+
+    lv_index_material  TYPE sy-tabix.
+
+
+*********************************************************************************************************
+* Usuário da aplicação
+*
+* Utilizamos LIKE para garantir compatibilidade com o tipo
+* definido na estrutura de retorno.
+*********************************************************************************************************
+
+  DATA:
+    lv_usuario_app LIKE ls_materiais-usuarioapp.
+
+
+*********************************************************************************************************
+* Declaração de ranges
+*********************************************************************************************************
+
+  DATA:
+    r_lgort TYPE RANGE OF mard-lgort,
+    r_mtart TYPE RANGE OF mara-mtart,
+    r_matkl TYPE RANGE OF mara-matkl,
+    r_werks TYPE RANGE OF mard-werks.
+
+
+*********************************************************************************************************
+* Estruturas dos ranges
+*********************************************************************************************************
+
+  DATA:
+    ls_lgort LIKE LINE OF r_lgort,
+    ls_mtart LIKE LINE OF r_mtart,
+    ls_matkl LIKE LINE OF r_matkl,
+    ls_werks LIKE LINE OF r_werks.
+
+
+*********************************************************************************************************
+* Inicialização
+*********************************************************************************************************
+
+  CLEAR:
+    lv_qtd_usu,
+    lv_material_saldo,
+    lv_total,
+    lv_inicio,
+    lv_fim,
+    lv_index_material,
+    lv_usuario_app,
+    ex_quantidade_material.
+
+
+  REFRESH:
+    lt_tb013,
+    lt_tb023,
+    lt_tb028,
+    lt_tb030,
+    lt_t006a,
+    lt_materiais_final,
+
+    r_lgort,
+    r_mtart,
+    r_matkl,
+    r_werks.
+
+
+*********************************************************************************************************
+* Validação dos critérios mínimos
+*********************************************************************************************************
+
+  IF ( rt_mtart[]       IS INITIAL OR
+       rt_werks[]       IS INITIAL ) AND
+     ( rt_usuario_app[] IS INITIAL ).
+
+    RETURN.
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Recupera usuário da aplicação
+*
+* Normalmente o sincronismo OMS envia um único usuário utilizando:
+*
+* SIGN   = I
+* OPTION = EQ
+*********************************************************************************************************
+
+  IF rt_usuario_app[] IS NOT INITIAL.
+
+    READ TABLE rt_usuario_app
+      INTO ls_usuario_app
+      INDEX 1.
+
+    IF sy-subrc EQ 0.
+
+      IF ls_usuario_app-sign   = 'I' AND
+         ls_usuario_app-option = 'EQ'.
+
+        lv_usuario_app =
+          ls_usuario_app-low.
+
+      ENDIF.
+
+    ENDIF.
+
+  ENDIF.
+
+
+*********************************************************************************************************
+* Busca configurações do perfil do usuário
+*********************************************************************************************************
+
+  IF rt_usuario_app[] IS NOT INITIAL.
+
+
+*********************************************************************************************************
+* Busca usuário / perfil
+*********************************************************************************************************
+
+    SELECT usuario
+           perfil
+           material_saldo
+      FROM /ptloms/tb013
+      INTO CORRESPONDING FIELDS OF TABLE lt_tb013
+      WHERE usuario IN rt_usuario_app.
+
+
+    IF lt_tb013[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+
+*********************************************************************************************************
+* Busca tipos de material do perfil
+*********************************************************************************************************
+
+    SELECT perfil
+           mtart
+      FROM /ptloms/tb023
+      INTO CORRESPONDING FIELDS OF TABLE lt_tb023
+      FOR ALL ENTRIES IN lt_tb013
+      WHERE perfil = lt_tb013-perfil.
+
+
+*********************************************************************************************************
+* Monta range de tipo de material
+*********************************************************************************************************
+
+    LOOP AT lt_tb023 INTO ls_tb023.
+
+      IF ls_tb023-mtart IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+
+      CLEAR ls_mtart.
+
+      ls_mtart-sign   = 'I'.
+      ls_mtart-option = 'EQ'.
+      ls_mtart-low    = ls_tb023-mtart.
+
+      APPEND ls_mtart TO r_mtart.
+
+    ENDLOOP.
+
+
+*********************************************************************************************************
+* Remove duplicidades do range
+*********************************************************************************************************
+
+    SORT r_mtart BY
+         sign
+         option
+         low
+         high.
+
+
+    DELETE ADJACENT DUPLICATES
+      FROM r_mtart
+      COMPARING
+        sign
+        option
+        low
+        high.
+
+
+*********************************************************************************************************
+* Tipo de material é obrigatório para o perfil
+*********************************************************************************************************
+
+    IF r_mtart[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+
+*********************************************************************************************************
+* Busca grupos de mercadoria do perfil
+*********************************************************************************************************
+
+    SELECT perfil
+           matkl
+      FROM /ptloms/tb028
+      INTO CORRESPONDING FIELDS OF TABLE lt_tb028
+      FOR ALL ENTRIES IN lt_tb013
+      WHERE perfil = lt_tb013-perfil.
+
+
+*********************************************************************************************************
+* Monta range de grupo de mercadoria
+*********************************************************************************************************
+
+    LOOP AT lt_tb028 INTO ls_tb028.
+
+      IF ls_tb028-matkl IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+
+      CLEAR ls_matkl.
+
+      ls_matkl-sign   = 'I'.
+      ls_matkl-option = 'EQ'.
+      ls_matkl-low    = ls_tb028-matkl.
+
+      APPEND ls_matkl TO r_matkl.
+
+    ENDLOOP.
+
+
+*********************************************************************************************************
+* Remove duplicidades
+*********************************************************************************************************
+
+    SORT r_matkl BY
+         sign
+         option
+         low
+         high.
+
+
+    DELETE ADJACENT DUPLICATES
+      FROM r_matkl
+      COMPARING
+        sign
+        option
+        low
+        high.
+
+
+*********************************************************************************************************
+* Busca centros e depósitos do perfil
+*********************************************************************************************************
+
+    SELECT perfil
+           werks
+           lgort
+      FROM /ptloms/tb030
+      INTO CORRESPONDING FIELDS OF TABLE lt_tb030
+      FOR ALL ENTRIES IN lt_tb013
+      WHERE perfil = lt_tb013-perfil.
+
+
+*********************************************************************************************************
+* Monta ranges de centro e depósito
+*********************************************************************************************************
+
+    LOOP AT lt_tb030 INTO ls_tb030.
+
+
+*********************************************************************************************************
+* Depósito
+*********************************************************************************************************
+
+      IF ls_tb030-lgort IS NOT INITIAL.
+
+        CLEAR ls_lgort.
+
+        ls_lgort-sign   = 'I'.
+        ls_lgort-option = 'EQ'.
+        ls_lgort-low    = ls_tb030-lgort.
+
+        APPEND ls_lgort TO r_lgort.
+
+      ENDIF.
+
+
+*********************************************************************************************************
+* Centro
+*********************************************************************************************************
+
+      IF ls_tb030-werks IS NOT INITIAL.
+
+        CLEAR ls_werks.
+
+        ls_werks-sign   = 'I'.
+        ls_werks-option = 'EQ'.
+        ls_werks-low    = ls_tb030-werks.
+
+        APPEND ls_werks TO r_werks.
+
+      ENDIF.
+
+
+    ENDLOOP.
+
+
+*********************************************************************************************************
+* Remove duplicidades do depósito
+*********************************************************************************************************
+
+    SORT r_lgort BY
+         sign
+         option
+         low
+         high.
+
+
+    DELETE ADJACENT DUPLICATES
+      FROM r_lgort
+      COMPARING
+        sign
+        option
+        low
+        high.
+
+
+*********************************************************************************************************
+* Remove duplicidades do centro
+*********************************************************************************************************
+
+    SORT r_werks BY
+         sign
+         option
+         low
+         high.
+
+
+    DELETE ADJACENT DUPLICATES
+      FROM r_werks
+      COMPARING
+        sign
+        option
+        low
+        high.
+
+
+*********************************************************************************************************
+* Depósito obrigatório
+*********************************************************************************************************
+
+    IF r_lgort[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+
+*********************************************************************************************************
+* Centro obrigatório
+*********************************************************************************************************
+
+    IF r_werks[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+
+*********************************************************************************************************
+* Verifica configuração de saldo do material
+*
+* Essa configuração somente será considerada quando existir
+* exatamente um usuário informado.
+*********************************************************************************************************
+
+    DESCRIBE TABLE rt_usuario_app
+      LINES lv_qtd_usu.
+
+
+    IF lv_qtd_usu = 1.
+
+      READ TABLE rt_usuario_app
+        INTO ls_usuario_app
+        INDEX 1.
+
+
+      IF sy-subrc EQ 0.
+
+        IF ls_usuario_app-sign   = 'I' AND
+           ls_usuario_app-option = 'EQ'.
+
+
+          READ TABLE lt_tb013
+            INTO ls_tb013
+            WITH KEY
+              usuario = ls_usuario_app-low.
+
+
+          IF sy-subrc EQ 0.
+
+            IF ls_tb013-material_saldo = 'X'.
+
+              lv_material_saldo =
+                'X'.
+
+            ENDIF.
+
+          ENDIF.
+
+        ENDIF.
+
+      ENDIF.
+
+    ENDIF.
+
+
+*********************************************************************************************************
+* Seleção dos materiais
+*********************************************************************************************************
+
+    IF rt_lgort[] IS NOT INITIAL OR
+       r_lgort[]  IS NOT INITIAL.
+
+
+*********************************************************************************************************
+* MATERIAL POR CENTRO / DEPÓSITO
+*********************************************************************************************************
+
+      IF lv_material_saldo = 'X'.
+
+
+*********************************************************************************************************
+* Materiais somente com saldo
+*********************************************************************************************************
+
+        SELECT a~matnr
+               c~maktx
+               a~mtart
+               a~meins
+               b~werks
+               b~lgort
+
+          FROM mara AS a
+
+          INNER JOIN mard AS b
+            ON b~matnr = a~matnr
+
+          INNER JOIN makt AS c
+            ON c~matnr = a~matnr
+
+          INTO CORRESPONDING FIELDS OF TABLE rt_materiais
+
+          WHERE a~mtart IN rt_mtart
+            AND b~werks IN rt_werks
+            AND b~lgort IN rt_lgort
+
+            AND c~spras = sy-langu
+
+            AND b~labst > 0
+
+            AND a~lvorm EQ space
+            AND b~lvorm EQ space
+
+            AND a~mtart IN r_mtart
+            AND a~matkl IN r_matkl
+            AND b~werks IN r_werks
+            AND b~lgort IN r_lgort.
+
+
+      ELSE.
+
+
+*********************************************************************************************************
+* Materiais independentemente do saldo
+*********************************************************************************************************
+
+        SELECT a~matnr
+               c~maktx
+               a~mtart
+               a~meins
+               b~werks
+               b~lgort
+
+          FROM mara AS a
+
+          INNER JOIN mard AS b
+            ON b~matnr = a~matnr
+
+          INNER JOIN makt AS c
+            ON c~matnr = a~matnr
+
+          INTO CORRESPONDING FIELDS OF TABLE rt_materiais
+
+          WHERE a~mtart IN rt_mtart
+            AND b~werks IN rt_werks
+            AND b~lgort IN rt_lgort
+
+            AND c~spras = sy-langu
+
+            AND a~lvorm EQ space
+            AND b~lvorm EQ space
+
+            AND a~mtart IN r_mtart
+            AND a~matkl IN r_matkl
+            AND b~werks IN r_werks
+            AND b~lgort IN r_lgort.
+
+
+      ENDIF.
+
+
+    ELSE.
+
+
+*********************************************************************************************************
+* MATERIAL CONSOLIDADO POR CENTRO
+*
+* Nesta situação utilizamos MARC + MARD.
+*
+* Importante:
+* O relacionamento entre MARC e MARD considera:
+*
+* MATNR + WERKS
+*
+* Isso evita cruzar depósitos de centros diferentes.
+*********************************************************************************************************
+
+      IF lv_material_saldo = 'X'.
+
+
+*********************************************************************************************************
+* Materiais somente com saldo
+*********************************************************************************************************
+
+        SELECT a~matnr
+               c~maktx
+               a~mtart
+               a~meins
+               b~werks
+
+          FROM mara AS a
+
+          INNER JOIN marc AS b
+            ON b~matnr = a~matnr
+
+          INNER JOIN mard AS d
+            ON d~matnr = b~matnr
+           AND d~werks = b~werks
+
+          INNER JOIN makt AS c
+            ON c~matnr = a~matnr
+
+          INTO CORRESPONDING FIELDS OF TABLE rt_materiais
+
+          WHERE a~mtart IN rt_mtart
+            AND b~werks IN rt_werks
+
+            AND c~spras = sy-langu
+
+            AND d~labst > 0
+
+            AND a~lvorm EQ space
+            AND b~lvorm EQ space
+            AND d~lvorm EQ space
+
+            AND a~mtart IN r_mtart
+            AND a~matkl IN r_matkl
+            AND b~werks IN r_werks
+            AND d~lgort IN r_lgort.
+
+
+      ELSE.
+
+
+*********************************************************************************************************
+* Materiais independentemente do saldo
+*********************************************************************************************************
+
+        SELECT a~matnr
+               c~maktx
+               a~mtart
+               a~meins
+               b~werks
+
+          FROM mara AS a
+
+          INNER JOIN marc AS b
+            ON b~matnr = a~matnr
+
+          INNER JOIN mard AS d
+            ON d~matnr = b~matnr
+           AND d~werks = b~werks
+
+          INNER JOIN makt AS c
+            ON c~matnr = a~matnr
+
+          INTO CORRESPONDING FIELDS OF TABLE rt_materiais
+
+          WHERE a~mtart IN rt_mtart
+            AND b~werks IN rt_werks
+
+            AND c~spras = sy-langu
+
+            AND a~lvorm EQ space
+            AND b~lvorm EQ space
+            AND d~lvorm EQ space
+
+            AND a~mtart IN r_mtart
+            AND a~matkl IN r_matkl
+            AND b~werks IN r_werks
+            AND d~lgort IN r_lgort.
+
+
+      ENDIF.
+
+    ENDIF.
+
+
+*********************************************************************************************************
+* Ordenação e eliminação de duplicidades
+*********************************************************************************************************
+
+    IF rt_materiais[] IS NOT INITIAL.
+
+
+      SORT rt_materiais BY
+
+           matnr ASCENDING
+           mtart ASCENDING
+           meins ASCENDING
+           werks ASCENDING
+           lgort ASCENDING.
+
+
+*********************************************************************************************************
+* Mantém regra original:
+*
+* MATNR
+* MTART
+* MEINS
+* WERKS
+*
+* LGORT não participa da eliminação.
+*********************************************************************************************************
+
+      DELETE ADJACENT DUPLICATES
+        FROM rt_materiais
+        COMPARING
+          matnr
+          mtart
+          meins
+          werks.
+
+
+*********************************************************************************************************
+* Paginação
+*********************************************************************************************************
+
+      IF im_top > 0.
+
+
+*********************************************************************************************************
+* Quantidade total antes da paginação
+*********************************************************************************************************
+
+        DESCRIBE TABLE rt_materiais
+          LINES lv_total.
+
+
+        ex_quantidade_material =
+          lv_total.
+
+
+*********************************************************************************************************
+* Primeiro registro
+*********************************************************************************************************
+
+        lv_inicio =
+          im_skip + 1.
+
+
+*********************************************************************************************************
+* Último registro
+*********************************************************************************************************
+
+        lv_fim =
+          im_skip + im_top.
+
+
+*********************************************************************************************************
+* Não existem registros para essa página
+*********************************************************************************************************
+
+        IF lv_inicio > lv_total.
+
+          REFRESH rt_materiais.
+
+          RETURN.
+
+        ENDIF.
+
+
+*********************************************************************************************************
+* Ajusta último registro
+*********************************************************************************************************
+
+        IF lv_fim > lv_total.
+
+          lv_fim =
+            lv_total.
+
+        ENDIF.
+
+
+*********************************************************************************************************
+* Copia somente a página solicitada
+*********************************************************************************************************
+
+        REFRESH lt_materiais_final.
+
+
+        LOOP AT rt_materiais
+          INTO ls_materiais
+          FROM lv_inicio
+          TO lv_fim.
+
+
+          APPEND ls_materiais
+            TO lt_materiais_final.
+
+
+        ENDLOOP.
+
+
+*********************************************************************************************************
+* Retorna somente os materiais da página
+*********************************************************************************************************
+
+        REFRESH rt_materiais.
+
+
+        rt_materiais[] =
+          lt_materiais_final[].
+
+
+      ENDIF.
+
+
+*********************************************************************************************************
+* Busca descrições das unidades de medida
+*
+* T006A:
+*
+* MSEHI = unidade
+* MSEHL = descrição
+*********************************************************************************************************
+
+      REFRESH lt_t006a.
+
+
+      SELECT msehi
+             msehl
+
+        FROM t006a
+
+        INTO CORRESPONDING FIELDS OF TABLE lt_t006a
+
+        WHERE spras = sy-langu.
+
+
+*********************************************************************************************************
+* Ordenação necessária para BINARY SEARCH
+*********************************************************************************************************
+
+      SORT lt_t006a BY msehi.
+
+
+*********************************************************************************************************
+* Preenche campos complementares
+*********************************************************************************************************
+
+      LOOP AT rt_materiais
+        INTO ls_materiais.
+
+
+*********************************************************************************************************
+* Guarda índice do material
+*
+* Importante:
+* READ TABLE da T006A altera SY-TABIX.
+*********************************************************************************************************
+
+        lv_index_material =
+          sy-tabix.
+
+
+*********************************************************************************************************
+* Usuário da aplicação
+*********************************************************************************************************
+
+        ls_materiais-usuarioapp =
+          lv_usuario_app.
+
+
+*********************************************************************************************************
+* Descrição da unidade de medida
+*********************************************************************************************************
+
+        CLEAR ls_t006a.
+
+
+        READ TABLE lt_t006a
+          INTO ls_t006a
+          WITH KEY
+            msehi = ls_materiais-meins
+          BINARY SEARCH.
+
+
+        IF sy-subrc EQ 0.
+
+          ls_materiais-msehl =
+            ls_t006a-msehl.
+
+        ELSE.
+
+          CLEAR
+            ls_materiais-msehl.
+
+        ENDIF.
+
+
+*********************************************************************************************************
+* Atualiza o registro
+*********************************************************************************************************
+
+        MODIFY rt_materiais
+          FROM ls_materiais
+          INDEX lv_index_material.
+
+
+      ENDLOOP.
+
+
+    ENDIF.
+
+
+  ENDIF.
+
+
+ENDMETHOD.
+
+
   METHOD out_matricula.
 
 ***    SELECT usuario, nome, matricula
@@ -11365,81 +13104,202 @@ CLASS /PTLOMS/CL001 IMPLEMENTATION.
 
 
   METHOD out_usuario.
+*********************************************************************************************************
+***  Trecho do código abaixo REVISADO em 21/07/2026 em função da incompatibilidade de versão com a SOLAR.
+*********************************************************************************************************
+***  INICIO - Iury Silva
+*********************************************************************************************************
+***
+***    DATA: ls_dados_usuario_app LIKE LINE OF et_dados_usuario_app.
+***
+***    DATA lt_dados_usuario TYPE TABLE OF /ptloms/tb013.
+***    SELECT *
+***      FROM /ptloms/tb013
+***      INTO CORRESPONDING FIELDS OF TABLE lt_dados_usuario
+***      WHERE usuario   IN rt_usuario_app.
+***
+***    DATA ls_tb033 TYPE /ptloms/tb033.
+***    SELECT SINGLE *
+***      FROM /ptloms/tb033
+***      INTO CORRESPONDING FIELDS OF ls_tb033.
+***
+***    DATA: ls_dados_usuario TYPE /ptloms/tb013,
+***          lv_separador     TYPE char1.
+***
+***    LOOP AT lt_dados_usuario INTO ls_dados_usuario.
+***      CLEAR ls_dados_usuario_app.
+***      MOVE-CORRESPONDING ls_dados_usuario TO ls_dados_usuario_app.
+***
+***      IF ls_dados_usuario-matricula IS NOT INITIAL.
+***        IF  ls_dados_usuario-unidade_tempo IS INITIAL.
+***          MOVE ls_tb033-confirmacao TO ls_dados_usuario_app-unidade_tempo.
+***        ENDIF.
+***
+***        SELECT DISTINCT iwerk AS werks
+***          INTO TABLE @DATA(lt_centros)
+***          FROM /ptloms/tb015
+***         WHERE perfil = @ls_dados_usuario-perfil.
+***
+***        lv_separador = ''.
+***        LOOP AT lt_centros ASSIGNING FIELD-SYMBOL(<centro>).
+***          ls_dados_usuario_app-centros = ls_dados_usuario_app-centros && lv_separador && <centro>-werks.
+***          lv_separador = `, `.
+***        ENDLOOP.
+***
+***        APPEND ls_dados_usuario_app TO et_dados_usuario_app.
+***      ENDIF.
+***
+***    ENDLOOP.
+***
+***    DATA: lt_crhd TYPE TABLE OF crhd,
+***          ls_crhd TYPE crhd.
+***    FIELD-SYMBOLS: <fs_dados_usuario_app> LIKE LINE OF et_dados_usuario_app.
+***    SELECT *
+***      FROM crhd
+***      INTO TABLE lt_crhd.
+***
+***    LOOP AT et_dados_usuario_app ASSIGNING <fs_dados_usuario_app>.
+***      READ TABLE lt_crhd INTO ls_crhd WITH KEY objid = <fs_dados_usuario_app>-objid BINARY SEARCH.
+***      IF sy-subrc IS INITIAL.
+***        <fs_dados_usuario_app>-arbpl = ls_crhd-arbpl.
+***      ENDIF.
+***    ENDLOOP.
 
-    DATA: ls_dados_usuario_app LIKE LINE OF et_dados_usuario_app.
+**********************************************************************
+* Código compatível com SAP EHP6
+**********************************************************************
 
-    DATA lt_dados_usuario TYPE TABLE OF /ptloms/tb013.
+    TYPES: BEGIN OF ty_centro,
+             werks TYPE /ptloms/tb015-iwerk,
+           END OF ty_centro.
+
+    DATA: ls_dados_usuario_app LIKE LINE OF et_dados_usuario_app,
+          lt_dados_usuario     TYPE TABLE OF /ptloms/tb013,
+          ls_dados_usuario     TYPE /ptloms/tb013,
+          ls_tb033             TYPE /ptloms/tb033,
+          lt_centros           TYPE TABLE OF ty_centro,
+          lv_separador         TYPE char2,
+          lt_crhd              TYPE TABLE OF crhd,
+          ls_crhd              TYPE crhd.
+
+    FIELD-SYMBOLS:
+      <centro>               TYPE ty_centro,
+      <fs_dados_usuario_app> LIKE LINE OF et_dados_usuario_app.
+
+*--------------------------------------------------------------------*
+* Busca os usuários
+*--------------------------------------------------------------------*
     SELECT *
       FROM /ptloms/tb013
       INTO CORRESPONDING FIELDS OF TABLE lt_dados_usuario
-      WHERE usuario   IN rt_usuario_app.
+      WHERE usuario IN rt_usuario_app.
 
-    DATA ls_tb033 TYPE /ptloms/tb033.
+*--------------------------------------------------------------------*
+* Busca as configurações
+*--------------------------------------------------------------------*
+    CLEAR ls_tb033.
+
     SELECT SINGLE *
       FROM /ptloms/tb033
-      INTO CORRESPONDING FIELDS OF ls_tb033.
+      INTO ls_tb033.
 
-    DATA: ls_dados_usuario TYPE /ptloms/tb013,
-          lv_separador     TYPE char1.
-
+*--------------------------------------------------------------------*
+* Monta os dados dos usuários
+*--------------------------------------------------------------------*
     LOOP AT lt_dados_usuario INTO ls_dados_usuario.
-      CLEAR ls_dados_usuario_app.
-      MOVE-CORRESPONDING ls_dados_usuario TO ls_dados_usuario_app.
 
-      IF ls_dados_usuario-matricula IS NOT INITIAL.
-        IF  ls_dados_usuario-unidade_tempo IS INITIAL.
-          MOVE ls_tb033-confirmacao TO ls_dados_usuario_app-unidade_tempo.
+      CLEAR ls_dados_usuario_app.
+
+      MOVE-CORRESPONDING ls_dados_usuario
+        TO ls_dados_usuario_app.
+
+      IF ls_dados_usuario-matricula IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+      IF ls_dados_usuario-unidade_tempo IS INITIAL.
+        ls_dados_usuario_app-unidade_tempo =
+          ls_tb033-confirmacao.
+      ENDIF.
+
+*--------------------------------------------------------------------*
+* Busca os centros associados ao perfil
+*--------------------------------------------------------------------*
+      REFRESH lt_centros.
+
+      SELECT DISTINCT iwerk
+        FROM /ptloms/tb015
+        INTO TABLE lt_centros
+        WHERE perfil = ls_dados_usuario-perfil.
+
+      CLEAR:
+        lv_separador,
+        ls_dados_usuario_app-centros.
+
+      LOOP AT lt_centros ASSIGNING <centro>.
+
+        CONCATENATE
+          ls_dados_usuario_app-centros
+          lv_separador
+          <centro>-werks
+          INTO ls_dados_usuario_app-centros.
+
+        lv_separador = ', '.
+
+      ENDLOOP.
+
+      APPEND ls_dados_usuario_app
+        TO et_dados_usuario_app.
+
+    ENDLOOP.
+
+*--------------------------------------------------------------------*
+* Busca os centros de trabalho
+*--------------------------------------------------------------------*
+    IF et_dados_usuario_app[] IS NOT INITIAL.
+
+      SELECT *
+        FROM crhd
+        INTO TABLE lt_crhd
+        FOR ALL ENTRIES IN et_dados_usuario_app
+        WHERE objid = et_dados_usuario_app-objid.
+
+      SORT lt_crhd BY objid.
+
+      LOOP AT et_dados_usuario_app ASSIGNING <fs_dados_usuario_app>.
+
+        CLEAR ls_crhd.
+
+        READ TABLE lt_crhd
+          INTO ls_crhd
+          WITH KEY objid = <fs_dados_usuario_app>-objid
+          BINARY SEARCH.
+
+        IF sy-subrc = 0.
+          <fs_dados_usuario_app>-arbpl = ls_crhd-arbpl.
         ENDIF.
 
-        SELECT DISTINCT iwerk AS werks
-          INTO TABLE @DATA(lt_centros)
-          FROM /ptloms/tb015
-         WHERE perfil = @ls_dados_usuario-perfil.
+      ENDLOOP.
 
-        lv_separador = ''.
-        LOOP AT lt_centros ASSIGNING FIELD-SYMBOL(<centro>).
-          ls_dados_usuario_app-centros = ls_dados_usuario_app-centros && lv_separador && <centro>-werks.
-          lv_separador = `, `.
-        ENDLOOP.
+    ENDIF.
 
-        APPEND ls_dados_usuario_app TO et_dados_usuario_app.
-      ENDIF.
+    UNASSIGN: <centro>, <fs_dados_usuario_app>.
 
-    ENDLOOP.
-
-    DATA: lt_crhd TYPE TABLE OF crhd,
-          ls_crhd TYPE crhd.
-    FIELD-SYMBOLS: <fs_dados_usuario_app> LIKE LINE OF et_dados_usuario_app.
-    SELECT *
-      FROM crhd
-      INTO TABLE lt_crhd.
-
-    LOOP AT et_dados_usuario_app ASSIGNING <fs_dados_usuario_app>.
-      READ TABLE lt_crhd INTO ls_crhd WITH KEY objid = <fs_dados_usuario_app>-objid BINARY SEARCH.
-      IF sy-subrc IS INITIAL.
-        <fs_dados_usuario_app>-arbpl = ls_crhd-arbpl.
-      ENDIF.
-    ENDLOOP.
-
+*********************************************************************************************************
+***  FIM - Iury Silva
+*********************************************************************************************************
   ENDMETHOD.
 
 
 METHOD out_variant.
 
-*********************************************************************************************************
-***  Trecho do código abaixo REVISADO em 30/04/2024 em função da incompatibilidade de versão com a SOLAR.
-*********************************************************************************************************
-***  INICIO - Bretz
-*********************************************************************************************************
-  DATA: s_var_usuario  TYPE RANGE OF /ptloms/tb049-var_usuario,
-        ls_var_usuario LIKE LINE OF s_var_usuario.
+  DATA: s_var_usuario      TYPE RANGE OF /ptloms/tb049-var_usuario,
+        ls_var_usuario     LIKE LINE OF s_var_usuario,
+        lr_var_usuario_aux TYPE /iwbep/t_cod_select_options,
+        ls_var_usuario_aux LIKE LINE OF lr_var_usuario_aux.
 
   IF rt_var_usuario[] IS NOT INITIAL.
 
-*Monta Range S_WERKS
-*** LOOP AT rt_var_usuario INTO DATA(ls_var_usuario_aux).
-    DATA: lr_var_usuario_aux TYPE /iwbep/t_cod_select_options.
-    DATA: ls_var_usuario_aux LIKE LINE OF lr_var_usuario_aux.
     LOOP AT rt_var_usuario INTO ls_var_usuario_aux.
       CLEAR ls_var_usuario.
       MOVE-CORRESPONDING ls_var_usuario_aux TO ls_var_usuario.
@@ -11448,17 +13308,14 @@ METHOD out_variant.
 
   ENDIF.
 
-* Busca dados na tabela de variantes
+
   SELECT var_key var_id var_name var_global var_def var_overwrite
          var_tile var_app var_usuario var_json
     FROM /ptloms/tb049
     INTO CORRESPONDING FIELDS OF TABLE it_variant
-    WHERE var_usuario IN s_var_usuario.
-
-***  SELECT *
-***    FROM /ptloms/tb049
-***    INTO CORRESPONDING FIELDS OF TABLE @it_variant
-***    WHERE var_usuario IN @s_var_usuario.
+    WHERE var_usuario IN s_var_usuario
+      AND var_app     IN rt_var_app
+      AND ( var_id_key  IN rt_var_id or var_id_key = '' ).
 
 ENDMETHOD.
 
@@ -11468,6 +13325,8 @@ METHOD out_variant_create.
   DATA: ls_variant TYPE /ptloms/tb049.
 
   MOVE-CORRESPONDING iv_variant TO ls_variant.
+
+  ls_variant-var_id_key = ls_variant-var_id.
 
   MODIFY /ptloms/tb049 FROM ls_variant.
 
@@ -11496,6 +13355,7 @@ ENDMETHOD.
 METHOD out_variant_update.
 
   UPDATE /ptloms/tb049 SET var_id        = iv_variant-var_id
+                           var_id_key    = iv_variant-var_id
                            var_name      = iv_variant-var_name
                            var_global    = iv_variant-var_global
                            var_def       = iv_variant-var_def

@@ -79,6 +79,52 @@ FORM f_carrega_dados .
         id     = name
         values = list.
 
+
+    " Busca dados do provedor de IA do dominio
+    CALL FUNCTION 'DD_DOMVALUES_GET'
+      EXPORTING
+        domname   = '/PTLOMS/DM030'
+        text      = 'X'
+*       LANGU     = sy-langu
+*       BYPASS_BUFFER        = ' '
+*       IMPORTING
+*       RC        =
+      TABLES
+        dd07v_tab = it_idd07v
+*       EXCEPTIONS
+*       WRONG_TEXTFLAG       = 1
+*       OTHERS    = 2
+      .
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
+    ENDIF.
+
+    CLEAR: wa_dd07v, name, list, value.
+
+    name = 'WA_TB033-PROVEDORIA'.
+
+    LOOP AT it_idd07v INTO wa_dd07v.
+
+      value-key = wa_dd07v-domvalue_l.
+
+      CASE value-key.
+
+        WHEN 1.
+          value-text = wa_dd07v-ddtext.
+        WHEN OTHERS.
+          value-text = wa_dd07v-ddtext.
+
+      ENDCASE.
+      APPEND value TO list.
+
+    ENDLOOP.
+
+    " Lista com os Provedores de IA
+    CALL FUNCTION 'VRM_SET_VALUES'
+      EXPORTING
+        id     = name
+        values = list.
+
   ENDIF.
 
 ENDFORM.

@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <INCLUDES>
+    <SOBJ_NAME>/PTLOMS/LGFTB201TOP</SOBJ_NAME>
+    <SOBJ_NAME>/PTLOMS/SAPLGFTB201</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>/PTLOMS/MF167</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Validar Login OMS</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <TYP>/PTLOMS/ED108</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_SENHA</PARAMETER>
+       <TYP>CHAR32</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IS_CLIENT_INFO</PARAMETER>
+       <TYP>/PTLOMS/ET211</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET210</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_SENHA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IS_CLIENT_INFO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Informações do Cliente</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Resultado do Login</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF168</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Validar Login SAP</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IS_CLIENT_INFO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ET211</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET210</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IS_CLIENT_INFO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Informações do Cliente</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Resultado do Login</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF169</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Recuperar contexto do usuário</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ED108</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ES_USUARIO</PARAMETER>
+       <TYP>/PTLOMS/ET212</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ET_AUTORIZACAO</PARAMETER>
+       <TYP>/PTLOMS/CT076</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ET_CONFIG_PERFIL</PARAMETER>
+       <TYP>/PTLOMS/CT078</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ET_CONFIG_SISTEMA</PARAMETER>
+       <TYP>/PTLOMS/CT074</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET213</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Dados do Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_AUTORIZACAO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET108</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_CONFIG_PERFIL</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET109</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_CONFIG_SISTEMA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET074</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Resultado Genérico</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF170</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Registrar Auditoria de Acesso</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ED108</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_TIPO_USUARIO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ED164</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IS_CLIENT_INFO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ET211</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_SUCESSO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>XFELD</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_REASON_CODE</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ED167</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_MENSAGEM</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>BAPI_MSG</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>EV_LOG_ID</PARAMETER>
+       <TYP>/PTLOMS/ED118</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET213</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_TIPO_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Tipo de Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IS_CLIENT_INFO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Informações do Cliente</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_SUCESSO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Campo de seleção</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_REASON_CODE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Reason Code Login</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_MENSAGEM</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Texto de mensagem</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>EV_LOG_ID</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Globally Unique Identifier - GUID - CHAR40</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Resultado Genérico</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF171</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Buscar Autorizações</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <TYP>/PTLOMS/ED108</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ET_AUTORIZACAO</PARAMETER>
+       <TYP>/PTLOMS/CT076</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET213</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_AUTORIZACAO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET108</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Resultado Genérico</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF172</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Buscar Configuração de Perfil</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ED108</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ET_CONFIG_PERFIL</PARAMETER>
+       <TYP>/PTLOMS/CT078</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET213</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_CONFIG_PERFIL</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET109</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Resultado Genérico</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF173</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Buscar Configuração de Sistema</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/PTLOMS/ED108</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ET_CONFIG_SISTEMA</PARAMETER>
+       <TYP>/PTLOMS/CT074</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET213</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_CONFIG_SISTEMA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET074</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS V2 - Resultado Genérico</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

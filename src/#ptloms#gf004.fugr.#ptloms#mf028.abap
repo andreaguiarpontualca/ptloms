@@ -17,7 +17,7 @@ FUNCTION /ptloms/mf028.
 
   CREATE OBJECT o_oms.
 
-  o_oms->out_material( EXPORTING rt_mtart               = rt_mtart
+  o_oms->out_material_v2( EXPORTING rt_mtart               = rt_mtart
                                  rt_werks               = rt_werks
                                  rt_lgort               = rt_lgort
                                  rt_usuario_app         = rt_usuario_app

@@ -146,6 +146,16 @@ public section.
       !EV_MATERIALDOCUMENT type MBLNR
       !EV_MATDOCUMENTYEAR type MJAHR
       !ET_RETURN type BAPIRET2_T .
+  class-methods BUSCAR_CENTRO_CUSTO
+    importing
+      value(IR_KOSTL) type /IWBEP/T_COD_SELECT_OPTIONS
+      value(IR_KOKRS) type /IWBEP/T_COD_SELECT_OPTIONS
+      value(IR_KTEXT) type /IWBEP/T_COD_SELECT_OPTIONS
+      value(IV_TOP) type INT4
+      value(IV_SKIP) type INT4
+      value(IV_SEARCH) type STRING optional
+    exporting
+      value(ET_CENTRO_CUSTO) type /PTLOMS/CT174 .
 protected section.
 private section.
 ENDCLASS.
@@ -156,160 +166,303 @@ CLASS /PTLOMS/CL013 IMPLEMENTATION.
 
 
 METHOD baixa_reserva_pm.
+*********************************************************************************************************
+***  Trecho do código abaixo REVISADO em 20/07/2026 em função da incompatibilidade de versão com a SOLAR.
+*********************************************************************************************************
+***  INICIO - Iury Silva
+*********************************************************************************************************
 
-  DATA: lt_resb     TYPE TABLE OF resb,
-        ls_header   TYPE bapi2017_gm_head_01,
-        ls_code     TYPE bapi2017_gm_code,
-        lt_item     TYPE TABLE OF bapi2017_gm_item_create,
-        ls_item     TYPE bapi2017_gm_item_create,
-        ls_headret  TYPE bapi2017_gm_head_ret,
-        lt_return   TYPE TABLE OF bapiret2,
-        ls_return   TYPE bapiret2,
-        lv_pendente TYPE menge_d,
-        lv_erro     TYPE abap_bool,
-        lv_bwart    TYPE bwart,
-        lv_auart    TYPE aufart.
+  DATA: lt_resb       TYPE TABLE OF resb,
+        ls_header     TYPE bapi2017_gm_head_01,
+        ls_code       TYPE bapi2017_gm_code,
+        lt_item       TYPE TABLE OF bapi2017_gm_item_create,
+        ls_item       TYPE bapi2017_gm_item_create,
+        ls_headret    TYPE bapi2017_gm_head_ret,
+        lt_return     TYPE TABLE OF bapiret2,
+        ls_return     TYPE bapiret2,
+        lv_pendente   TYPE menge_d,
+        lv_erro       TYPE abap_bool,
+        lv_bwart      TYPE bwart,
+        lv_auart      TYPE aufart,
+        lv_menge      TYPE string,
+        lv_pendente_s TYPE string.
+
+  DATA: ls_resb_ref TYPE resb,
+        ls_resb     TYPE resb,
+        ls_baixa    LIKE LINE OF it_baixa,
+        ls_message  TYPE bapiret2.
+
+  FIELD-SYMBOLS: <fs_resb>  TYPE resb,
+                 <fs_baixa> LIKE LINE OF it_baixa.
+
 
   CLEAR: ev_materialdocument,
          ev_matdocumentyear,
          et_return.
 
   IF iv_rsnum IS INITIAL.
-    APPEND VALUE bapiret2(
-      type    = 'E'
-      id      = 'ZPM'
-      number  = '001'
-      message = 'Número da reserva não informado.'
-    ) TO et_return.
+
+    CLEAR ls_message.
+    ls_message-type    = 'E'.
+    ls_message-id      = 'ZPM'.
+    ls_message-number  = '001'.
+    ls_message-message = 'Número da reserva não informado.'.
+    APPEND ls_message TO et_return.
+***    APPEND VALUE bapiret2(
+***      type    = 'E'
+***      id      = 'ZPM'
+***      number  = '001'
+***      message = 'Número da reserva não informado.'
+***    ) TO et_return.
+
     RETURN.
   ENDIF.
 
   IF it_baixa IS INITIAL.
-    APPEND VALUE bapiret2(
-      type    = 'E'
-      id      = 'ZPM'
-      number  = '002'
-      message = 'Nenhum item informado para baixa.'
-    ) TO et_return.
+
+    CLEAR ls_message.
+    ls_message-type    = 'E'.
+    ls_message-id      = 'ZPM'.
+    ls_message-number  = '002'.
+    ls_message-message = 'Nenhum item informado para baixa.'.
+    APPEND ls_message TO et_return.
+***    APPEND VALUE bapiret2(
+***      type    = 'E'
+***      id      = 'ZPM'
+***      number  = '002'
+***      message = 'Nenhum item informado para baixa.'
+***    ) TO et_return.
     RETURN.
   ENDIF.
 
+***  SELECT *
+***    FROM resb
+***    INTO TABLE @lt_resb
+***   WHERE rsnum = @iv_rsnum
+***     AND xloek = @space.
   SELECT *
     FROM resb
-    INTO TABLE @lt_resb
-   WHERE rsnum = @iv_rsnum
-     AND xloek = @space.
+    INTO TABLE lt_resb
+   WHERE rsnum = iv_rsnum
+     AND xloek = space.
 
   IF lt_resb IS INITIAL.
-    APPEND VALUE bapiret2(
-      type    = 'E'
-      id      = 'ZPM'
-      number  = '003'
-      message = |Reserva { iv_rsnum } não encontrada ou sem itens válidos.|
-    ) TO et_return.
+
+    CLEAR ls_message.
+    ls_message-type    = 'E'.
+    ls_message-id      = 'ZPM'.
+    ls_message-number  = '003'.
+    CONCATENATE 'Reserva' iv_rsnum 'não encontrada ou sem itens válidos.' INTO ls_message-message SEPARATED BY space.
+    APPEND ls_message TO et_return.
+***    APPEND VALUE bapiret2(
+***      type    = 'E'
+***      id      = 'ZPM'
+***      number  = '003'
+***      message = |Reserva { iv_rsnum } não encontrada ou sem itens válidos.|
+***    ) TO et_return.
+
     RETURN.
+
   ENDIF.
 
-  DATA(ls_resb_ref) = lt_resb[ 1 ].
+***  DATA(ls_resb_ref) = lt_resb[ 1 ].
+  CLEAR ls_resb_ref.
+
+  READ TABLE lt_resb
+    INTO ls_resb_ref
+    INDEX 1.
+
+  IF sy-subrc <> 0.
+    CLEAR ls_message.
+    ls_message-type    = 'E'.
+    ls_message-id      = 'ZPM'.
+    ls_message-number  = '003'.
+    ls_message-message = 'Reserva não encontrada ou sem itens válidos.'.
+    APPEND ls_message TO et_return.
+    RETURN.
+  ENDIF.
 
   IF ls_resb_ref-aufnr IS NOT INITIAL.
 
+    CLEAR lv_auart.
+
     SELECT SINGLE auart
       FROM aufk
-      INTO @lv_auart
-     WHERE aufnr = @ls_resb_ref-aufnr.
+      INTO lv_auart
+     WHERE aufnr = ls_resb_ref-aufnr.
+***    SELECT SINGLE auart
+***      FROM aufk
+***      INTO @lv_auart
+***     WHERE aufnr = @ls_resb_ref-aufnr.r
 
   ENDIF.
 
-  ls_header-pstng_date = COND #( WHEN iv_pstng_date IS INITIAL
-                                 THEN sy-datum
-                                 ELSE iv_pstng_date ).
+***  ls_header-pstng_date = COND #( WHEN iv_pstng_date IS INITIAL
+***                                 THEN sy-datum
+***                                 ELSE iv_pstng_date ).
+  IF iv_pstng_date IS INITIAL.
+    ls_header-pstng_date = sy-datum.
+  ELSE.
+    ls_header-pstng_date = iv_pstng_date.
+  ENDIF.
 
   ls_header-doc_date   = sy-datum.
   ls_header-pr_uname   = sy-uname.
-  ls_header-header_txt = |Baixa reserva PM { iv_rsnum }|.
+
+***  ls_header-header_txt = |Baixa reserva PM { iv_rsnum }|.
+  CONCATENATE 'Baixa reserva PM' iv_rsnum INTO ls_header-header_txt SEPARATED BY space.
 
   ls_code-gm_code = '03'. "Goods Issue
 
-  LOOP AT lt_resb ASSIGNING FIELD-SYMBOL(<fs_resb>).
+***  LOOP AT lt_resb ASSIGNING FIELD-SYMBOL(<fs_resb>).
+***
+***    READ TABLE it_baixa ASSIGNING FIELD-SYMBOL(<fs_baixa>)
 
-    READ TABLE it_baixa ASSIGNING FIELD-SYMBOL(<fs_baixa>)
-      WITH KEY rsnum = <fs_resb>-rsnum
-               rspos = <fs_resb>-rspos.
+  LOOP AT lt_resb ASSIGNING <fs_resb>.
+
+    UNASSIGN <fs_baixa>.
+
+    READ TABLE it_baixa ASSIGNING <fs_baixa> WITH KEY rsnum = <fs_resb>-rsnum
+                                                      rspos = <fs_resb>-rspos.
 
     IF sy-subrc <> 0.
       CONTINUE.
     ENDIF.
 
     IF <fs_baixa>-menge IS INITIAL OR <fs_baixa>-menge <= 0.
-      APPEND VALUE bapiret2(
-        type    = 'E'
-        id      = 'ZPM'
-        number  = '004'
-        message = |Item { <fs_resb>-rspos }: quantidade para baixa inválida.|
-      ) TO et_return.
+
+      CLEAR ls_message.
+      ls_message-type    = 'E'.
+      ls_message-id      = 'ZPM'.
+      ls_message-number  = '004'.
+      CONCATENATE 'Item' <fs_resb>-rspos ': quantidade para baixa inválida.' INTO ls_message-message SEPARATED BY space.
+      APPEND ls_message TO et_return.
+***      APPEND VALUE bapiret2(
+***        type    = 'E'
+***        id      = 'ZPM'
+***        number  = '004'
+***        message = |Item { <fs_resb>-rspos }: quantidade para baixa inválida.|
+***      ) TO et_return.
       CONTINUE.
+
     ENDIF.
 
     IF <fs_resb>-kzear = abap_true.
-      APPEND VALUE bapiret2(
-        type    = 'E'
-        id      = 'ZPM'
-        number  = '005'
-        message = |Item { <fs_resb>-rspos }: item da reserva já finalizado.|
-      ) TO et_return.
+
+      CLEAR ls_message.
+      ls_message-type    = 'E'.
+      ls_message-id      = 'ZPM'.
+      ls_message-number  = '005'.
+      CONCATENATE 'Item' <fs_resb>-rspos ': item da reserva já finalizado.' INTO ls_message-message SEPARATED BY space.
+      APPEND ls_message TO et_return.
+***      APPEND VALUE bapiret2(
+***        type    = 'E'
+***        id      = 'ZPM'
+***        number  = '005'
+***        message = |Item { <fs_resb>-rspos }: item da reserva já finalizado.|
+***      ) TO et_return.
       CONTINUE.
+
     ENDIF.
 
     lv_pendente = <fs_resb>-bdmng - <fs_resb>-enmng.
 
     IF lv_pendente <= 0.
-      APPEND VALUE bapiret2(
-        type    = 'W'
-        id      = 'ZPM'
-        number  = '006'
-        message = |Item { <fs_resb>-rspos }: não possui saldo pendente para baixa.|
-      ) TO et_return.
+
+      CLEAR ls_message.
+      ls_message-type    = 'W'.
+      ls_message-id      = 'ZPM'.
+      ls_message-number  = '006'.
+      CONCATENATE 'Item' <fs_resb>-rspos ': não possui saldo pendente para baixa.' INTO ls_message-message SEPARATED BY space.
+      APPEND ls_message TO et_return.
+***      APPEND VALUE bapiret2(
+***        type    = 'W'
+***        id      = 'ZPM'
+***        number  = '006'
+***        message = |Item { <fs_resb>-rspos }: não possui saldo pendente para baixa.|
+***      ) TO et_return.
       CONTINUE.
+
     ENDIF.
 
     IF <fs_baixa>-menge > lv_pendente.
-      APPEND VALUE bapiret2(
-        type    = 'E'
-        id      = 'ZPM'
-        number  = '007'
-        message = |Item { <fs_resb>-rspos }: quantidade informada { <fs_baixa>-menge } superior ao saldo pendente { lv_pendente }.|
-      ) TO et_return.
+
+      CLEAR: ls_message, lv_menge, lv_pendente_s.
+      ls_message-type    = 'E'.
+      ls_message-id      = 'ZPM'.
+      ls_message-number  = '007'.
+      CONCATENATE 'Item' <fs_resb>-rspos ': quantidade informada' INTO ls_message-message SEPARATED BY space.
+      lv_menge = <fs_baixa>-menge.
+      CONCATENATE ls_message-message lv_menge 'superior ao saldo pendente' INTO ls_message-message SEPARATED BY space.
+      lv_pendente_s = lv_pendente.
+      CONCATENATE ls_message-message lv_pendente_s '.' INTO ls_message-message SEPARATED BY space.
+      APPEND ls_message TO et_return.
+***      APPEND VALUE bapiret2(
+***        type    = 'E'
+***        id      = 'ZPM'
+***        number  = '007'
+***        message = |Item { <fs_resb>-rspos }: quantidade informada { <fs_baixa>-menge } superior ao saldo pendente { lv_pendente }.|
+***      ) TO et_return.
       CONTINUE.
+
     ENDIF.
 
     CLEAR lv_bwart.
 
     SELECT SINGLE bwart
       FROM /ptloms/tb080
-      INTO @lv_bwart
-     WHERE werks = @<fs_resb>-werks
-       AND auart = @lv_auart
-       AND ativo = @abap_true.
+      INTO lv_bwart
+     WHERE werks = <fs_resb>-werks
+       AND auart = lv_auart
+       AND ativo = abap_true.
 
     IF lv_bwart IS INITIAL.
       SELECT SINGLE bwart
         FROM /ptloms/tb080
-        INTO @lv_bwart
-       WHERE werks = @<fs_resb>-werks
-         AND auart = @space
-         AND ativo = @abap_true.
+        INTO lv_bwart
+       WHERE werks = <fs_resb>-werks
+         AND auart = space
+         AND ativo = abap_true.
     ENDIF.
+***    SELECT SINGLE bwart
+***      FROM /ptloms/tb080
+***      INTO @lv_bwart
+***     WHERE werks = @<fs_resb>-werks
+***       AND auart = @lv_auart
+***       AND ativo = @abap_true.
+***
+***    IF lv_bwart IS INITIAL.
+***      SELECT SINGLE bwart
+***        FROM /ptloms/tb080
+***        INTO @lv_bwart
+***       WHERE werks = @<fs_resb>-werks
+***         AND auart = @space
+***         AND ativo = @abap_true.
+***    ENDIF.
 
     IF lv_bwart IS INITIAL.
+
       lv_bwart = '261'.
 
-      APPEND VALUE bapiret2(
-        type    = 'W'
-        id      = 'ZPM'
-        number  = '009'
-        message = |Item { <fs_resb>-rspos }: movimento não configurado para centro { <fs_resb>-werks } e tipo de ordem { lv_auart }. Utilizado movimento default 261.|
-      ) TO et_return.
+      CLEAR ls_message.
+      ls_message-type    = 'W'.
+      ls_message-id      = 'ZPM'.
+      ls_message-number  = '009'.
+      CONCATENATE: 'Item'
+                   <fs_resb>-rspos
+                  ': movimento não configurado para centro'
+                  <fs_resb>-werks
+                  'e tipo de ordem'
+                  lv_auart
+                  '. Utilizado movimento default 261.'
+             INTO ls_message-message SEPARATED BY space.
+***      APPEND VALUE bapiret2(
+***        type    = 'W'
+***        id      = 'ZPM'
+***        number  = '009'
+***        message = |Item { <fs_resb>-rspos }: movimento não configurado para centro { <fs_resb>-werks } e tipo de ordem { lv_auart }. Utilizado movimento default 261.|
+***      ) TO et_return.
+
     ENDIF.
 
     CLEAR ls_item.
@@ -344,13 +497,21 @@ METHOD baixa_reserva_pm.
   ENDIF.
 
   IF lt_item IS INITIAL.
-    APPEND VALUE bapiret2(
-      type    = 'W'
-      id      = 'ZPM'
-      number  = '008'
-      message = |Nenhum item válido encontrado para baixa da reserva { iv_rsnum }.|
-    ) TO et_return.
+
+    CLEAR ls_message.
+    ls_message-type    = 'W'.
+    ls_message-id      = 'ZPM'.
+    ls_message-number  = '008'.
+    CONCATENATE: 'Nenhum item válido encontrado para baixa da reserva' iv_rsnum INTO ls_message-message SEPARATED BY space.
+
+***    APPEND VALUE bapiret2(
+***      type    = 'W'
+***      id      = 'ZPM'
+***      number  = '008'
+***      message = |Nenhum item válido encontrado para baixa da reserva { iv_rsnum }.|
+***    ) TO et_return.
     RETURN.
+
   ENDIF.
 
   CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
@@ -387,6 +548,391 @@ METHOD baixa_reserva_pm.
     CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
       EXPORTING
         wait = abap_true.
+  ENDIF.
+
+* IA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+*  Versão sem retrofit
+***DATA: lt_resb     TYPE TABLE OF resb,
+***        ls_header   TYPE bapi2017_gm_head_01,
+***        ls_code     TYPE bapi2017_gm_code,
+***        lt_item     TYPE TABLE OF bapi2017_gm_item_create,
+***        ls_item     TYPE bapi2017_gm_item_create,
+***        ls_headret  TYPE bapi2017_gm_head_ret,
+***        lt_return   TYPE TABLE OF bapiret2,
+***        ls_return   TYPE bapiret2,
+***        lv_pendente TYPE menge_d,
+***        lv_erro     TYPE abap_bool,
+***        lv_bwart    TYPE bwart,
+***        lv_auart    TYPE aufart.
+***
+***  CLEAR: ev_materialdocument,
+***         ev_matdocumentyear,
+***         et_return.
+***
+***  IF iv_rsnum IS INITIAL.
+***    APPEND VALUE bapiret2(
+***      type    = 'E'
+***      id      = 'ZPM'
+***      number  = '001'
+***      message = 'Número da reserva não informado.'
+***    ) TO et_return.
+***    RETURN.
+***  ENDIF.
+***
+***  IF it_baixa IS INITIAL.
+***    APPEND VALUE bapiret2(
+***      type    = 'E'
+***      id      = 'ZPM'
+***      number  = '002'
+***      message = 'Nenhum item informado para baixa.'
+***    ) TO et_return.
+***    RETURN.
+***  ENDIF.
+***
+***  SELECT *
+***    FROM resb
+***    INTO TABLE @lt_resb
+***   WHERE rsnum = @iv_rsnum
+***     AND xloek = @space.
+***
+***  IF lt_resb IS INITIAL.
+***    APPEND VALUE bapiret2(
+***      type    = 'E'
+***      id      = 'ZPM'
+***      number  = '003'
+***      message = |Reserva { iv_rsnum } não encontrada ou sem itens válidos.|
+***    ) TO et_return.
+***    RETURN.
+***  ENDIF.
+***
+***  DATA(ls_resb_ref) = lt_resb[ 1 ].
+***
+***  IF ls_resb_ref-aufnr IS NOT INITIAL.
+***
+***    SELECT SINGLE auart
+***      FROM aufk
+***      INTO @lv_auart
+***     WHERE aufnr = @ls_resb_ref-aufnr.
+***
+***  ENDIF.
+***
+***  ls_header-pstng_date = COND #( WHEN iv_pstng_date IS INITIAL
+***                                 THEN sy-datum
+***                                 ELSE iv_pstng_date ).
+***
+***  ls_header-doc_date   = sy-datum.
+***  ls_header-pr_uname   = sy-uname.
+***  ls_header-header_txt = |Baixa reserva PM { iv_rsnum }|.
+***
+***  ls_code-gm_code = '03'. "Goods Issue
+***
+***  LOOP AT lt_resb ASSIGNING FIELD-SYMBOL(<fs_resb>).
+***
+***    READ TABLE it_baixa ASSIGNING FIELD-SYMBOL(<fs_baixa>)
+***      WITH KEY rsnum = <fs_resb>-rsnum
+***               rspos = <fs_resb>-rspos.
+***
+***    IF sy-subrc <> 0.
+***      CONTINUE.
+***    ENDIF.
+***
+***    IF <fs_baixa>-menge IS INITIAL OR <fs_baixa>-menge <= 0.
+***      APPEND VALUE bapiret2(
+***        type    = 'E'
+***        id      = 'ZPM'
+***        number  = '004'
+***        message = |Item { <fs_resb>-rspos }: quantidade para baixa inválida.|
+***      ) TO et_return.
+***      CONTINUE.
+***    ENDIF.
+***
+***    IF <fs_resb>-kzear = abap_true.
+***      APPEND VALUE bapiret2(
+***        type    = 'E'
+***        id      = 'ZPM'
+***        number  = '005'
+***        message = |Item { <fs_resb>-rspos }: item da reserva já finalizado.|
+***      ) TO et_return.
+***      CONTINUE.
+***    ENDIF.
+***
+***    lv_pendente = <fs_resb>-bdmng - <fs_resb>-enmng.
+***
+***    IF lv_pendente <= 0.
+***      APPEND VALUE bapiret2(
+***        type    = 'W'
+***        id      = 'ZPM'
+***        number  = '006'
+***        message = |Item { <fs_resb>-rspos }: não possui saldo pendente para baixa.|
+***      ) TO et_return.
+***      CONTINUE.
+***    ENDIF.
+***
+***    IF <fs_baixa>-menge > lv_pendente.
+***      APPEND VALUE bapiret2(
+***        type    = 'E'
+***        id      = 'ZPM'
+***        number  = '007'
+***        message = |Item { <fs_resb>-rspos }: quantidade informada { <fs_baixa>-menge } superior ao saldo pendente { lv_pendente }.|
+***      ) TO et_return.
+***      CONTINUE.
+***    ENDIF.
+***
+***    CLEAR lv_bwart.
+***
+***    SELECT SINGLE bwart
+***      FROM /ptloms/tb080
+***      INTO @lv_bwart
+***     WHERE werks = @<fs_resb>-werks
+***       AND auart = @lv_auart
+***       AND ativo = @abap_true.
+***
+***    IF lv_bwart IS INITIAL.
+***      SELECT SINGLE bwart
+***        FROM /ptloms/tb080
+***        INTO @lv_bwart
+***       WHERE werks = @<fs_resb>-werks
+***         AND auart = @space
+***         AND ativo = @abap_true.
+***    ENDIF.
+***
+***    IF lv_bwart IS INITIAL.
+***      lv_bwart = '261'.
+***
+***      APPEND VALUE bapiret2(
+***        type    = 'W'
+***        id      = 'ZPM'
+***        number  = '009'
+***        message = |Item { <fs_resb>-rspos }: movimento não configurado para centro { <fs_resb>-werks } e tipo de ordem { lv_auart }. Utilizado movimento default 261.|
+***      ) TO et_return.
+***    ENDIF.
+***
+***    CLEAR ls_item.
+***
+***    ls_item-material  = <fs_resb>-matnr.
+***    ls_item-plant     = <fs_resb>-werks.
+***    ls_item-stge_loc  = <fs_resb>-lgort.
+***    ls_item-batch     = <fs_resb>-charg.
+***    ls_item-move_type = lv_bwart.
+***
+***    ls_item-entry_qnt = <fs_baixa>-menge.
+***    ls_item-entry_uom = <fs_resb>-meins.
+***
+***    ls_item-reserv_no = <fs_resb>-rsnum.
+***    ls_item-res_item  = <fs_resb>-rspos.
+***    ls_item-orderid   = <fs_resb>-aufnr.
+***
+***    APPEND ls_item TO lt_item.
+***
+***  ENDLOOP.
+***
+***  LOOP AT et_return TRANSPORTING NO FIELDS
+***    WHERE type = 'E'
+***       OR type = 'A'
+***       OR type = 'X'.
+***    lv_erro = abap_true.
+***    EXIT.
+***  ENDLOOP.
+***
+***  IF lv_erro = abap_true.
+***    RETURN.
+***  ENDIF.
+***
+***  IF lt_item IS INITIAL.
+***    APPEND VALUE bapiret2(
+***      type    = 'W'
+***      id      = 'ZPM'
+***      number  = '008'
+***      message = |Nenhum item válido encontrado para baixa da reserva { iv_rsnum }.|
+***    ) TO et_return.
+***    RETURN.
+***  ENDIF.
+***
+***  CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
+***    EXPORTING
+***      goodsmvt_header  = ls_header
+***      goodsmvt_code    = ls_code
+***      testrun          = iv_testrun
+***    IMPORTING
+***      goodsmvt_headret = ls_headret
+***      materialdocument = ev_materialdocument
+***      matdocumentyear  = ev_matdocumentyear
+***    TABLES
+***      goodsmvt_item    = lt_item
+***      return           = lt_return.
+***
+***  APPEND LINES OF lt_return TO et_return.
+***
+***  CLEAR lv_erro.
+***
+***  LOOP AT lt_return INTO ls_return
+***    WHERE type = 'E'
+***       OR type = 'A'
+***       OR type = 'X'.
+***    lv_erro = abap_true.
+***    EXIT.
+***  ENDLOOP.
+***
+***  IF lv_erro = abap_true.
+***    CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+***    RETURN.
+***  ENDIF.
+***
+***  IF iv_testrun IS INITIAL.
+***    CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
+***      EXPORTING
+***        wait = abap_true.
+***  ENDIF.
+* FA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+*********************************************************************************************************
+***  FIM - Iury Silva
+*********************************************************************************************************
+ENDMETHOD.
+
+
+METHOD buscar_centro_custo.
+
+  DATA:
+    lv_max_rows   TYPE i,
+    lv_lines      TYPE i,
+    lv_search     TYPE string,
+    lv_search_up  TYPE string,
+    lv_ktext_up   TYPE cskt-ktext,
+    lv_kostl      TYPE csks-kostl,
+    lv_kokrs      TYPE csks-kokrs,
+    lt_aux        TYPE /ptloms/ct174,
+    ls_aux        LIKE LINE OF lt_aux.
+
+  CLEAR et_centro_custo[].
+
+  lv_max_rows = iv_skip + iv_top.
+
+*---------------------------------------------------------------------*
+* Pesquisa global informada
+*---------------------------------------------------------------------*
+  IF iv_search IS NOT INITIAL.
+
+    lv_search = iv_search.
+    TRANSLATE lv_search TO UPPER CASE.
+
+*---------------------------------------------------------------------*
+* Como a pesquisa global envolve OR entre campos diferentes,
+* primeiro recuperamos os registros válidos e filtramos em memória.
+*
+* Isso evita depender de LIKE com transformações diferentes
+* para KOSTL/KOKRS/KTEXT em releases antigos.
+*---------------------------------------------------------------------*
+    SELECT csks~kostl
+           csks~kokrs
+           cskt~ktext
+      INTO CORRESPONDING FIELDS OF TABLE lt_aux
+      FROM csks AS csks
+     INNER JOIN cskt AS cskt
+        ON cskt~kokrs = csks~kokrs
+       AND cskt~kostl = csks~kostl
+       AND cskt~datbi = csks~datbi
+       AND cskt~spras = sy-langu
+     WHERE csks~datab <= sy-datum
+       AND csks~datbi >= sy-datum
+       AND csks~kostl IN ir_kostl
+       AND csks~kokrs IN ir_kokrs
+       AND cskt~ktext IN ir_ktext
+     ORDER BY csks~kostl.
+
+*---------------------------------------------------------------------*
+* Aplica pesquisa global:
+* KOSTL contém busca
+* OU KOKRS contém busca
+* OU KTEXT contém busca
+*---------------------------------------------------------------------*
+    LOOP AT lt_aux INTO ls_aux.
+
+      CLEAR:
+        lv_kostl,
+        lv_kokrs,
+        lv_ktext_up.
+
+      lv_kostl    = ls_aux-kostl.
+      lv_kokrs    = ls_aux-kokrs.
+      lv_ktext_up = ls_aux-ktext.
+
+      TRANSLATE lv_kostl TO UPPER CASE.
+      TRANSLATE lv_kokrs TO UPPER CASE.
+      TRANSLATE lv_ktext_up TO UPPER CASE.
+
+      IF lv_kostl CS lv_search OR
+         lv_kokrs CS lv_search OR
+         lv_ktext_up CS lv_search.
+
+        APPEND ls_aux TO et_centro_custo.
+
+      ENDIF.
+
+    ENDLOOP.
+
+*---------------------------------------------------------------------*
+* Paginação após aplicação da pesquisa
+*---------------------------------------------------------------------*
+    IF iv_skip > 0.
+
+      DESCRIBE TABLE et_centro_custo LINES lv_lines.
+
+      IF iv_skip >= lv_lines.
+        CLEAR et_centro_custo[].
+      ELSE.
+        DELETE et_centro_custo FROM 1 TO iv_skip.
+      ENDIF.
+
+    ENDIF.
+
+*---------------------------------------------------------------------*
+* Limita ao TOP
+*---------------------------------------------------------------------*
+    IF iv_top > 0.
+
+      DESCRIBE TABLE et_centro_custo LINES lv_lines.
+
+      IF lv_lines > iv_top.
+        DELETE et_centro_custo FROM iv_top + 1 TO lv_lines.
+      ENDIF.
+
+    ENDIF.
+
+*---------------------------------------------------------------------*
+* Sem pesquisa global
+*---------------------------------------------------------------------*
+  ELSE.
+
+    SELECT csks~kostl
+           csks~kokrs
+           cskt~ktext
+      INTO CORRESPONDING FIELDS OF TABLE et_centro_custo
+      UP TO lv_max_rows ROWS
+      FROM csks AS csks
+     INNER JOIN cskt AS cskt
+        ON cskt~kokrs = csks~kokrs
+       AND cskt~kostl = csks~kostl
+       AND cskt~datbi = csks~datbi
+       AND cskt~spras = sy-langu
+     WHERE csks~datab <= sy-datum
+       AND csks~datbi >= sy-datum
+       AND csks~kostl IN ir_kostl
+       AND csks~kokrs IN ir_kokrs
+       AND cskt~ktext IN ir_ktext
+     ORDER BY csks~kostl.
+
+    IF iv_skip > 0.
+
+      DESCRIBE TABLE et_centro_custo LINES lv_lines.
+
+      IF iv_skip >= lv_lines.
+        CLEAR et_centro_custo[].
+      ELSE.
+        DELETE et_centro_custo FROM 1 TO iv_skip.
+      ENDIF.
+
+    ENDIF.
+
   ENDIF.
 
 ENDMETHOD.
@@ -3251,7 +3797,12 @@ METHOD ordem_por_cliente.
 ENDMETHOD.
 
 
-METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
+METHOD ordens_por_equipamento_local.
+*********************************************************************************************************
+***  Trecho do código abaixo REVISADO em 20/07/2026 em função da incompatibilidade de versão com a SOLAR.
+*********************************************************************************************************
+***  INICIO - Iury Silva
+*********************************************************************************************************
 
   TYPES: BEGIN OF ty_equnr,
            equnr TYPE equi-equnr,
@@ -3379,12 +3930,34 @@ METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
     wa_equnr_sel-equnr = lv_equnr.
     APPEND wa_equnr_sel TO lt_equnr_sel.
 
+*IA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+***  ELSEIF iv_invnr IS NOT INITIAL.
+***
+***    SELECT equnr
+***      FROM equi
+***      INTO CORRESPONDING FIELDS OF TABLE @lt_equnr_sel
+***      WHERE invnr = @iv_invnr.
+***
+***  ELSEIF iv_eqktx IS NOT INITIAL.
+***
+***    lv_search = iv_eqktx.
+***    CONDENSE lv_search.
+***    TRANSLATE lv_search TO UPPER CASE.
+***    CONCATENATE '%' lv_search '%' INTO lv_search.
+***
+***    SELECT equnr
+***      FROM eqkt
+***      INTO CORRESPONDING FIELDS OF TABLE @lt_equnr_sel
+***      WHERE eqktx LIKE @lv_search
+***        AND spras = @sy-langu.
+***
+***  ENDIF.
   ELSEIF iv_invnr IS NOT INITIAL.
 
     SELECT equnr
       FROM equi
-      INTO CORRESPONDING FIELDS OF TABLE @lt_equnr_sel
-      WHERE invnr = @iv_invnr.
+      INTO CORRESPONDING FIELDS OF TABLE lt_equnr_sel
+      WHERE invnr = iv_invnr.
 
   ELSEIF iv_eqktx IS NOT INITIAL.
 
@@ -3395,11 +3968,12 @@ METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
 
     SELECT equnr
       FROM eqkt
-      INTO CORRESPONDING FIELDS OF TABLE @lt_equnr_sel
-      WHERE eqktx LIKE @lv_search
-        AND spras = @sy-langu.
+      INTO CORRESPONDING FIELDS OF TABLE lt_equnr_sel
+      WHERE eqktx LIKE lv_search
+        AND spras = sy-langu.
 
   ENDIF.
+*FA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
 
   IF lt_equnr_sel IS NOT INITIAL.
 
@@ -3441,11 +4015,18 @@ METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
     TRANSLATE lv_search TO UPPER CASE.
     CONCATENATE '%' lv_search '%' INTO lv_search.
 
+*IA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+***    SELECT tplnr
+***      FROM iflotx
+***      INTO CORRESPONDING FIELDS OF TABLE @lt_tplnr_sel
+***      WHERE pltxt LIKE @lv_search
+***        AND spras = @sy-langu.
     SELECT tplnr
       FROM iflotx
-      INTO CORRESPONDING FIELDS OF TABLE @lt_tplnr_sel
-      WHERE pltxt LIKE @lv_search
-        AND spras = @sy-langu.
+      INTO CORRESPONDING FIELDS OF TABLE lt_tplnr_sel
+      WHERE pltxt LIKE lv_search
+        AND spras = sy-langu.
+*FA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
 
   ENDIF.
 
@@ -3476,57 +4057,213 @@ METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
   IF lt_equnr_rng IS NOT INITIAL
      AND lt_tplnr_rng IS NOT INITIAL.
 
-    SELECT a~aufnr,
-           a~auart,
-           a~ktext,
-           a~erdat,
-           b~equnr,
-           c~tplnr,
+*IA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+***    SELECT a~aufnr,
+***           a~auart,
+***           a~ktext,
+***           a~erdat,
+***           b~equnr,
+***           c~tplnr,
+***           a~objnr
+***      FROM aufk AS a
+***      INNER JOIN afih AS b
+***        ON a~aufnr = b~aufnr
+***      LEFT OUTER JOIN iloa AS c
+***        ON b~iloan = c~iloan
+***      INTO CORRESPONDING FIELDS OF TABLE @lt_aufk_fin
+***      WHERE b~equnr IN @lt_equnr_rng
+***        AND c~tplnr IN @lt_tplnr_rng
+***        AND a~autyp = '30'.
+***
+***    ELSEIF lt_equnr_rng IS NOT INITIAL.
+***
+***      SELECT a~aufnr,
+***             a~auart,
+***             a~ktext,
+***             a~erdat,
+***             b~equnr,
+***             c~tplnr,
+***             a~objnr
+***        FROM aufk AS a
+***        INNER JOIN afih AS b
+***          ON a~aufnr = b~aufnr
+***        LEFT OUTER JOIN iloa AS c
+***          ON b~iloan = c~iloan
+***        INTO CORRESPONDING FIELDS OF TABLE @lt_aufk_fin
+***        WHERE b~equnr IN @lt_equnr_rng
+***          AND a~autyp = '30'.
+***
+***      ELSEIF lt_tplnr_rng IS NOT INITIAL.
+***
+***        SELECT a~aufnr,
+***               a~auart,
+***               a~ktext,
+***               a~erdat,
+***               b~equnr,
+***               c~tplnr,
+***               a~objnr
+***          FROM aufk AS a
+***          INNER JOIN afih AS b
+***            ON a~aufnr = b~aufnr
+***          LEFT OUTER JOIN iloa AS c
+***            ON b~iloan = c~iloan
+***          INTO CORRESPONDING FIELDS OF TABLE @lt_aufk_fin
+***          WHERE c~tplnr IN @lt_tplnr_rng
+***            AND a~autyp = '30'.
+***
+***        ENDIF.
+***
+***        IF lt_aufk_fin IS INITIAL.
+***          RETURN.
+***        ENDIF.
+***
+***        SORT lt_aufk_fin BY aufnr.
+***        DELETE ADJACENT DUPLICATES FROM lt_aufk_fin COMPARING aufnr.
+***
+***        "====================================================================
+***        " 4. Busca em lote dos dados auxiliares
+***        "====================================================================
+***        SELECT objnr,
+***               stat
+***          FROM jest
+***          INTO CORRESPONDING FIELDS OF TABLE @lt_jest
+***          FOR ALL ENTRIES IN @lt_aufk_fin
+***          WHERE objnr = @lt_aufk_fin-objnr
+***            AND inact = @space.
+***
+***          SORT lt_jest BY objnr stat.
+***
+***          IF lt_jest IS NOT INITIAL.
+***
+***            SELECT istat,
+***                   txt04,
+***                   txt30
+***              FROM tj02t
+***              INTO CORRESPONDING FIELDS OF TABLE @lt_tj02t
+***              FOR ALL ENTRIES IN @lt_jest
+***              WHERE istat = @lt_jest-stat
+***                AND spras = @sy-langu.
+***
+***              SORT lt_tj02t BY istat.
+***
+***            ENDIF.
+***
+***            SELECT equnr,
+***                   eqktx
+***              FROM eqkt
+***              INTO CORRESPONDING FIELDS OF TABLE @lt_eqkt
+***              FOR ALL ENTRIES IN @lt_aufk_fin
+***              WHERE equnr = @lt_aufk_fin-equnr
+***                AND spras = @sy-langu.
+***
+***              SORT lt_eqkt BY equnr.
+***
+***              SELECT equnr,
+***                     invnr
+***                FROM equi
+***                INTO TABLE @lt_equi
+***                FOR ALL ENTRIES IN @lt_aufk_fin
+***                WHERE equnr = @lt_aufk_fin-equnr.
+***
+***                SORT lt_equi BY equnr.
+***
+***                SELECT tplnr,
+***                       pltxt
+***                  FROM iflotx
+***                  INTO CORRESPONDING FIELDS OF TABLE @lt_iflotx
+***                  FOR ALL ENTRIES IN @lt_aufk_fin
+***                  WHERE tplnr = @lt_aufk_fin-tplnr
+***                    AND spras = @sy-langu.
+***
+***                  SORT lt_iflotx BY tplnr.
+***
+***                  SELECT equnr,
+***                         kunnr
+***                    FROM eqbs
+***                    INTO CORRESPONDING FIELDS OF TABLE @lt_eqbs_kunnr
+***                    FOR ALL ENTRIES IN @lt_aufk_fin
+***                    WHERE equnr = @lt_aufk_fin-equnr.
+***
+***                    IF lt_eqbs_kunnr IS NOT INITIAL.
+***
+***                      SORT lt_eqbs_kunnr BY equnr kunnr.
+***                      DELETE ADJACENT DUPLICATES FROM lt_eqbs_kunnr COMPARING equnr kunnr.
+***                      DELETE lt_eqbs_kunnr WHERE kunnr IS INITIAL.
+***
+***                      IF lt_eqbs_kunnr IS NOT INITIAL.
+***
+***                        SELECT kunnr,
+***                               name1,
+***                               name2,
+***                               stcd1,
+***                               stcd2
+***                          FROM kna1
+***                          INTO CORRESPONDING FIELDS OF TABLE @lt_kna1
+***                          FOR ALL ENTRIES IN @lt_eqbs_kunnr
+***                          WHERE kunnr = @lt_eqbs_kunnr-kunnr.
+***
+***                          SORT lt_kna1 BY kunnr.
+***
+***                        ENDIF.
+***
+***                      ENDIF.
+***
+***
+    SELECT a~aufnr
+           a~auart
+           a~ktext
+           a~erdat
+           b~equnr
+           c~tplnr
            a~objnr
+      INTO CORRESPONDING FIELDS OF TABLE lt_aufk_fin
       FROM aufk AS a
       INNER JOIN afih AS b
         ON a~aufnr = b~aufnr
-      LEFT OUTER JOIN iloa AS c
+***      LEFT OUTER JOIN iloa AS c
+***        ON b~iloan = c~iloan
+      INNER JOIN iloa AS c
         ON b~iloan = c~iloan
-      INTO CORRESPONDING FIELDS OF TABLE @lt_aufk_fin
-      WHERE b~equnr IN @lt_equnr_rng
-        AND c~tplnr IN @lt_tplnr_rng
+      WHERE b~equnr IN lt_equnr_rng
+        AND c~tplnr IN lt_tplnr_rng
         AND a~autyp = '30'.
 
   ELSEIF lt_equnr_rng IS NOT INITIAL.
 
-    SELECT a~aufnr,
-           a~auart,
-           a~ktext,
-           a~erdat,
-           b~equnr,
-           c~tplnr,
+    SELECT a~aufnr
+           a~auart
+           a~ktext
+           a~erdat
+           b~equnr
+           c~tplnr
            a~objnr
+      INTO CORRESPONDING FIELDS OF TABLE lt_aufk_fin
       FROM aufk AS a
       INNER JOIN afih AS b
         ON a~aufnr = b~aufnr
       LEFT OUTER JOIN iloa AS c
         ON b~iloan = c~iloan
-      INTO CORRESPONDING FIELDS OF TABLE @lt_aufk_fin
-      WHERE b~equnr IN @lt_equnr_rng
+      WHERE b~equnr IN lt_equnr_rng
         AND a~autyp = '30'.
 
   ELSEIF lt_tplnr_rng IS NOT INITIAL.
 
-    SELECT a~aufnr,
-           a~auart,
-           a~ktext,
-           a~erdat,
-           b~equnr,
-           c~tplnr,
+    SELECT a~aufnr
+           a~auart
+           a~ktext
+           a~erdat
+           b~equnr
+           c~tplnr
            a~objnr
+      INTO CORRESPONDING FIELDS OF TABLE lt_aufk_fin
       FROM aufk AS a
       INNER JOIN afih AS b
         ON a~aufnr = b~aufnr
-      LEFT OUTER JOIN iloa AS c
+***      LEFT OUTER JOIN iloa AS c
+***        ON b~iloan = c~iloan
+      INNER JOIN iloa AS c
         ON b~iloan = c~iloan
-      INTO CORRESPONDING FIELDS OF TABLE @lt_aufk_fin
-      WHERE c~tplnr IN @lt_tplnr_rng
+      WHERE c~tplnr IN lt_tplnr_rng
         AND a~autyp = '30'.
 
   ENDIF.
@@ -3541,66 +4278,66 @@ METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
   "====================================================================
   " 4. Busca em lote dos dados auxiliares
   "====================================================================
-  SELECT objnr,
+  SELECT objnr
          stat
     FROM jest
-    INTO CORRESPONDING FIELDS OF TABLE @lt_jest
-    FOR ALL ENTRIES IN @lt_aufk_fin
-    WHERE objnr = @lt_aufk_fin-objnr
-      AND inact = @space.
+    INTO CORRESPONDING FIELDS OF TABLE lt_jest
+    FOR ALL ENTRIES IN lt_aufk_fin
+    WHERE objnr = lt_aufk_fin-objnr
+      AND inact = space.
 
   SORT lt_jest BY objnr stat.
 
   IF lt_jest IS NOT INITIAL.
 
-    SELECT istat,
-           txt04,
+    SELECT istat
+           txt04
            txt30
       FROM tj02t
-      INTO CORRESPONDING FIELDS OF TABLE @lt_tj02t
-      FOR ALL ENTRIES IN @lt_jest
-      WHERE istat = @lt_jest-stat
-        AND spras = @sy-langu.
+      INTO CORRESPONDING FIELDS OF TABLE lt_tj02t
+      FOR ALL ENTRIES IN lt_jest
+      WHERE istat = lt_jest-stat
+        AND spras = sy-langu.
 
     SORT lt_tj02t BY istat.
 
   ENDIF.
 
-  SELECT equnr,
+  SELECT equnr
          eqktx
     FROM eqkt
-    INTO CORRESPONDING FIELDS OF TABLE @lt_eqkt
-    FOR ALL ENTRIES IN @lt_aufk_fin
-    WHERE equnr = @lt_aufk_fin-equnr
-      AND spras = @sy-langu.
+    INTO CORRESPONDING FIELDS OF TABLE lt_eqkt
+    FOR ALL ENTRIES IN lt_aufk_fin
+    WHERE equnr = lt_aufk_fin-equnr
+      AND spras = sy-langu.
 
   SORT lt_eqkt BY equnr.
 
-  SELECT equnr,
+  SELECT equnr
          invnr
     FROM equi
-    INTO TABLE @lt_equi
-    FOR ALL ENTRIES IN @lt_aufk_fin
-    WHERE equnr = @lt_aufk_fin-equnr.
+    INTO TABLE lt_equi
+    FOR ALL ENTRIES IN lt_aufk_fin
+    WHERE equnr = lt_aufk_fin-equnr.
 
   SORT lt_equi BY equnr.
 
-  SELECT tplnr,
+  SELECT tplnr
          pltxt
     FROM iflotx
-    INTO CORRESPONDING FIELDS OF TABLE @lt_iflotx
-    FOR ALL ENTRIES IN @lt_aufk_fin
-    WHERE tplnr = @lt_aufk_fin-tplnr
-      AND spras = @sy-langu.
+    INTO CORRESPONDING FIELDS OF TABLE lt_iflotx
+    FOR ALL ENTRIES IN lt_aufk_fin
+    WHERE tplnr = lt_aufk_fin-tplnr
+      AND spras = sy-langu.
 
   SORT lt_iflotx BY tplnr.
 
-  SELECT equnr,
+  SELECT equnr
          kunnr
     FROM eqbs
-    INTO CORRESPONDING FIELDS OF TABLE @lt_eqbs_kunnr
-    FOR ALL ENTRIES IN @lt_aufk_fin
-    WHERE equnr = @lt_aufk_fin-equnr.
+    INTO CORRESPONDING FIELDS OF TABLE lt_eqbs_kunnr
+    FOR ALL ENTRIES IN lt_aufk_fin
+    WHERE equnr = lt_aufk_fin-equnr.
 
   IF lt_eqbs_kunnr IS NOT INITIAL.
 
@@ -3610,21 +4347,23 @@ METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
 
     IF lt_eqbs_kunnr IS NOT INITIAL.
 
-      SELECT kunnr,
-             name1,
-             name2,
-             stcd1,
+      SELECT kunnr
+             name1
+             name2
+             stcd1
              stcd2
         FROM kna1
-        INTO CORRESPONDING FIELDS OF TABLE @lt_kna1
-        FOR ALL ENTRIES IN @lt_eqbs_kunnr
-        WHERE kunnr = @lt_eqbs_kunnr-kunnr.
+        INTO CORRESPONDING FIELDS OF TABLE lt_kna1
+        FOR ALL ENTRIES IN lt_eqbs_kunnr
+        WHERE kunnr = lt_eqbs_kunnr-kunnr.
 
       SORT lt_kna1 BY kunnr.
 
     ENDIF.
 
   ENDIF.
+
+*FA - Comentado por IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
 
   "====================================================================
   " 5. Montagem da saída
@@ -3795,6 +4534,9 @@ METHOD ORDENS_POR_EQUIPAMENTO_LOCAL.
   SORT lt_orders_out BY erdat DESCENDING.
   et_orders = lt_orders_out.
 
+*********************************************************************************************************
+***  FIM - Iury Silva
+*********************************************************************************************************
 ENDMETHOD.
 
 

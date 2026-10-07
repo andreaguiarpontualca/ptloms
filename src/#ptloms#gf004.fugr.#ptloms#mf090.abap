@@ -26,7 +26,7 @@ FUNCTION /ptloms/mf090.
 
   CREATE OBJECT o_oms.
 
-  o_oms->out_equipamento( EXPORTING rt_bukrs                  = rt_bukrs
+  o_oms->out_equipamento_v3( EXPORTING rt_bukrs                  = rt_bukrs
                                     rt_iwerk                  = rt_iwerk
                                     rt_ingrp                  = rt_ingrp
                                     rt_beber                  = rt_beber

@@ -168,3 +168,13 @@ MODULE valida_horizonte INPUT.
   PERFORM f_valida_horizonte.
 
 ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  VALIDA_SWERK  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE valida_swerk INPUT.
+
+  PERFORM f_valida_swerk.
+
+ENDMODULE.

@@ -18,6 +18,7 @@
    <FUNCTIONS>
     <item>
      <FUNCNAME>TABLEFRAME_/PTLOMS/GF001</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -64,44 +65,54 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name der Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>TABLEPROC_/PTLOMS/GF001</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -176,75 +187,93 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name der Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V001</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -294,47 +323,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V002</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -384,47 +424,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V003</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -474,47 +525,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V004</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -564,47 +626,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V005</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -654,47 +727,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V006</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -744,47 +828,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V007</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -834,47 +929,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V008</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -924,47 +1030,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V009</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1014,47 +1131,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V010</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1104,47 +1232,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V011</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1194,47 +1333,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V012</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1284,47 +1434,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V013</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1374,47 +1535,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V015</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1464,47 +1636,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V016</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1554,47 +1737,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V017</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1644,47 +1838,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V018</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1734,47 +1939,58 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWFRAME_/PTLOMS/V020</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -1824,48 +2040,59 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V001</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -1943,80 +2170,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V002</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -2094,80 +2340,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V003</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -2245,80 +2510,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V004</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -2396,80 +2680,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V005</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -2547,80 +2850,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V006</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -2698,80 +3020,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V007</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -2849,80 +3190,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V008</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -3000,80 +3360,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V009</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -3151,80 +3530,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V010</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -3302,80 +3700,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V011</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -3453,80 +3870,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V012</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -3604,80 +4040,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V013</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -3755,80 +4210,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V015</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -3906,80 +4380,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V016</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -4057,80 +4550,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V017</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -4208,80 +4720,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V018</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -4359,80 +4890,99 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>VIEWPROC_/PTLOMS/V020</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -4510,74 +5060,92 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit dem View: anzeigen/ändern (S/U)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name des Views</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für den View</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die View-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>NO_VALUE_FOR_SUBSET_IDENT</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>für ein &apos;SUBSET&apos;-Feld wurde kein Wert vorgegeben</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
@@ -9754,13 +10322,14 @@
        <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB013-ASSOCIA</NAME>
-       <TEXT>+_______________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>011</COLUMN>
        <LENGTH>040</LENGTH>
-       <VISLENGTH>001</VISLENGTH>
+       <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>1</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -9785,13 +10354,14 @@
        <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB013-ATUALIZAR_SENHA</NAME>
-       <TEXT>+_______________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>013</COLUMN>
        <LENGTH>040</LENGTH>
-       <VISLENGTH>001</VISLENGTH>
+       <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>1</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -9864,13 +10434,14 @@
        <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB013-ELIMINADO</NAME>
-       <TEXT>+_______________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>018</COLUMN>
        <LENGTH>040</LENGTH>
-       <VISLENGTH>001</VISLENGTH>
+       <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>1</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -9887,6 +10458,70 @@
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
        <MODIFIC>1</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <TC_HEADING>X</TC_HEADING>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>*/PTLOMS/TB013-NAO_ALOCAR_OP</NAME>
+       <LINE>001</LINE>
+       <COLUMN>020</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>010</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>1</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <TC_HEADING>X</TC_HEADING>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>*/PTLOMS/TB013-SWERK</NAME>
+       <LINE>001</LINE>
+       <COLUMN>021</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>004</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>4</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <TC_HEADING>X</TC_HEADING>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>*/PTLOMS/TB013-EMAIL</NAME>
+       <LINE>001</LINE>
+       <COLUMN>022</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>241</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>V</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <TC_HEADING>X</TC_HEADING>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>*/PTLOMS/TB013-TELEFONE</NAME>
+       <LINE>001</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>V</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -10093,7 +10728,7 @@
        <LINE>001</LINE>
        <COLUMN>011</COLUMN>
        <LENGTH>001</LENGTH>
-       <VISLENGTH>001</VISLENGTH>
+       <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
@@ -10127,7 +10762,7 @@
        <LINE>001</LINE>
        <COLUMN>013</COLUMN>
        <LENGTH>001</LENGTH>
-       <VISLENGTH>001</VISLENGTH>
+       <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
@@ -10214,7 +10849,7 @@
        <LINE>001</LINE>
        <COLUMN>018</COLUMN>
        <LENGTH>001</LENGTH>
-       <VISLENGTH>001</VISLENGTH>
+       <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
@@ -10240,6 +10875,78 @@
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
        <DICT_I_VAL>X</DICT_I_VAL>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB013-NAO_ALOCAR_OP</NAME>
+       <TEXT>_</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>020</COLUMN>
+       <LENGTH>001</LENGTH>
+       <VISLENGTH>010</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>X</MODIFIC>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB013-SWERK</NAME>
+       <TEXT>____</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>021</COLUMN>
+       <LENGTH>004</LENGTH>
+       <VISLENGTH>004</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>X</MODIFIC>
+       <PARAM_ID>SWK</PARAM_ID>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB013-EMAIL</NAME>
+       <TEXT>____________________________________________________________________________________________________________________________________</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>022</COLUMN>
+       <LENGTH>241</LENGTH>
+       <VISLENGTH>241</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>X</MODIFIC>
+       <CONV_EXIT>SXIDN</CONV_EXIT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB013</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB013-TELEFONE</NAME>
+       <TEXT>____________________</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>NUMC</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>X</MODIFIC>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <LEAD_ZEROS>X</LEAD_ZEROS>
       </RPY_DYFATC>
      </FIELDS>
     </item>
@@ -23026,7 +23733,7 @@
        <COLUMN>001</COLUMN>
        <LENGTH>083</LENGTH>
        <VISLENGTH>083</VISLENGTH>
-       <HEIGHT>022</HEIGHT>
+       <HEIGHT>028</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -23481,6 +24188,194 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>/PTLOMS/TB033-CESTO</NAME>
        <LINE>021</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>001</LENGTH>
+       <VISLENGTH>001</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>/PTLOMS/TB033-TRACKING</NAME>
+       <LINE>022</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB033-TRACKING</NAME>
+       <LINE>022</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>011</LENGTH>
+       <VISLENGTH>011</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>INT4</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>/PTLOMS/TB033-LATITUDE</NAME>
+       <LINE>023</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB033-LATITUDE</NAME>
+       <LINE>023</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>/PTLOMS/TB033-LONGITUDE</NAME>
+       <LINE>024</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB033-LONGITUDE</NAME>
+       <LINE>024</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>/PTLOMS/TB033-PROVEDORIA</NAME>
+       <LINE>025</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB033-PROVEDORIA</NAME>
+       <DROPDOWN>L</DROPDOWN>
+       <LINE>025</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>060</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <DICT_I_VAL>X</DICT_I_VAL>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>/PTLOMS/TB033-CUSTOMER_ID</NAME>
+       <LINE>026</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB033-CUSTOMER_ID</NAME>
+       <LINE>026</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>/PTLOMS/TB033-ALERTAS</NAME>
+       <LINE>027</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB033-ALERTAS</NAME>
+       <LINE>027</LINE>
        <COLUMN>023</COLUMN>
        <LENGTH>001</LENGTH>
        <VISLENGTH>001</VISLENGTH>

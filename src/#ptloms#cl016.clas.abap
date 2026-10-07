@@ -406,94 +406,424 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD busca_detalhe_operacao.
+METHOD busca_detalhe_operacao.
+*********************************************************************************************************
+***  Trecho do código abaixo REVISADO em 20/07/2026 em função da incompatibilidade de versão com a SOLAR.
+*********************************************************************************************************
+***  INICIO - Iury Silva
+*********************************************************************************************************
 
-    DATA: e_operations  TYPE bapi_alm_order_operation_e,
-          lt_text_lines TYPE TABLE OF bapi_alm_text_lines,
-          ls_text_lines TYPE bapi_alm_text_lines,
-          lt_text       TYPE TABLE OF bapi_alm_text,
-          w_detalhe     LIKE LINE OF i_detalhe,
-          s_detalhe     LIKE LINE OF e_detalhe,
-          v_aufnr       TYPE aufnr,
-          v_vornr       TYPE vornr,
-          lt_retorno    TYPE bapiret2_t,
-          ls_retorno    LIKE LINE OF lt_retorno.
 
-    DATA: lt_tb022 TYPE TABLE OF /ptloms/tb022,
-          ls_tb022 LIKE LINE OF lt_tb022.
+*--------------------------------------------------------------------*
+* Tipos locais
+*--------------------------------------------------------------------*
+  TYPES: BEGIN OF ty_assoc,
+           aufnr TYPE aufnr,
+           vornr TYPE vornr,
+           uname TYPE uname,
+         END OF ty_assoc,
 
-    SELECT *
-      FROM /ptloms/tb022
-      INTO TABLE lt_tb022
-      WHERE perfil NE ' '.
+         BEGIN OF ty_total_assoc,
+           aufnr TYPE aufnr,
+           vornr TYPE vornr,
+           total TYPE i,
+         END OF ty_total_assoc,
 
-    CLEAR e_detalhe.
+         BEGIN OF ty_cabecalho,
+           gstrp TYPE afko-gstrp,
+           gltrp TYPE afko-gltrp,
+         END OF ty_cabecalho.
 
-    LOOP AT i_detalhe   INTO w_detalhe.
+*--------------------------------------------------------------------*
+* Dados
+*--------------------------------------------------------------------*
+  DATA: lt_assoc       TYPE STANDARD TABLE OF ty_assoc,
+        ls_cabecalho   TYPE ty_cabecalho,
+        ls_assoc       TYPE ty_assoc,
+        ls_total_assoc TYPE ty_total_assoc,
+        lt_total_assoc TYPE HASHED TABLE OF ty_total_assoc
+                       WITH UNIQUE KEY aufnr vornr,
+        e_operations   TYPE bapi_alm_order_operation_e,
+        ls_header      TYPE bapi_alm_order_header_e,
+        lt_text_lines  TYPE TABLE OF bapi_alm_text_lines,
+        ls_text_lines  TYPE bapi_alm_text_lines,
+        lt_text        TYPE TABLE OF bapi_alm_text,
+        w_detalhe      LIKE LINE OF i_detalhe,
+        s_detalhe      LIKE LINE OF e_detalhe,
+        v_aufnr        TYPE aufnr,
+        v_vornr        TYPE vornr,
+        lt_retorno     TYPE bapiret2_t,
+        ls_retorno     LIKE LINE OF lt_retorno,
+        lt_tb022       TYPE TABLE OF /ptloms/tb022,
+        ls_tb022       LIKE LINE OF lt_tb022.
 
-      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-        EXPORTING
-          input  = w_detalhe-aufnr
-        IMPORTING
-          output = v_aufnr.
+  FIELD-SYMBOLS <fs_assoc> TYPE ty_assoc.
 
-      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
-        EXPORTING
-          input  = w_detalhe-vornr
-        IMPORTING
-          output = v_vornr.
+*--------------------------------------------------------------------*
+* Configuração
+*--------------------------------------------------------------------*
+  SELECT *
+    INTO TABLE lt_tb022
+    FROM /ptloms/tb022
+   WHERE perfil <> space.
 
-      CLEAR:
-        e_operations.
+*--------------------------------------------------------------------*
+* Total de associações por ordem e operação
+*--------------------------------------------------------------------*
+  IF i_detalhe[] IS NOT INITIAL.
 
-      REFRESH:
-        lt_retorno,
-        lt_text,
-        lt_text_lines.
+    SELECT aufnr
+           vornr
+           uname
+      INTO CORRESPONDING FIELDS OF TABLE lt_assoc
+      FROM /ptloms/tb065
+      FOR ALL ENTRIES IN i_detalhe
+     WHERE aufnr = i_detalhe-aufnr
+       AND vornr = i_detalhe-vornr.
 
-      CALL FUNCTION 'BAPI_ALM_OPERATION_GET_DETAIL'
-        EXPORTING
-          iv_orderid    = v_aufnr
-          iv_activity   = v_vornr
-        IMPORTING
-          es_operation  = e_operations
-        TABLES
-          return        = lt_retorno
-          et_text       = lt_text
-          et_text_lines = lt_text_lines.
+    LOOP AT lt_assoc ASSIGNING <fs_assoc>.
 
-      IF  sy-subrc      = 0.
+      CLEAR ls_total_assoc.
 
-        MOVE:
-          w_detalhe-aufnr   TO s_detalhe-aufnr,
-          w_detalhe-vornr   TO s_detalhe-vornr.
+      READ TABLE lt_total_assoc
+        INTO ls_total_assoc
+        WITH TABLE KEY
+             aufnr = <fs_assoc>-aufnr
+             vornr = <fs_assoc>-vornr.
 
-        MOVE-CORRESPONDING e_operations TO s_detalhe.
+      IF sy-subrc = 0.
 
-        READ TABLE lt_tb022 INTO ls_tb022 WITH KEY auart = s_detalhe-control_key.
+        ADD 1 TO ls_total_assoc-total.
 
-        IF sy-subrc IS INITIAL.
-          s_detalhe-filtro_catalogo = ls_tb022-filtro_catalogo.
-        ENDIF.
+        MODIFY TABLE lt_total_assoc
+          FROM ls_total_assoc.
 
-        LOOP AT lt_text_lines INTO ls_text_lines.
+      ELSE.
 
-          CONCATENATE s_detalhe-tdline ls_text_lines INTO s_detalhe-tdline.
+        CLEAR ls_total_assoc.
 
-        ENDLOOP.
+        ls_total_assoc-aufnr = <fs_assoc>-aufnr.
+        ls_total_assoc-vornr = <fs_assoc>-vornr.
+        ls_total_assoc-total = 1.
 
-        APPEND s_detalhe    TO e_detalhe.
+        INSERT ls_total_assoc
+          INTO TABLE lt_total_assoc.
 
       ENDIF.
 
     ENDLOOP.
 
-  ENDMETHOD.
+  ENDIF.
+
+*--------------------------------------------------------------------*
+* Busca dos detalhes das operações
+*--------------------------------------------------------------------*
+  REFRESH e_detalhe.
+
+  LOOP AT i_detalhe INTO w_detalhe.
+
+    CLEAR: s_detalhe,
+           e_operations,
+           v_aufnr,
+           v_vornr,
+           ls_tb022,
+           ls_total_assoc.
+
+    REFRESH: lt_retorno,
+             lt_text,
+             lt_text_lines.
+
+*--------------------------------------------------------------------*
+* Conversão da ordem e operação para o formato interno
+*--------------------------------------------------------------------*
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+      EXPORTING
+        input  = w_detalhe-aufnr
+      IMPORTING
+        output = v_aufnr.
+
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+      EXPORTING
+        input  = w_detalhe-vornr
+      IMPORTING
+        output = v_vornr.
+
+*--------------------------------------------------------------------*
+* Detalhes da operação
+*--------------------------------------------------------------------*
+    "-- Obter Data Base do cabeçalho da ordem --"
+    SELECT SINGLE gstrp gltrp
+      INTO ls_cabecalho
+      FROM afko
+     WHERE aufnr = v_aufnr.
+
+
+    CALL FUNCTION 'BAPI_ALM_OPERATION_GET_DETAIL'
+      EXPORTING
+        iv_orderid    = v_aufnr
+        iv_activity   = v_vornr
+      IMPORTING
+        es_operation  = e_operations
+      TABLES
+        return        = lt_retorno
+        et_text       = lt_text
+        et_text_lines = lt_text_lines.
+
+    IF sy-subrc <> 0.
+      CONTINUE.
+    ENDIF.
+
+    MOVE-CORRESPONDING e_operations TO s_detalhe.
+
+    s_detalhe-data_base_ini = ls_cabecalho-gstrp.
+    s_detalhe-data_base_fim = ls_cabecalho-gltrp.
+
+    "Garante as chaves no resultado
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT' EXPORTING input  = v_aufnr IMPORTING output = s_detalhe-aufnr.
+    s_detalhe-vornr = v_vornr.
+
+*--------------------------------------------------------------------*
+* Verifica erros retornados pela BAPI
+*--------------------------------------------------------------------*
+    READ TABLE lt_retorno
+      INTO ls_retorno
+      WITH KEY type = 'E'.
+
+    IF sy-subrc <> 0.
+
+      READ TABLE lt_retorno
+        INTO ls_retorno
+        WITH KEY type = 'A'.
+
+    ENDIF.
+
+    IF sy-subrc = 0.
+      CONTINUE.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Filtro de catálogo
+*--------------------------------------------------------------------*
+
+    DATA: ls_order TYPE bapi_alm_order_header_e.
+    DATA: lt_return_order TYPE TABLE OF bapiret2.
+
+    CALL FUNCTION 'BAPI_ALM_ORDER_GET_DETAIL'
+      EXPORTING
+        number    = v_aufnr
+      IMPORTING
+        es_header = ls_order
+      TABLES
+        return    = lt_return_order.
+
+    READ TABLE lt_tb022
+      INTO ls_tb022
+      WITH KEY auart = ls_order-order_type.
+
+    IF sy-subrc = 0.
+      s_detalhe-filtro_catalogo = ls_tb022-filtro_catalogo.
+    ENDIF.
+
+*--------------------------------------------------------------------*
+* Texto longo
+*--------------------------------------------------------------------*
+    CLEAR s_detalhe-tdline.
+
+    LOOP AT lt_text_lines INTO ls_text_lines.
+
+      IF s_detalhe-tdline IS INITIAL.
+
+        s_detalhe-tdline = ls_text_lines-tdline.
+
+      ELSE.
+
+        CONCATENATE s_detalhe-tdline
+                    ls_text_lines-tdline
+               INTO s_detalhe-tdline
+               SEPARATED BY space.
+
+      ENDIF.
+
+    ENDLOOP.
+
+*--------------------------------------------------------------------*
+* Total de associações
+*--------------------------------------------------------------------*
+    CLEAR ls_total_assoc.
+
+    READ TABLE lt_total_assoc
+      INTO ls_total_assoc
+      WITH TABLE KEY
+           aufnr = v_aufnr
+           vornr = v_vornr.
+
+    IF sy-subrc = 0.
+      s_detalhe-tot_assoc = ls_total_assoc-total.
+    ELSE.
+      s_detalhe-tot_assoc = 0.
+    ENDIF.
+
+    APPEND s_detalhe TO e_detalhe.
+
+  ENDLOOP.
+
+  UNASSIGN <fs_assoc>.
+
+ENDMETHOD.
+
+***  METHOD busca_detalhe_operacao.
+***
+***    TYPES: BEGIN OF ty_assoc,
+***             aufnr TYPE aufnr,
+***             vornr TYPE vornr,
+***             uname TYPE uname,
+***           END OF ty_assoc,
+***
+***           BEGIN OF ty_total_assoc,
+***             aufnr TYPE aufnr,
+***             vornr TYPE vornr,
+***             total TYPE i,
+***           END OF ty_total_assoc.
+***
+***    DATA: lt_assoc       TYPE STANDARD TABLE OF ty_assoc,
+***          ls_total_assoc TYPE ty_total_assoc,
+***          lt_total_assoc TYPE HASHED TABLE OF ty_total_assoc WITH UNIQUE KEY aufnr vornr,
+***          e_operations   TYPE bapi_alm_order_operation_e,
+***          lt_text_lines  TYPE TABLE OF bapi_alm_text_lines,
+***          ls_text_lines  TYPE bapi_alm_text_lines,
+***          lt_text        TYPE TABLE OF bapi_alm_text,
+***          w_detalhe      LIKE LINE OF i_detalhe,
+***          s_detalhe      LIKE LINE OF e_detalhe,
+***          v_aufnr        TYPE aufnr,
+***          v_vornr        TYPE vornr,
+***          lt_retorno     TYPE bapiret2_t,
+***          ls_retorno     LIKE LINE OF lt_retorno,
+***          lt_tb022       TYPE TABLE OF /ptloms/tb022,
+***          ls_tb022       LIKE LINE OF lt_tb022.
+***
+***    SELECT *
+***      FROM /ptloms/tb022
+***      INTO TABLE lt_tb022
+***      WHERE perfil NE ' '.
+***
+***    IF i_detalhe[] IS NOT INITIAL.
+***
+***      SELECT aufnr,
+***             vornr,
+***             uname
+***        FROM /ptloms/tb065
+***        INTO CORRESPONDING FIELDS OF TABLE @lt_assoc
+***        FOR ALL ENTRIES IN @i_detalhe
+***        WHERE aufnr = @i_detalhe-aufnr
+***          AND vornr = @i_detalhe-vornr.
+***
+***      LOOP AT lt_assoc ASSIGNING FIELD-SYMBOL(<assoc>).
+***
+***        READ TABLE lt_total_assoc INTO ls_total_assoc WITH TABLE KEY aufnr = <assoc>-aufnr vornr = <assoc>-vornr.
+***
+***        IF sy-subrc IS INITIAL.
+***          ls_total_assoc-total = ls_total_assoc-total + 1.
+***          MODIFY TABLE lt_total_assoc FROM ls_total_assoc.
+***        ELSE.
+***          CLEAR ls_total_assoc.
+***          ls_total_assoc-aufnr = <assoc>-aufnr.
+***          ls_total_assoc-vornr = <assoc>-vornr.
+***          ls_total_assoc-total = 1.
+***          INSERT ls_total_assoc INTO TABLE lt_total_assoc.
+***        ENDIF.
+***
+***      ENDLOOP.
+***
+***    ENDIF.
+***
+***    CLEAR e_detalhe.
+***
+***    LOOP AT i_detalhe   INTO w_detalhe.
+***
+***      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+***        EXPORTING
+***          input  = w_detalhe-aufnr
+***        IMPORTING
+***          output = v_aufnr.
+***
+***      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+***        EXPORTING
+***          input  = w_detalhe-vornr
+***        IMPORTING
+***          output = v_vornr.
+***
+***      CLEAR:
+***        e_operations.
+***
+***      REFRESH:
+***        lt_retorno,
+***        lt_text,
+***        lt_text_lines.
+***
+***      CALL FUNCTION 'BAPI_ALM_OPERATION_GET_DETAIL'
+***        EXPORTING
+***          iv_orderid    = v_aufnr
+***          iv_activity   = v_vornr
+***        IMPORTING
+***          es_operation  = e_operations
+***        TABLES
+***          return        = lt_retorno
+***          et_text       = lt_text
+***          et_text_lines = lt_text_lines.
+***
+***      IF  sy-subrc      = 0.
+***
+***        MOVE:
+***          w_detalhe-aufnr   TO s_detalhe-aufnr,
+***          w_detalhe-vornr   TO s_detalhe-vornr.
+***
+***        MOVE-CORRESPONDING e_operations TO s_detalhe.
+***
+***        READ TABLE lt_tb022 INTO ls_tb022 WITH KEY auart = s_detalhe-control_key.
+***
+***        IF sy-subrc IS INITIAL.
+***          s_detalhe-filtro_catalogo = ls_tb022-filtro_catalogo.
+***        ENDIF.
+***
+***        LOOP AT lt_text_lines INTO ls_text_lines.
+***
+***          CONCATENATE s_detalhe-tdline ls_text_lines INTO s_detalhe-tdline.
+***
+***        ENDLOOP.
+***
+***
+***        CLEAR ls_total_assoc.
+***
+***        READ TABLE lt_total_assoc INTO ls_total_assoc WITH TABLE KEY aufnr = s_detalhe-aufnr vornr = s_detalhe-vornr.
+***
+***        IF sy-subrc IS INITIAL.
+***          s_detalhe-tot_assoc = ls_total_assoc-total.
+***        ELSE.
+***          s_detalhe-tot_assoc = 0.
+***        ENDIF.
+***
+***
+***        APPEND s_detalhe    TO e_detalhe.
+***
+***      ENDIF.
+***
+***    ENDLOOP.
+***
+***  ENDMETHOD.
+*********************************************************************************************************
+***  FIM - Iury Silva
+*********************************************************************************************************
 
 
   METHOD busca_detalhe_ordem.
 
+    TYPES: BEGIN OF ty_cabecalho,
+             gstrp TYPE afko-gstrp,
+             gltrp TYPE afko-gltrp,
+           END OF ty_cabecalho.
+
     DATA: e_operations  TYPE bapi_alm_order_operation_e,
+          ls_cabecalho  TYPE ty_cabecalho,
           lt_text_lines TYPE TABLE OF bapi_alm_text_lines,
           ls_text_lines TYPE bapi_alm_text_lines,
           lt_text       TYPE TABLE OF bapi_alm_text,
@@ -512,6 +842,12 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
       IMPORTING
         output = i_vornr.
 
+    "-- Obter Data Base do cabeçalho da ordem --"
+    SELECT SINGLE gstrp gltrp
+      INTO ls_cabecalho
+      FROM afko
+     WHERE aufnr = i_aufnr.
+
     CALL FUNCTION 'BAPI_ALM_OPERATION_GET_DETAIL'
       EXPORTING
         iv_orderid    = i_aufnr
@@ -525,10 +861,13 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
 
     IF  sy-subrc      = 0.
       CLEAR e_detalhe.
+
       MOVE-CORRESPONDING e_operations TO e_detalhe.
-      MOVE:
-        i_aufnr   TO e_detalhe-aufnr,
-        i_vornr   TO e_detalhe-vornr.
+
+      e_detalhe-aufnr = i_aufnr.
+      e_detalhe-vornr = i_vornr.
+      e_detalhe-data_base_ini = ls_cabecalho-gstrp.
+      e_detalhe-data_base_fim = ls_cabecalho-gltrp.
 
       LOOP AT lt_text_lines INTO ls_text_lines.
 
@@ -1210,6 +1549,12 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
 
 
   METHOD busca_lista_associar.
+*********************************************************************************************************
+***  Trecho do código abaixo REVISADO em 20/07/2026 em função da incompatibilidade de versão com a SOLAR.
+*********************************************************************************************************
+***  INICIO - Iury Silva
+*********************************************************************************************************
+
 
     DATA: ls_lista       LIKE LINE OF it_lista,
           lt_tb065       TYPE TABLE OF /ptloms/tb065,
@@ -1236,7 +1581,7 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
 
 *--> Valida se existe dados na tabela
 
-    et_lista[] = it_lista[].
+*    et_lista[] = it_lista[].
 
     LOOP AT it_lista ASSIGNING <fs_lista>.
 
@@ -1259,6 +1604,9 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
 
     ENDLOOP.
 
+    et_lista[] = it_lista[].
+
+
 *--> Valida se existe dados na tabela
     SELECT *
       FROM /ptloms/tb065
@@ -1271,13 +1619,14 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
     LOOP AT it_lista INTO ls_lista.
 
       lv_tabix2 = sy-tabix.
+      lv_tabix = lv_tabix2.
 
       READ TABLE lt_tb065 INTO ls_tb065 WITH KEY aufnr = ls_lista-aufnr
                                                  vornr = ls_lista-vornr
                                                  uname = ls_lista-uname.
 
       IF sy-subrc EQ 0.
-        lv_tabix = sy-tabix.
+*        lv_tabix = sy-tabix.
 
         REFRESH lt_retorno.
 
@@ -1365,12 +1714,26 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
                 CLEAR ls_tb065.
                 MOVE lv_guid                TO ls_lista-guid.
                 MOVE-CORRESPONDING ls_lista TO ls_tb065.
-                ls_tb065-aufnr =  |{ ls_tb065-aufnr ALPHA = IN }|.
+
+* IA - IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+***                ls_tb065-aufnr =  |{ ls_tb065-aufnr ALPHA = IN }|.
+                CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+                  EXPORTING
+                    input  = ls_tb065-aufnr
+                  IMPORTING
+                    output = ls_tb065-aufnr.
+* FA - IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+
                 MODIFY /ptloms/tb065      FROM ls_tb065.
 
                 CLEAR ls_tb066.
                 MOVE-CORRESPONDING ls_lista TO ls_tb066.
-                ls_tb066-aufnr        = |{ ls_tb065-aufnr ALPHA = IN }|.
+
+* IA - IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+***                ls_tb066-aufnr        = |{ ls_tb065-aufnr ALPHA = IN }|.
+                ls_tb066-aufnr        = ls_tb065-aufnr .
+* FA - IuryFSilva - Pontual - 20.07.2026 - Retrofit Solar
+
                 ls_tb066-criadopor    = sy-uname.
                 ls_tb066-datacriacao  = sy-datum.
                 ls_tb066-horacriacao  = sy-uzeit.
@@ -1393,7 +1756,25 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
 
               ENDIF.
 
+            ELSE.
+              "monta mensagem de retorno.
+              MOVE:
+                'E'                     TO ls_retorno_aux-type,
+                '    '                  TO ls_retorno_aux-id,
+                0                       TO ls_retorno_aux-number.
+              CONCATENATE 'Ordem' lv_aufnr 'Operação' ls_lista-vornr 'já confirmada.' INTO ls_retorno_aux-message SEPARATED BY space.
+              APPEND ls_retorno_aux TO lt_retorno_aux.
+
             ENDIF.
+
+          ELSE.
+            "monta mensagem de retorno.
+            MOVE:
+              'E'                     TO ls_retorno_aux-type,
+              '    '                  TO ls_retorno_aux-id,
+              0                       TO ls_retorno_aux-number.
+            CONCATENATE 'Ordem' lv_aufnr 'Operação' ls_lista-vornr 'não está liberada' INTO ls_retorno_aux-message SEPARATED BY space.
+            APPEND ls_retorno_aux TO lt_retorno_aux.
 
           ENDIF.
 
@@ -1436,7 +1817,294 @@ CLASS /PTLOMS/CL016 IMPLEMENTATION.
 *------------------------------------------------------------*
     ENDLOOP.
 
+    LOOP AT et_lista ASSIGNING <fs_lista>.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = <fs_lista>-aufnr
+        IMPORTING
+          output = <fs_lista>-aufnr.
+
+*      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+*        EXPORTING
+*          input  = <fs_lista>-vornr
+*        IMPORTING
+*          output = <fs_lista>-vornr.
+
+    ENDLOOP.
+    UNASSIGN <fs_lista>.
+
   ENDMETHOD.
+***  METHOD busca_lista_associar.
+***
+***    DATA: ls_lista       LIKE LINE OF it_lista,
+***          lt_tb065       TYPE TABLE OF /ptloms/tb065,
+***          ls_tb065       TYPE /ptloms/tb065,
+***          ls_tb066       TYPE /ptloms/tb066,
+***          lt_retorno     TYPE /ptloms/ct060,
+***          ls_retorno     LIKE LINE OF lt_retorno,
+***          lt_retorno_aux TYPE bapiret2_t,
+***          lt_return      TYPE bapiret2_t,
+***          ls_return      LIKE LINE OF lt_return,
+***          ls_retorno_aux LIKE LINE OF lt_retorno_aux,
+***          lv_matricula   TYPE /ptloms/tb013-matricula,
+***          lv_guid        TYPE char75,
+***          lv_tabix       TYPE sy-tabix,
+***          lv_tabix2      TYPE sy-tabix,
+***          lv_rfcdest     TYPE bdbapidst,
+***          lv_aufnr       TYPE aufnr,
+***          lv_vornr       TYPE vornr,
+***          ls_header      TYPE bapi_alm_order_header_e,
+***          lt_operations  TYPE TABLE OF bapi_alm_order_operation_e,
+***          ls_operations  TYPE bapi_alm_order_operation_e.
+***
+***    FIELD-SYMBOLS: <fs_lista> LIKE LINE OF et_lista.
+***
+****--> Valida se existe dados na tabela
+***
+****    et_lista[] = it_lista[].
+***
+***    LOOP AT it_lista ASSIGNING <fs_lista>.
+***
+***      CLEAR: lv_aufnr, lv_vornr.
+***      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+***        EXPORTING
+***          input  = <fs_lista>-aufnr
+***        IMPORTING
+***          output = lv_aufnr.
+***
+***      <fs_lista>-aufnr = lv_aufnr.
+***
+***      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+***        EXPORTING
+***          input  = <fs_lista>-vornr
+***        IMPORTING
+***          output = lv_vornr.
+***
+***      <fs_lista>-vornr = lv_vornr.
+***
+***    ENDLOOP.
+***
+***    et_lista[] = it_lista[].
+***
+***
+****--> Valida se existe dados na tabela
+***    SELECT *
+***      FROM /ptloms/tb065
+***      INTO TABLE lt_tb065
+***      FOR ALL ENTRIES IN it_lista
+***      WHERE aufnr EQ it_lista-aufnr
+***        AND vornr EQ it_lista-vornr
+***        AND uname EQ it_lista-uname.
+***
+***    LOOP AT it_lista INTO ls_lista.
+***
+***      lv_tabix2 = sy-tabix.
+***      lv_tabix = lv_tabix2.
+***
+***      READ TABLE lt_tb065 INTO ls_tb065 WITH KEY aufnr = ls_lista-aufnr
+***                                                 vornr = ls_lista-vornr
+***                                                 uname = ls_lista-uname.
+***
+***      IF sy-subrc EQ 0.
+****        lv_tabix = sy-tabix.
+***
+***        REFRESH lt_retorno.
+***
+***        "monta mensagem de retorno.
+***        MOVE:
+***          ls_lista-chave          TO ls_retorno-chave,
+***          'E'                     TO ls_retorno-type,
+***          '    '                  TO ls_retorno-id,
+***          0                       TO ls_retorno-number,
+****          'Existe(m) registros já cadastrados, verifique!' TO ls_retorno-message.
+***          'Operação já associada para este usuário' TO ls_retorno-message.
+***
+***        APPEND ls_retorno TO lt_retorno.
+***
+***        ls_lista-retorno[] = lt_retorno[].
+***        ls_lista-tiporetorno = 'E'.
+***        MODIFY et_lista FROM ls_lista INDEX lv_tabix.
+***
+***        CONTINUE.
+***
+***      ENDIF.
+***
+***      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+***        EXPORTING
+***          input  = ls_lista-aufnr
+***        IMPORTING
+***          output = lv_aufnr.
+***
+***      CALL FUNCTION '/PTLOMS/MF082'
+***        DESTINATION lv_rfcdest
+***        EXPORTING
+***          im_aufnr   = lv_aufnr
+***          origem     = 'APP'
+***        IMPORTING
+***          it_retorno = lt_retorno_aux.
+***
+***      IF lt_retorno_aux IS INITIAL.
+***
+***        " Chamar méthod VALIDAR_PERMISSAO_USUARIO
+***        CALL METHOD /ptloms/cl008=>validar_permissao_usuario(
+***          EXPORTING
+***            im_usuario             = ls_lista-uname
+***          EXCEPTIONS
+***            erro_usuario_permissao = 1
+***            OTHERS                 = 2 ).
+***
+***        IF sy-subrc IS INITIAL.
+***          CLEAR:
+***            ls_header.
+***
+***          REFRESH:
+***            lt_operations,
+***            lt_retorno_aux.
+***
+***          CALL FUNCTION 'BAPI_ALM_ORDER_GET_DETAIL'
+***            EXPORTING
+***              number        = lv_aufnr
+***            IMPORTING
+***              es_header     = ls_header
+***            TABLES
+***              et_operations = lt_operations
+***              return        = lt_retorno_aux.
+***
+***          IF  ls_header-sys_status CS 'LIB'.
+***
+***            READ TABLE lt_operations INTO ls_operations WITH KEY activity = ls_lista-vornr.
+***
+***            IF  sy-subrc         EQ 0
+***            AND NOT ls_operations-system_status_text CS 'CONF'.
+***
+***              CALL FUNCTION '/PTLOMS/MF036'
+***                DESTINATION lv_rfcdest
+***                EXPORTING
+***                  im_aufnr   = lv_aufnr
+***                  im_vornr   = ls_lista-vornr
+***                  im_usuario = ls_lista-uname
+***                TABLES
+***                  it_return  = lt_retorno_aux.
+***
+***              READ TABLE lt_retorno_aux TRANSPORTING NO FIELDS WITH KEY type = 'E'.
+***              IF sy-subrc IS NOT INITIAL.
+***
+***                lv_guid = cl_system_uuid=>if_system_uuid_static~create_uuid_x16( ).
+***
+***                CLEAR ls_tb065.
+***                MOVE lv_guid                TO ls_lista-guid.
+***                MOVE-CORRESPONDING ls_lista TO ls_tb065.
+***                ls_tb065-aufnr =  |{ ls_tb065-aufnr ALPHA = IN }|.
+***                MODIFY /ptloms/tb065      FROM ls_tb065.
+***
+***                CLEAR ls_tb066.
+***                MOVE-CORRESPONDING ls_lista TO ls_tb066.
+***                ls_tb066-aufnr        = |{ ls_tb065-aufnr ALPHA = IN }|.
+***                ls_tb066-criadopor    = sy-uname.
+***                ls_tb066-datacriacao  = sy-datum.
+***                ls_tb066-horacriacao  = sy-uzeit.
+***                ls_tb066-status       = 1.
+***                MODIFY /ptloms/tb066 FROM ls_tb066.
+***
+***                COMMIT WORK AND WAIT.
+***                REFRESH lt_retorno.
+***                LOOP AT lt_retorno_aux INTO ls_retorno_aux.
+***                  CLEAR ls_retorno.
+***                  MOVE-CORRESPONDING ls_retorno_aux TO ls_retorno.
+***                  APPEND ls_retorno TO lt_retorno.
+***                  ls_lista-retorno[] = lt_retorno[].
+***                ENDLOOP.
+***
+***                ls_lista-tiporetorno = 'S'.
+***                MODIFY et_lista FROM ls_lista INDEX lv_tabix2 .
+***
+***                CONTINUE.
+***
+***              ENDIF.
+***
+***            ELSE.
+***              "monta mensagem de retorno.
+***              MOVE:
+***                'E'                     TO ls_retorno_aux-type,
+***                '    '                  TO ls_retorno_aux-id,
+***                0                       TO ls_retorno_aux-number.
+***              CONCATENATE 'Ordem' lv_aufnr 'Operação' ls_lista-vornr 'já confirmada.' INTO ls_retorno_aux-message SEPARATED BY space.
+***              APPEND ls_retorno_aux TO lt_retorno_aux.
+***
+***            ENDIF.
+***
+***          ELSE.
+***            "monta mensagem de retorno.
+***            MOVE:
+***              'E'                     TO ls_retorno_aux-type,
+***              '    '                  TO ls_retorno_aux-id,
+***              0                       TO ls_retorno_aux-number.
+***            CONCATENATE 'Ordem' lv_aufnr 'Operação' ls_lista-vornr 'não está liberada' INTO ls_retorno_aux-message SEPARATED BY space.
+***            APPEND ls_retorno_aux TO lt_retorno_aux.
+***
+***          ENDIF.
+***
+***        ENDIF.
+***
+***      ENDIF.
+***
+***      REFRESH lt_retorno.
+***
+***      LOOP AT lt_retorno_aux INTO ls_retorno_aux.
+***
+***        MOVE-CORRESPONDING ls_retorno_aux TO ls_retorno.
+***        APPEND ls_retorno TO lt_retorno.
+***
+***      ENDLOOP.
+***
+***      ls_lista-retorno[]   = lt_retorno[].
+***      ls_lista-tiporetorno = 'E'.
+***      MODIFY et_lista FROM ls_lista INDEX lv_tabix2.
+***
+***    ENDLOOP.
+***
+***    DELETE ADJACENT DUPLICATES FROM it_lista COMPARING chave guid aufnr vornr.
+***    LOOP AT it_lista INTO ls_lista.
+****------------------------------------------------------------*
+****               Atualizar capacidade técnica
+****------------------------------------------------------------*
+***      CALL FUNCTION '/PTLOMS/MF132'
+***        EXPORTING
+***          im_aufnr  = ls_lista-aufnr
+***          im_vornr  = ls_lista-vornr
+***        TABLES
+***          it_return = lt_return.
+***
+***      CLEAR ls_retorno.
+***      LOOP AT lt_return INTO ls_return.
+***        MOVE-CORRESPONDING ls_return TO ls_retorno.
+***        APPEND ls_retorno TO ls_lista-retorno[].
+***      ENDLOOP.
+****------------------------------------------------------------*
+***    ENDLOOP.
+***
+***    LOOP AT et_lista ASSIGNING <fs_lista>.
+***
+***      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+***        EXPORTING
+***          input  = <fs_lista>-aufnr
+***        IMPORTING
+***          output = <fs_lista>-aufnr.
+***
+****      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+****        EXPORTING
+****          input  = <fs_lista>-vornr
+****        IMPORTING
+****          output = <fs_lista>-vornr.
+***
+***    ENDLOOP.
+***    UNASSIGN <fs_lista>.
+***
+***  ENDMETHOD.
+*********************************************************************************************************
+***  FIM - Iury Silva
+*********************************************************************************************************
 
 
   METHOD busca_lista_detalhe_nota.

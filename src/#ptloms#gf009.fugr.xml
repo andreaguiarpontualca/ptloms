@@ -10,6 +10,7 @@
     <item>
      <FUNCNAME>/PTLOMS/MF138</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT Consulta Respostas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_USUARIO</PARAMETER>
@@ -46,30 +47,37 @@
       <RSFDO>
        <PARAMETER>I_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Usuário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_OPERACAO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Operação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Data Inicial</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Data Final</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET117</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RESPOSTAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET092</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>

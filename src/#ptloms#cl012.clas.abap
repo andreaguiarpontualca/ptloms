@@ -122,6 +122,26 @@ public section.
       !ET_FILTRO_TIDNR type /PTLOMS/CT056
       !EX_QUANTIDADE_EQUIPAMENTO type INT4
       !ET_RETORNO type /PTLOMS/CT156 .
+  methods OUT_EQUIPAMENTO_V3
+    importing
+      !RT_BUKRS type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_IWERK type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_INGRP type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_BEBER type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_GEWRK type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_EQART type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_EQTYP type /IWBEP/T_COD_SELECT_OPTIONS
+      !RT_USUARIO_APP type /IWBEP/T_COD_SELECT_OPTIONS optional
+      !IM_TOP type INT4 optional
+      !IM_SKIP type INT4 optional
+    exporting
+      !ET_IMAGEMS_EQUIPAMENTO type /PTLOMS/CT072
+      !ET_EQUIPAMENTO type /PTLOMS/CT019
+      !ET_FILTRO_EQUNR type /PTLOMS/CT056
+      !ET_FILTRO_EQKTX type /PTLOMS/CT056
+      !ET_FILTRO_INVNR type /PTLOMS/CT056
+      !ET_FILTRO_TIDNR type /PTLOMS/CT056
+      !EX_QUANTIDADE_EQUIPAMENTO type INT4 .
   methods OUT_EQUIPAMENTO
     importing
       !RT_BUKRS type /IWBEP/T_COD_SELECT_OPTIONS
@@ -3917,6 +3937,1039 @@ CLASS /PTLOMS/CL012 IMPLEMENTATION.
 
     SORT rt_equnr BY sign option low.
     DELETE ADJACENT DUPLICATES FROM rt_equnr COMPARING sign option low.
+
+  ENDMETHOD.
+
+
+  METHOD out_equipamento_v3.
+
+*---------------------------------------------------------------------*
+* Versao otimizada - compativel com ABAP classico / ECC
+*
+* Principais objetivos:
+*   1. Evitar INNER JOIN V_EQUI x JEST multiplicando equipamento.
+*   2. Aplicar validacao de status em lote.
+*   3. Paginar antes de FLEET / STATUS_* / filtros.
+*   4. Evitar SELECT SINGLE TJ02T dentro do LOOP.
+*   5. Usar tabelas com chave para leituras repetitivas.
+*
+* Observacoes de compatibilidade:
+*   - sem inline DATA(...)
+*   - sem VALUE #( )
+*   - sem CORRESPONDING #( )
+*   - sem FILTER / REDUCE / CONV / NEW
+*   - sem host variables @
+*   - sem OFFSET/FETCH de Open SQL moderno
+*---------------------------------------------------------------------*
+
+*---------------------------------------------------------------------*
+* Tipos locais
+*---------------------------------------------------------------------*
+    TYPES: BEGIN OF ty_v_equi,
+             equnr TYPE v_equi-equnr,
+             eqtyp TYPE v_equi-eqtyp,
+             eqktx TYPE v_equi-eqktx,
+             eqart TYPE v_equi-eqart,
+             brgew TYPE v_equi-brgew,
+             invnr TYPE v_equi-invnr,
+             herst TYPE v_equi-herst,
+             typbz TYPE v_equi-typbz,
+             serge TYPE v_equi-serge,
+             swerk TYPE v_equi-swerk,
+             beber TYPE v_equi-beber,
+             ppsid TYPE v_equi-ppsid,
+             eqfnr TYPE v_equi-eqfnr,
+             bukrs TYPE v_equi-bukrs,
+             anlnr TYPE v_equi-anlnr,
+             kostl TYPE v_equi-kostl,
+             iwerk TYPE v_equi-iwerk,
+             ingrp TYPE v_equi-ingrp,
+             gewrk TYPE v_equi-gewrk,
+             rbnr  TYPE v_equi-rbnr,
+             tplnr TYPE v_equi-tplnr,
+             tidnr TYPE v_equi-tidnr,
+             submt TYPE v_equi-submt,
+             objnr TYPE v_equi-objnr,
+             baujj TYPE v_equi-baujj,
+           END OF ty_v_equi.
+
+    TYPES: BEGIN OF ty_fleet,
+             objnr       TYPE fleet-objnr,
+             fleet_num   TYPE fleet-fleet_num,
+             license_num TYPE fleet-license_num,
+           END OF ty_fleet.
+
+    TYPES: BEGIN OF ty_jest_active,
+             objnr TYPE jest-objnr,
+             stat  TYPE jest-stat,
+           END OF ty_jest_active.
+
+    TYPES: BEGIN OF ty_objnr_key,
+             objnr TYPE jest-objnr,
+           END OF ty_objnr_key.
+
+    TYPES: BEGIN OF ty_tj02t,
+             istat TYPE tj02t-istat,
+             txt30 TYPE tj02t-txt30,
+           END OF ty_tj02t.
+
+*---------------------------------------------------------------------*
+* Ranges
+*---------------------------------------------------------------------*
+    DATA: r_iwerk      TYPE RANGE OF v_equi-iwerk,
+          r_ingrp      TYPE RANGE OF v_equi-ingrp,
+          r_beber      TYPE RANGE OF v_equi-beber,
+          r_lgwid      TYPE RANGE OF v_equi-gewrk,
+          r_eqtyp      TYPE RANGE OF v_equi-eqtyp,
+          r_eqart      TYPE RANGE OF v_equi-eqart,
+          r_equnr      TYPE RANGE OF v_equi-equnr,
+          r_equnr_copy TYPE RANGE OF v_equi-equnr,
+          rt_equnr     TYPE /iwbep/t_cod_select_options,
+          r_exc        TYPE RANGE OF /ptloms/tb052-stat,
+          r_inc        TYPE RANGE OF /ptloms/tb051-stat.
+
+*---------------------------------------------------------------------*
+* Customizing / perfil
+*---------------------------------------------------------------------*
+    DATA: lt_tb013 TYPE TABLE OF /ptloms/tb013,
+          lt_tb014 TYPE TABLE OF /ptloms/tb014,
+          lt_tb015 TYPE TABLE OF /ptloms/tb015,
+          lt_tb016 TYPE TABLE OF /ptloms/tb016,
+          lt_tb017 TYPE TABLE OF /ptloms/tb017,
+          lt_tb019 TYPE TABLE OF /ptloms/tb019,
+          lt_tb020 TYPE TABLE OF /ptloms/tb020,
+          lt_tb051 TYPE TABLE OF /ptloms/tb051,
+          lt_tb052 TYPE TABLE OF /ptloms/tb052.
+
+*---------------------------------------------------------------------*
+* Equipamentos / status / enriquecimento
+*---------------------------------------------------------------------*
+    DATA: lt_v_equi       TYPE STANDARD TABLE OF ty_v_equi,
+          lt_v_equi_valid TYPE STANDARD TABLE OF ty_v_equi,
+          lt_equi_page    TYPE STANDARD TABLE OF ty_v_equi,
+          lt_jest_active  TYPE STANDARD TABLE OF ty_jest_active,
+          lt_fleet        TYPE SORTED TABLE OF ty_fleet
+                               WITH NON-UNIQUE KEY objnr,
+          lt_tj02t        TYPE SORTED TABLE OF ty_tj02t
+                               WITH UNIQUE KEY istat.
+
+*---------------------------------------------------------------------*
+* Sets HASHED para validacao de status
+*---------------------------------------------------------------------*
+    DATA: lt_obj_active TYPE HASHED TABLE OF ty_objnr_key
+                            WITH UNIQUE KEY objnr,
+          lt_obj_inc    TYPE HASHED TABLE OF ty_objnr_key
+                            WITH UNIQUE KEY objnr,
+          lt_obj_exc    TYPE HASHED TABLE OF ty_objnr_key
+                            WITH UNIQUE KEY objnr.
+
+*---------------------------------------------------------------------*
+* Filtros locais com chave unica
+*---------------------------------------------------------------------*
+    DATA: lt_filtro_equnr TYPE HASHED TABLE OF /ptloms/et056
+                              WITH UNIQUE KEY key,
+          lt_filtro_eqktx TYPE HASHED TABLE OF /ptloms/et056
+                              WITH UNIQUE KEY key,
+          lt_filtro_invnr TYPE HASHED TABLE OF /ptloms/et056
+                              WITH UNIQUE KEY key,
+          lt_filtro_tidnr TYPE HASHED TABLE OF /ptloms/et056
+                              WITH UNIQUE KEY key.
+
+*---------------------------------------------------------------------*
+* Work areas
+*---------------------------------------------------------------------*
+    DATA: ls_equipamento LIKE LINE OF et_equipamento,
+          ls_filtro      TYPE /ptloms/et056,
+          ls_tb013       LIKE LINE OF lt_tb013,
+          ls_tb014       LIKE LINE OF lt_tb014,
+          ls_tb015       LIKE LINE OF lt_tb015,
+          ls_tb016       LIKE LINE OF lt_tb016,
+          ls_tb017       LIKE LINE OF lt_tb017,
+          ls_tb019       LIKE LINE OF lt_tb019,
+          ls_tb020       LIKE LINE OF lt_tb020,
+          ls_tb051       LIKE LINE OF lt_tb051,
+          ls_tb052       LIKE LINE OF lt_tb052,
+          ls_iwerk       LIKE LINE OF r_iwerk,
+          ls_ingrp       LIKE LINE OF r_ingrp,
+          ls_beber       LIKE LINE OF r_beber,
+          ls_lgwid       LIKE LINE OF r_lgwid,
+          ls_eqtyp       LIKE LINE OF r_eqtyp,
+          ls_eqart       LIKE LINE OF r_eqart,
+          ls_equnr       LIKE LINE OF r_equnr,
+          ls_equnr_aux   LIKE LINE OF rt_equnr,
+          ls_inc         LIKE LINE OF r_inc,
+          ls_exc         LIKE LINE OF r_exc,
+          ls_v_equi      TYPE ty_v_equi,
+          ls_jest_active TYPE ty_jest_active,
+          ls_objnr_key   TYPE ty_objnr_key,
+          ls_fleet       TYPE ty_fleet,
+          ls_tj02t       TYPE ty_tj02t,
+          ls_jstat       TYPE jstat.
+
+    FIELD-SYMBOLS:
+      <fs_filtro> TYPE /ptloms/et056,
+      <fs_equi>   LIKE LINE OF et_equipamento.
+
+*---------------------------------------------------------------------*
+* Variaveis
+*---------------------------------------------------------------------*
+    DATA: lv_line              TYPE bsvx-sttxt,
+          lv_user_line         TYPE bsvx-sttxt,
+          lv_anw_stat_existing TYPE xfeld,
+          lv_e_stsma           TYPE jsto-stsma,
+          lv_stonr             TYPE tj30-stonr,
+          lv_configuracao      TYPE /ptloms/tb044-configuracao,
+          lv_quantidade_pacote TYPE int4 VALUE 2000,
+          lv_from              TYPE i,
+          lv_to                TYPE i,
+          lv_total             TYPE i,
+          lv_has_active        TYPE c LENGTH 1,
+          lv_has_inc           TYPE c LENGTH 1,
+          lv_has_exc           TYPE c LENGTH 1.
+
+    DATA: lt_jstat TYPE TABLE OF jstat.
+
+*---------------------------------------------------------------------*
+* Limpa saidas
+*---------------------------------------------------------------------*
+    CLEAR:
+      ex_quantidade_equipamento,
+      et_equipamento,
+      et_imagems_equipamento,
+      et_filtro_equnr,
+      et_filtro_eqktx,
+      et_filtro_invnr,
+      et_filtro_tidnr.
+
+*---------------------------------------------------------------------*
+* 1. Validacao minima de entrada
+*---------------------------------------------------------------------*
+    IF rt_bukrs[]       IS INITIAL AND
+       rt_iwerk[]       IS INITIAL AND
+       rt_ingrp[]       IS INITIAL AND
+       rt_beber[]       IS INITIAL AND
+       rt_gewrk[]       IS INITIAL AND
+       rt_eqart[]       IS INITIAL AND
+       rt_eqtyp[]       IS INITIAL AND
+       rt_usuario_app[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+*---------------------------------------------------------------------*
+* 2. Perfil do usuario
+*---------------------------------------------------------------------*
+    IF rt_usuario_app[] IS NOT INITIAL.
+
+      SELECT usuario perfil
+        FROM /ptloms/tb013
+        INTO CORRESPONDING FIELDS OF TABLE lt_tb013
+        WHERE usuario IN rt_usuario_app.
+
+      IF lt_tb013[] IS NOT INITIAL.
+
+        READ TABLE lt_tb013 INTO ls_tb013 INDEX 1.
+
+*---------------------------------------------------------------------*
+* Configuracao 02
+*---------------------------------------------------------------------*
+        CLEAR lv_configuracao.
+
+        SELECT SINGLE configuracao
+          FROM /ptloms/tb044
+          INTO lv_configuracao
+          WHERE perfil       = ls_tb013-perfil
+            AND configuracao = '02'.
+
+        IF lv_configuracao = '02'.
+
+          me->out_equipamento_v2(
+            EXPORTING
+              rt_usuario_app = rt_usuario_app
+            IMPORTING
+              rt_equnr       = rt_equnr ).
+
+          IF rt_equnr[] IS INITIAL.
+            RETURN.
+          ENDIF.
+
+          LOOP AT rt_equnr INTO ls_equnr_aux.
+
+            CLEAR ls_equnr.
+            MOVE-CORRESPONDING ls_equnr_aux TO ls_equnr.
+            APPEND ls_equnr TO r_equnr.
+
+          ENDLOOP.
+
+        ELSE.
+
+*---------------------------------------------------------------------*
+* Centros do perfil
+*---------------------------------------------------------------------*
+          SELECT perfil werks
+            FROM /ptloms/tb014
+            INTO CORRESPONDING FIELDS OF TABLE lt_tb014
+            FOR ALL ENTRIES IN lt_tb013
+            WHERE perfil = lt_tb013-perfil.
+
+          LOOP AT lt_tb014 INTO ls_tb014.
+
+            CLEAR ls_iwerk.
+            ls_iwerk-sign   = 'I'.
+            ls_iwerk-option = 'EQ'.
+            ls_iwerk-low    = ls_tb014-werks.
+            APPEND ls_iwerk TO r_iwerk.
+
+          ENDLOOP.
+
+          SORT r_iwerk BY low.
+          DELETE ADJACENT DUPLICATES FROM r_iwerk COMPARING low.
+
+*---------------------------------------------------------------------*
+* Grupo de planejamento
+*---------------------------------------------------------------------*
+          IF r_iwerk[] IS NOT INITIAL.
+
+            SELECT perfil iwerk ingrp filtro_equi
+              FROM /ptloms/tb015
+              INTO CORRESPONDING FIELDS OF TABLE lt_tb015
+              FOR ALL ENTRIES IN lt_tb013
+              WHERE perfil = lt_tb013-perfil
+                AND iwerk  IN r_iwerk.
+
+            LOOP AT lt_tb015 INTO ls_tb015
+                 WHERE filtro_equi = 'X'.
+
+              CLEAR ls_ingrp.
+              ls_ingrp-sign   = 'I'.
+              ls_ingrp-option = 'EQ'.
+              ls_ingrp-low    = ls_tb015-ingrp.
+              APPEND ls_ingrp TO r_ingrp.
+
+            ENDLOOP.
+
+            SORT r_ingrp BY low.
+            DELETE ADJACENT DUPLICATES FROM r_ingrp COMPARING low.
+
+*---------------------------------------------------------------------*
+* Area operacional
+*---------------------------------------------------------------------*
+            SELECT perfil werks beber filtro_equi
+              FROM /ptloms/tb016
+              INTO CORRESPONDING FIELDS OF TABLE lt_tb016
+              FOR ALL ENTRIES IN lt_tb013
+              WHERE perfil = lt_tb013-perfil
+                AND werks  IN r_iwerk.
+
+            LOOP AT lt_tb016 INTO ls_tb016
+                 WHERE filtro_equi = 'X'.
+
+              CLEAR ls_beber.
+              ls_beber-sign   = 'I'.
+              ls_beber-option = 'EQ'.
+              ls_beber-low    = ls_tb016-beber.
+              APPEND ls_beber TO r_beber.
+
+            ENDLOOP.
+
+            SORT r_beber BY low.
+            DELETE ADJACENT DUPLICATES FROM r_beber COMPARING low.
+
+*---------------------------------------------------------------------*
+* Centro de trabalho
+*---------------------------------------------------------------------*
+            SELECT perfil werks objid filtro_equi
+              FROM /ptloms/tb017
+              INTO CORRESPONDING FIELDS OF TABLE lt_tb017
+              FOR ALL ENTRIES IN lt_tb013
+              WHERE perfil = lt_tb013-perfil
+                AND werks  IN r_iwerk.
+
+            LOOP AT lt_tb017 INTO ls_tb017
+                 WHERE filtro_equi = 'X'.
+
+              CLEAR ls_lgwid.
+              ls_lgwid-sign   = 'I'.
+              ls_lgwid-option = 'EQ'.
+              ls_lgwid-low    = ls_tb017-objid.
+              APPEND ls_lgwid TO r_lgwid.
+
+            ENDLOOP.
+
+            SORT r_lgwid BY low.
+            DELETE ADJACENT DUPLICATES FROM r_lgwid COMPARING low.
+
+          ENDIF.
+
+*---------------------------------------------------------------------*
+* Categoria de equipamento
+*---------------------------------------------------------------------*
+          SELECT perfil eqtyp
+            FROM /ptloms/tb019
+            INTO CORRESPONDING FIELDS OF TABLE lt_tb019
+            FOR ALL ENTRIES IN lt_tb013
+            WHERE perfil = lt_tb013-perfil.
+
+          LOOP AT lt_tb019 INTO ls_tb019.
+
+            CLEAR ls_eqtyp.
+            ls_eqtyp-sign   = 'I'.
+            ls_eqtyp-option = 'EQ'.
+            ls_eqtyp-low    = ls_tb019-eqtyp.
+            APPEND ls_eqtyp TO r_eqtyp.
+
+          ENDLOOP.
+
+          SORT r_eqtyp BY low.
+          DELETE ADJACENT DUPLICATES FROM r_eqtyp COMPARING low.
+
+*---------------------------------------------------------------------*
+* Tipo de objeto tecnico
+*---------------------------------------------------------------------*
+          SELECT perfil eqart filtro_equi
+            FROM /ptloms/tb020
+            INTO CORRESPONDING FIELDS OF TABLE lt_tb020
+            FOR ALL ENTRIES IN lt_tb013
+            WHERE perfil = lt_tb013-perfil.
+
+          LOOP AT lt_tb020 INTO ls_tb020
+               WHERE filtro_equi = 'X'.
+
+            CLEAR ls_eqart.
+            ls_eqart-sign   = 'I'.
+            ls_eqart-option = 'EQ'.
+            ls_eqart-low    = ls_tb020-eqart.
+            APPEND ls_eqart TO r_eqart.
+
+          ENDLOOP.
+
+          SORT r_eqart BY low.
+          DELETE ADJACENT DUPLICATES FROM r_eqart COMPARING low.
+
+        ENDIF.
+
+      ENDIF.
+
+    ENDIF.
+
+*---------------------------------------------------------------------*
+* 3. Status inclusivos/exclusivos
+*    Configuracao 02 nao aplica configuracao de status do perfil.
+*---------------------------------------------------------------------*
+    IF lv_configuracao <> '02'.
+
+      IF ls_tb013-perfil IS NOT INITIAL.
+
+        SELECT perfil stat
+          FROM /ptloms/tb051
+          INTO CORRESPONDING FIELDS OF TABLE lt_tb051
+          WHERE perfil = ls_tb013-perfil.
+
+        LOOP AT lt_tb051 INTO ls_tb051.
+
+          CLEAR ls_inc.
+          ls_inc-sign   = 'I'.
+          ls_inc-option = 'EQ'.
+          ls_inc-low    = ls_tb051-stat.
+          ls_inc-high   = ls_tb051-stat.
+          APPEND ls_inc TO r_inc.
+
+        ENDLOOP.
+
+        SELECT perfil stat
+          FROM /ptloms/tb052
+          INTO CORRESPONDING FIELDS OF TABLE lt_tb052
+          WHERE perfil = ls_tb013-perfil.
+
+        LOOP AT lt_tb052 INTO ls_tb052.
+
+          CLEAR ls_exc.
+          ls_exc-sign   = 'I'.
+          ls_exc-option = 'EQ'.
+          ls_exc-low    = ls_tb052-stat.
+          ls_exc-high   = ls_tb052-stat.
+          APPEND ls_exc TO r_exc.
+
+        ENDLOOP.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Status standard sempre excluidos
+*---------------------------------------------------------------------*
+      CLEAR ls_exc.
+      ls_exc-sign   = 'I'.
+      ls_exc-option = 'EQ'.
+      ls_exc-low    = 'I0320'.
+      ls_exc-high   = 'I0320'.
+      APPEND ls_exc TO r_exc.
+
+      CLEAR ls_exc.
+      ls_exc-sign   = 'I'.
+      ls_exc-option = 'EQ'.
+      ls_exc-low    = 'I0076'.
+      ls_exc-high   = 'I0076'.
+      APPEND ls_exc TO r_exc.
+
+      CLEAR ls_exc.
+      ls_exc-sign   = 'I'.
+      ls_exc-option = 'EQ'.
+      ls_exc-low    = 'I0013'.
+      ls_exc-high   = 'I0013'.
+      APPEND ls_exc TO r_exc.
+
+      SORT r_inc BY low.
+      DELETE ADJACENT DUPLICATES FROM r_inc COMPARING low.
+
+      SORT r_exc BY low.
+      DELETE ADJACENT DUPLICATES FROM r_exc COMPARING low.
+
+    ENDIF.
+
+*---------------------------------------------------------------------*
+* 4. Seleciona equipamentos
+*---------------------------------------------------------------------*
+    IF lv_configuracao = '02'.
+
+*---------------------------------------------------------------------*
+* Configuracao 02:
+* seleciona somente os equipamentos retornados pelo OUT_EQUIPAMENTO_V2
+* em pacotes para evitar ranges gigantes.
+*---------------------------------------------------------------------*
+      WHILE r_equnr[] IS NOT INITIAL.
+
+        CLEAR r_equnr_copy[].
+
+        APPEND LINES OF r_equnr
+          FROM 1 TO lv_quantidade_pacote
+          TO r_equnr_copy.
+
+        DELETE r_equnr
+          FROM 1 TO lv_quantidade_pacote.
+
+        SELECT equnr eqtyp eqktx eqart brgew invnr
+               herst typbz serge swerk beber ppsid
+               eqfnr bukrs anlnr kostl iwerk ingrp
+               gewrk rbnr tplnr tidnr submt objnr baujj
+          FROM v_equi
+          APPENDING CORRESPONDING FIELDS OF TABLE lt_v_equi
+          WHERE equnr IN r_equnr_copy
+            AND txasp = 'X'
+            AND owner = space
+            AND spras = sy-langu
+            AND bukrs IN rt_bukrs
+            AND iwerk IN rt_iwerk
+            AND eqtyp IN rt_eqtyp
+            AND ingrp IN rt_ingrp
+            AND beber IN rt_beber
+            AND gewrk IN rt_gewrk
+            AND eqart IN rt_eqart
+            AND datbi = '99991231'.
+
+      ENDWHILE.
+
+    ELSE.
+
+*---------------------------------------------------------------------*
+* Regra existente: categoria do perfil e obrigatoria.
+*---------------------------------------------------------------------*
+      IF r_eqtyp[] IS INITIAL.
+        RETURN.
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* IMPORTANTE:
+* Nao fazemos JOIN com JEST aqui.
+* Cada equipamento vem apenas uma vez da V_EQUI.
+*---------------------------------------------------------------------*
+      SELECT equnr eqtyp eqktx eqart brgew invnr
+             herst typbz serge swerk beber ppsid
+             eqfnr bukrs anlnr kostl iwerk ingrp
+             gewrk rbnr tplnr tidnr submt objnr baujj
+        FROM v_equi
+        INTO CORRESPONDING FIELDS OF TABLE lt_v_equi
+        WHERE spras = sy-langu
+          AND datbi = '99991231'
+
+          AND bukrs IN rt_bukrs
+          AND iwerk IN rt_iwerk
+          AND eqtyp IN rt_eqtyp
+          AND ingrp IN rt_ingrp
+          AND beber IN rt_beber
+          AND gewrk IN rt_gewrk
+          AND eqart IN rt_eqart
+
+          AND swerk IN r_iwerk
+          AND ingrp IN r_ingrp
+          AND beber IN r_beber
+          AND gewrk IN r_lgwid
+          AND eqtyp IN r_eqtyp
+          AND eqart IN r_eqart.
+
+*---------------------------------------------------------------------*
+* 5. Busca JEST ativa em lote para os candidatos
+*---------------------------------------------------------------------*
+      IF lt_v_equi[] IS NOT INITIAL.
+
+        SELECT objnr stat
+          FROM jest
+          INTO CORRESPONDING FIELDS OF TABLE lt_jest_active
+          FOR ALL ENTRIES IN lt_v_equi
+          WHERE objnr = lt_v_equi-objnr
+            AND inact = space.
+
+*---------------------------------------------------------------------*
+* Classifica OBJNR:
+*   ACTIVE = possui pelo menos um status ativo
+*   INC    = possui pelo menos um status inclusivo
+*   EXC    = possui pelo menos um status exclusivo
+*---------------------------------------------------------------------*
+        LOOP AT lt_jest_active INTO ls_jest_active.
+
+          CLEAR ls_objnr_key.
+          ls_objnr_key-objnr = ls_jest_active-objnr.
+
+          INSERT ls_objnr_key INTO TABLE lt_obj_active.
+
+          IF ls_jest_active-stat IN r_exc.
+            INSERT ls_objnr_key INTO TABLE lt_obj_exc.
+          ENDIF.
+
+          IF r_inc[] IS NOT INITIAL.
+            IF ls_jest_active-stat IN r_inc.
+              INSERT ls_objnr_key INTO TABLE lt_obj_inc.
+            ENDIF.
+          ENDIF.
+
+        ENDLOOP.
+
+*---------------------------------------------------------------------*
+* Preserva a semantica do INNER JOIN original:
+* - sem r_inc: exige algum status ativo;
+* - com r_inc: exige status incluso ativo;
+* - sempre rejeita status exclusivo ativo.
+*---------------------------------------------------------------------*
+        LOOP AT lt_v_equi INTO ls_v_equi.
+
+          CLEAR:
+            lv_has_active,
+            lv_has_inc,
+            lv_has_exc.
+
+          READ TABLE lt_obj_active
+            WITH TABLE KEY objnr = ls_v_equi-objnr
+            TRANSPORTING NO FIELDS.
+          IF sy-subrc = 0.
+            lv_has_active = 'X'.
+          ENDIF.
+
+          READ TABLE lt_obj_exc
+            WITH TABLE KEY objnr = ls_v_equi-objnr
+            TRANSPORTING NO FIELDS.
+          IF sy-subrc = 0.
+            lv_has_exc = 'X'.
+          ENDIF.
+
+          IF r_inc[] IS NOT INITIAL.
+
+            READ TABLE lt_obj_inc
+              WITH TABLE KEY objnr = ls_v_equi-objnr
+              TRANSPORTING NO FIELDS.
+
+            IF sy-subrc = 0.
+              lv_has_inc = 'X'.
+            ENDIF.
+
+          ENDIF.
+
+          IF lv_has_exc = 'X'.
+            CONTINUE.
+          ENDIF.
+
+          IF r_inc[] IS INITIAL.
+
+            IF lv_has_active = 'X'.
+              APPEND ls_v_equi TO lt_v_equi_valid.
+            ENDIF.
+
+          ELSE.
+
+            IF lv_has_inc = 'X'.
+              APPEND ls_v_equi TO lt_v_equi_valid.
+            ENDIF.
+
+          ENDIF.
+
+        ENDLOOP.
+
+        CLEAR lt_v_equi[].
+        lt_v_equi[] = lt_v_equi_valid[].
+
+      ENDIF.
+
+    ENDIF.
+
+*---------------------------------------------------------------------*
+* 6. Normalizacao / quantidade total
+*---------------------------------------------------------------------*
+    IF lt_v_equi[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    SORT lt_v_equi BY equnr.
+    DELETE ADJACENT DUPLICATES FROM lt_v_equi COMPARING equnr.
+
+    DESCRIBE TABLE lt_v_equi LINES lv_total.
+    ex_quantidade_equipamento = lv_total.
+
+*---------------------------------------------------------------------*
+* 7. PAGINACAO ANTES DO ENRIQUECIMENTO
+*
+* Mantem a semantica antiga:
+*   IM_TOP <= 0 => retorna tudo e ignora IM_SKIP.
+*---------------------------------------------------------------------*
+    IF im_top > 0.
+
+      lv_from = im_skip + 1.
+      lv_to   = im_skip + im_top.
+
+      IF lv_from < 1.
+        lv_from = 1.
+      ENDIF.
+
+      IF lv_from <= lv_total.
+
+        IF lv_to > lv_total.
+          lv_to = lv_total.
+        ENDIF.
+
+        LOOP AT lt_v_equi INTO ls_v_equi
+             FROM lv_from TO lv_to.
+          APPEND ls_v_equi TO lt_equi_page.
+        ENDLOOP.
+
+      ENDIF.
+
+    ELSE.
+
+      lt_equi_page[] = lt_v_equi[].
+
+    ENDIF.
+
+    IF lt_equi_page[] IS INITIAL.
+      RETURN.
+    ENDIF.
+
+*---------------------------------------------------------------------*
+* 8. FLEET somente para a pagina
+*---------------------------------------------------------------------*
+    SELECT objnr fleet_num license_num
+      FROM fleet
+      INTO CORRESPONDING FIELDS OF TABLE lt_fleet
+      FOR ALL ENTRIES IN lt_equi_page
+      WHERE objnr = lt_equi_page-objnr.
+
+*---------------------------------------------------------------------*
+* 9. Cache dos textos de status de sistema
+*
+* Evita SELECT SINGLE TJ02T para cada equipamento.
+* TJ02T e pequena e filtrada por idioma.
+*---------------------------------------------------------------------*
+    SELECT istat txt30
+      FROM tj02t
+      INTO TABLE lt_tj02t
+      WHERE spras = sy-langu.
+
+*---------------------------------------------------------------------*
+* 10. Montagem da pagina
+*---------------------------------------------------------------------*
+    LOOP AT lt_equi_page INTO ls_v_equi.
+
+      CLEAR:
+        ls_equipamento,
+        lv_anw_stat_existing,
+        lv_e_stsma,
+        lv_line,
+        lv_user_line,
+        lv_stonr,
+        lt_jstat.
+
+      MOVE-CORRESPONDING ls_v_equi TO ls_equipamento.
+
+*---------------------------------------------------------------------*
+* Texto agregado de status
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'STATUS_TEXT_EDIT'
+        EXPORTING
+          objnr             = ls_v_equi-objnr
+          spras             = sy-langu
+        IMPORTING
+          anw_stat_existing = lv_anw_stat_existing
+          e_stsma           = lv_e_stsma
+          line              = lv_line
+          user_line         = lv_user_line
+          stonr             = lv_stonr
+        EXCEPTIONS
+          object_not_found  = 1
+          OTHERS            = 2.
+
+      IF sy-subrc = 0.
+        ls_equipamento-status_usuario = lv_user_line.
+        ls_equipamento-status_sistema = lv_line.
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* FLEET por chave
+*---------------------------------------------------------------------*
+      IF ls_equipamento-objnr IS NOT INITIAL.
+
+        CLEAR ls_fleet.
+
+        READ TABLE lt_fleet
+          INTO ls_fleet
+          WITH TABLE KEY objnr = ls_equipamento-objnr.
+
+        IF sy-subrc = 0.
+          ls_equipamento-fleet_num   = ls_fleet-fleet_num.
+          ls_equipamento-license_num = ls_fleet-license_num.
+        ENDIF.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Filtro EQUNR
+*---------------------------------------------------------------------*
+      IF ls_equipamento-equnr IS NOT INITIAL.
+
+        CLEAR ls_filtro.
+
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+          EXPORTING
+            input  = ls_equipamento-equnr
+          IMPORTING
+            output = ls_filtro-key.
+
+        READ TABLE lt_filtro_equnr
+          ASSIGNING <fs_filtro>
+          WITH TABLE KEY key = ls_filtro-key.
+
+        IF sy-subrc <> 0.
+
+          ls_filtro-text  = ls_filtro-key.
+          ls_filtro-count = 1.
+
+          INSERT ls_filtro INTO TABLE lt_filtro_equnr.
+
+        ELSE.
+
+          <fs_filtro>-count = <fs_filtro>-count + 1.
+
+        ENDIF.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Filtro EQKTX
+*---------------------------------------------------------------------*
+      IF ls_equipamento-eqktx IS NOT INITIAL.
+
+        READ TABLE lt_filtro_eqktx
+          ASSIGNING <fs_filtro>
+          WITH TABLE KEY key = ls_equipamento-eqktx.
+
+        IF sy-subrc <> 0.
+
+          CLEAR ls_filtro.
+          ls_filtro-key   = ls_equipamento-eqktx.
+          ls_filtro-text  = ls_equipamento-eqktx.
+          ls_filtro-count = 1.
+
+          INSERT ls_filtro INTO TABLE lt_filtro_eqktx.
+
+        ELSE.
+
+          <fs_filtro>-count = <fs_filtro>-count + 1.
+
+        ENDIF.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Filtro INVNR
+*---------------------------------------------------------------------*
+      IF ls_equipamento-invnr IS NOT INITIAL.
+
+        READ TABLE lt_filtro_invnr
+          ASSIGNING <fs_filtro>
+          WITH TABLE KEY key = ls_equipamento-invnr.
+
+        IF sy-subrc <> 0.
+
+          CLEAR ls_filtro.
+          ls_filtro-key   = ls_equipamento-invnr.
+          ls_filtro-text  = ls_equipamento-invnr.
+          ls_filtro-count = 1.
+
+          INSERT ls_filtro INTO TABLE lt_filtro_invnr.
+
+        ELSE.
+
+          <fs_filtro>-count = <fs_filtro>-count + 1.
+
+        ENDIF.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Filtro TIDNR
+*---------------------------------------------------------------------*
+      IF ls_equipamento-tidnr IS NOT INITIAL.
+
+        READ TABLE lt_filtro_tidnr
+          ASSIGNING <fs_filtro>
+          WITH TABLE KEY key = ls_equipamento-tidnr.
+
+        IF sy-subrc <> 0.
+
+          CLEAR ls_filtro.
+          ls_filtro-key   = ls_equipamento-tidnr.
+          ls_filtro-text  = ls_equipamento-tidnr.
+          ls_filtro-count = 1.
+
+          INSERT ls_filtro INTO TABLE lt_filtro_tidnr.
+
+        ELSE.
+
+          <fs_filtro>-count = <fs_filtro>-count + 1.
+
+        ENDIF.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Quantidade total antes da paginacao
+*---------------------------------------------------------------------*
+      ls_equipamento-quantidade_equipamento =
+        ex_quantidade_equipamento.
+
+*---------------------------------------------------------------------*
+* STATUS_READ
+*
+* Mantido por compatibilidade funcional.
+* O SELECT SINGLE em TJ02T foi eliminado pelo cache acima.
+*---------------------------------------------------------------------*
+      CALL FUNCTION 'STATUS_READ'
+        EXPORTING
+          objnr            = ls_equipamento-objnr
+          only_active      = 'X'
+        TABLES
+          status           = lt_jstat
+        EXCEPTIONS
+          object_not_found = 1
+          OTHERS           = 2.
+
+      IF sy-subrc = 0.
+
+        READ TABLE lt_jstat INTO ls_jstat INDEX 1.
+
+        IF sy-subrc = 0.
+
+          ls_equipamento-status = ls_jstat-stat.
+
+          CLEAR ls_tj02t.
+
+          READ TABLE lt_tj02t
+            INTO ls_tj02t
+            WITH TABLE KEY istat = ls_jstat-stat.
+
+          IF sy-subrc = 0.
+            ls_equipamento-desc_status = ls_tj02t-txt30.
+          ENDIF.
+
+        ENDIF.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Saida de equipamento
+*---------------------------------------------------------------------*
+      APPEND ls_equipamento TO et_equipamento.
+
+    ENDLOOP.
+
+*---------------------------------------------------------------------*
+* 11. Converte caches de filtro para as tabelas de saida
+*---------------------------------------------------------------------*
+    LOOP AT lt_filtro_equnr INTO ls_filtro.
+      APPEND ls_filtro TO et_filtro_equnr.
+    ENDLOOP.
+
+    LOOP AT lt_filtro_eqktx INTO ls_filtro.
+      APPEND ls_filtro TO et_filtro_eqktx.
+    ENDLOOP.
+
+    LOOP AT lt_filtro_invnr INTO ls_filtro.
+      APPEND ls_filtro TO et_filtro_invnr.
+    ENDLOOP.
+
+    LOOP AT lt_filtro_tidnr INTO ls_filtro.
+      APPEND ls_filtro TO et_filtro_tidnr.
+    ENDLOOP.
+
+*---------------------------------------------------------------------*
+* 12. Ordenacao final defensiva
+*---------------------------------------------------------------------*
+    SORT et_equipamento BY equnr.
+
+    DELETE ADJACENT DUPLICATES
+      FROM et_equipamento
+      COMPARING equnr.
+
+*---------------------------------------------------------------------*
+* 13. Conversoes finais para formato externo
+*
+* IMPORTANTE:
+* As conversoes sao executadas somente depois da ordenacao e
+* eliminacao de duplicidades. Dessa forma, toda a logica interna
+* continua trabalhando com os valores no formato interno SAP.
+*---------------------------------------------------------------------*
+    LOOP AT et_equipamento ASSIGNING <fs_equi>.
+
+*---------------------------------------------------------------------*
+* Quantidade total de equipamentos antes da paginacao
+*---------------------------------------------------------------------*
+      <fs_equi>-quantidade_equipamento =
+        ex_quantidade_equipamento.
+
+*---------------------------------------------------------------------*
+* Equipamento - ALPHA OUTPUT
+*
+* Exemplo:
+* 000000000010002345 -> 10002345
+*---------------------------------------------------------------------*
+      IF <fs_equi>-equnr IS NOT INITIAL.
+
+        CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+          EXPORTING
+            input  = <fs_equi>-equnr
+          IMPORTING
+            output = <fs_equi>-equnr.
+
+      ENDIF.
+
+*---------------------------------------------------------------------*
+* Local de instalacao - TPLNR OUTPUT
+*---------------------------------------------------------------------*
+      IF <fs_equi>-tplnr IS NOT INITIAL.
+
+        CALL FUNCTION 'CONVERSION_EXIT_TPLNR_OUTPUT'
+          EXPORTING
+            input  = <fs_equi>-tplnr
+          IMPORTING
+            output = <fs_equi>-tplnr.
+
+      ENDIF.
+
+    ENDLOOP.
 
   ENDMETHOD.
 

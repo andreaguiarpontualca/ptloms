@@ -1443,3 +1443,21 @@ FORM f_valida_elimina_usuario CHANGING p_erro..
   ENDLOOP.
 
 ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  f_valida_swerk
+*&---------------------------------------------------------------------*
+FORM f_valida_swerk.
+
+  IF sy-ucomm NE 'EXIT' AND
+     sy-ucomm NE 'BACK' AND
+     sy-ucomm NE 'CANC' AND
+     sy-ucomm NE 'BTN_CANCEL'.
+
+    IF wa_usuario-swerk IS INITIAL.
+      MESSAGE e000 WITH 'Centro de Manutenção é obrigatório'(057).
+    ENDIF.
+
+  ENDIF.
+
+ENDFORM.

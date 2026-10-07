@@ -1,39 +1,140 @@
-class /PTLOMS/CL017 definition
-  public
-  final
-  create public .
+CLASS /ptloms/cl017 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  types:
-    tt_werks TYPE RANGE OF viaufks-werks .
-  types:
-    tt_auart      TYPE RANGE OF viaufks-auart .
-  types:
-    tt_usuperfil TYPE RANGE OF /ptloms/tb013-usuario .
-  types:
-    tt_eqtyp TYPE RANGE OF equi-eqtyp .
-  types:
-    tt_fltyp TYPE RANGE OF fltyp .
+    TYPES:
+      tt_werks TYPE RANGE OF viaufks-werks .
+    TYPES:
+      tt_auart      TYPE RANGE OF viaufks-auart .
+    TYPES:
+      tt_usuperfil TYPE RANGE OF /ptloms/tb013-usuario .
+    TYPES:
+      tt_eqtyp TYPE RANGE OF equi-eqtyp .
+    TYPES:
+      tt_fltyp TYPE RANGE OF fltyp .
 
-  methods BUSCA_PERGUNTAS
-    importing
-      value(I_PERGUNTAS) type /PTLOMS/CT155
-    exporting
-      value(E_PERGUNTAS) type /PTLOMS/CT155
-      value(E_OPCOES) type /PTLOMS/CT087
-      value(E_RETORNO) type /PTLOMS/CT156 .
-protected section.
-PRIVATE SECTION.
+    METHODS busca_perguntas
+      IMPORTING
+        VALUE(i_perguntas) TYPE /ptloms/ct155
+      EXPORTING
+        VALUE(e_perguntas) TYPE /ptloms/ct155
+        VALUE(e_opcoes)    TYPE /ptloms/ct087
+        VALUE(e_retorno)   TYPE /ptloms/ct156 .
 
-  DATA:
-    it_lista   TYPE /ptloms/ct123,
-    it_retorno TYPE /ptloms/ct060.
+    TYPES:
+      tt_checklist_vinculos TYPE STANDARD TABLE OF /ptloms/tb071.
+
+    METHODS busca_checklist_vinculos
+      EXPORTING
+        VALUE(e_vinculos) TYPE tt_checklist_vinculos.
+
+    TYPES:
+      tt_checklist_lista_opcoes TYPE STANDARD TABLE OF /ptloms/tb074.
+
+    METHODS busca_checklist_lista_opcoes
+      EXPORTING
+        VALUE(e_opcoes) TYPE tt_checklist_lista_opcoes.
+
+    TYPES:
+      tt_checklist_perguntas TYPE STANDARD TABLE OF /ptloms/tb075.
+
+    METHODS busca_checklist_perguntas
+      EXPORTING
+        VALUE(e_perguntas) TYPE tt_checklist_perguntas.
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+    DATA:
+      it_lista   TYPE /ptloms/ct123,
+      it_retorno TYPE /ptloms/ct060.
 ENDCLASS.
 
 
 
 CLASS /PTLOMS/CL017 IMPLEMENTATION.
+
+
+  METHOD busca_checklist_lista_opcoes.
+
+    DATA: lv_aplicacao TYPE /ptloms/tb069-id.
+
+    CLEAR e_opcoes[].
+
+* Busca ID da aplicação OMS
+    SELECT SINGLE id
+      INTO lv_aplicacao
+      FROM /ptloms/tb069
+      WHERE descricao = 'OMS'.
+
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+* Busca lista de opções configuradas para o OMS
+    SELECT *
+      INTO TABLE e_opcoes
+      FROM /ptloms/tb074
+      WHERE aplicacao = lv_aplicacao.
+
+  ENDMETHOD.
+
+
+  METHOD busca_checklist_perguntas.
+
+    DATA: lv_aplicacao TYPE /ptloms/tb069-id.
+
+    CLEAR e_perguntas[].
+
+* Busca ID da aplicação OMS
+    SELECT SINGLE id
+      INTO lv_aplicacao
+      FROM /ptloms/tb069
+      WHERE descricao = 'OMS'.
+
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+* Busca todas as perguntas cadastradas para o OMS
+    SELECT *
+      INTO TABLE e_perguntas
+      FROM /ptloms/tb075
+      WHERE aplicacao = lv_aplicacao
+      ORDER BY formulario
+               ordenacao1
+               ordenacao2
+               sequencial.
+
+  ENDMETHOD.
+
+
+  METHOD busca_checklist_vinculos.
+
+    DATA: lv_aplicacao TYPE /ptloms/tb069-id.
+
+    CLEAR e_vinculos[].
+
+* Busca ID da aplicação OMS
+    SELECT SINGLE id
+      INTO lv_aplicacao
+      FROM /ptloms/tb069
+      WHERE descricao = 'OMS'.
+
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+* Busca vínculos dos formulários configurados para o OMS
+    SELECT *
+      INTO TABLE e_vinculos
+      FROM /ptloms/tb071
+      WHERE aplicacao = lv_aplicacao.
+
+  ENDMETHOD.
 
 
   METHOD busca_perguntas.

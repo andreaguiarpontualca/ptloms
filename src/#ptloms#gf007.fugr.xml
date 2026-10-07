@@ -10,6 +10,7 @@
     <item>
      <FUNCNAME>/PTLOMS/MF106</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Função para recuperar operações para despacho</SHORT_TEXT>
      <EXPORT>
       <RSEXP>
        <PARAMETER>ET_OPERACOES</PARAMETER>
@@ -20,12 +21,14 @@
       <RSFDO>
        <PARAMETER>ET_OPERACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Categoria de tabela para estrutura ET140</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF107</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Função para despachar operações</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_USUARIO</PARAMETER>
@@ -50,24 +53,29 @@
       <RSFDO>
        <PARAMETER>I_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nome do usuário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Numero da ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_VORNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Número da operação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DESPACHO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Estrutura da tablea /PTLOM/TB062</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF109</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Função para recuperar lista de despachos</SHORT_TEXT>
      <EXPORT>
       <RSEXP>
        <PARAMETER>ET_DESPACHOS</PARAMETER>
@@ -78,12 +86,14 @@
       <RSFDO>
        <PARAMETER>ET_DESPACHOS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Categoria de tabela para estrutura ET141</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF117</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Função para tratar filtros de AssociarSet</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IT_FILTER_SELECT_OPTIONS</PARAMETER>
@@ -100,6 +110,7 @@
     <item>
      <FUNCNAME>/PTLOMS/MF118</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Recupera Associações (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_AUFNR</PARAMETER>
@@ -128,12 +139,14 @@
       <RSFDO>
        <PARAMETER>IT_ASSOCIACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS V2 : Tipo de Tabela Associação</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF119</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Recupera Histórico de Ordens (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_GUID</PARAMETER>
@@ -234,12 +247,14 @@
       <RSFDO>
        <PARAMETER>IT_ASSOCIACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET149</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF122</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Recupera Histórico de Ordens (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_AUFNR</PARAMETER>
@@ -268,12 +283,14 @@
       <RSFDO>
        <PARAMETER>DETALHES_ORDENS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS V2 : Tipo de Tabela Detalhes Ordens</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF124</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - IN_LAYOUT</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_DETALHE</PARAMETER>
@@ -290,16 +307,19 @@
       <RSFDO>
        <PARAMETER>I_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS V2: Detalhes Ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS V2: Detalhes Ordem Completo</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF125</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Confirmação das operações</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_DETALHE</PARAMETER>
@@ -316,16 +336,19 @@
       <RSFDO>
        <PARAMETER>I_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Lista Confirmação Operações</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS V2: Detalhes Confirmação Operações</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF127</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - DESassociação das operações (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_DETALHE</PARAMETER>
@@ -342,16 +365,19 @@
       <RSFDO>
        <PARAMETER>I_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura DESassociação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura DESassociação com Retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF130</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Recusa das operações (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_DETALHE</PARAMETER>
@@ -368,15 +394,18 @@
       <RSFDO>
        <PARAMETER>I_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para Recusa</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_DETALHE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para Recusa com Retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF132</FUNCNAME>
+     <SHORT_TEXT>OMS - Atualizar capacidade técnica</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IM_AUFNR</PARAMETER>
@@ -399,20 +428,24 @@
       <RSFDO>
        <PARAMETER>IM_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_VORNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº operação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_RETURN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Parâmetro de retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF133</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Histórico de Confirmações</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>HIST_CONFIR_IN</PARAMETER>
@@ -429,16 +462,19 @@
       <RSFDO>
        <PARAMETER>HIST_CONFIR_IN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para /PTLOMS/ET181</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>HIST_CONFIR_OUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para /PTLOMS/ET181</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF134</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Despacho Automático</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_OPERACOES</PARAMETER>
@@ -455,16 +491,19 @@
       <RSFDO>
        <PARAMETER>I_OPERACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para /PTLOMS/CT058</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_LISTA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para /PTLOMS/ET123</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF135</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Checklist Lista de Perguntas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_PERGUNTAS</PARAMETER>
@@ -489,24 +528,29 @@
       <RSFDO>
        <PARAMETER>I_PERGUNTAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Checklist Perguntas</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_PERGUNTAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Estrutura para /PTLOMS/ET088</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_OPCOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET089</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Parâmetro de retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF136</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Checklist Respostas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>I_RESPOSTAS</PARAMETER>
@@ -527,20 +571,24 @@
       <RSFDO>
        <PARAMETER>I_RESPOSTAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Checklist Respostas</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RESPOSTAS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET090</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Parâmetro de retorno</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF141</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Recupera Histórico de Status Execucão Operação (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_GUID</PARAMETER>
@@ -580,20 +628,24 @@
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Data do Despacho (Criação do Registro)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Data da Desassociação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_ASSOCIACOES</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET188</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF142</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Recupera Dados do Equipamento (Cesto)</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_EQUNR</PARAMETER>
@@ -729,52 +781,64 @@
       <RSFDO>
        <PARAMETER>IM_TOP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IM_SKIP</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_EQUIPAMENTO_IN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET019</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_IMAGEMS_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET072</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_EQUNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_EQKTX</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_INVNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_FILTRO_TIDNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET056</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EX_QUANTIDADE_EQUIPAMENTO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>E_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para Mensagens de Retorno</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_EQUIPAMENTO_OUT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de Tabela para /PTLOMS/ET019</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF148</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Histórico de Atendimento</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>RT_AUFNR</PARAMETER>
@@ -813,20 +877,24 @@
       <RSFDO>
        <PARAMETER>I_DATA_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Data do Despacho (Criação do Registro)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>I_DATA_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Data da Desassociação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_HISTORICO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET188</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF149</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Histórico de Atendimento</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_NAME</PARAMETER>
@@ -889,16 +957,19 @@
       <RSFDO>
        <PARAMETER>IV_DADOS_ENDERECO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_DADOS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET188</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF150</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Histórico de Atendimento</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_QMNUM</PARAMETER>
@@ -921,20 +992,24 @@
       <RSFDO>
        <PARAMETER>IV_QMNUM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Numero da nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Numero da ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_TIMELINE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Timeline</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF151</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Histórico de Atendimento</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_QMNUM</PARAMETER>
@@ -957,20 +1032,24 @@
       <RSFDO>
        <PARAMETER>IV_QMNUM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Numero da nota</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_AUFNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Numero da ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_TIMELINE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Timeline</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF152</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Histórico de Atendimento</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_EQKTX</PARAMETER>
@@ -1013,36 +1092,44 @@
       <RSFDO>
        <PARAMETER>IV_EQKTX</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Descrição do equipamento</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_INVNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código do inventário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_TPLNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código do local de instalação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_PLTXT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Descrição do local de instalação</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_STATUS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Status</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_EQUNR</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código do equipamento</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_DADOS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET188</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF153</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Pesquisa respostas do checklist</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_ORDEM</PARAMETER>
@@ -1080,32 +1167,39 @@
       <RSFDO>
        <PARAMETER>IV_ORDEM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Nº Ordem</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_USUARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Usuário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_FORMULARIO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Formulário</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_ERDAT_INI</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data criação inicio</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_ERDAT_FIM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data criação fim</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_DADOS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET188</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>/PTLOMS/MF154</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Função para realizar baixa de reservas</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IV_PSTNG_DATE</PARAMETER>
@@ -1134,18 +1228,22 @@
       <RSFDO>
        <PARAMETER>IV_PSTNG_DATE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data de lançamento no documento</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IV_TESTRUN</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Código geral</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>IT_BAIXA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - Categoria de tabela da estrutura /PTLOMS/ET201</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_DADOS</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET188</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_RETURN</PARAMETER>
@@ -1154,45 +1252,22 @@
      </DOCUMENTATION>
     </item>
     <item>
-     <FUNCNAME>/PTLOMS/MF155</FUNCNAME>
-     <REMOTE_CALL>R</REMOTE_CALL>
-     <IMPORT>
-      <RSIMP>
-       <PARAMETER>IV_PROMPT_USUARIO</PARAMETER>
-       <TYP>STRING</TYP>
-      </RSIMP>
-      <RSIMP>
-       <PARAMETER>IV_JSON_DADOS</PARAMETER>
-       <TYP>STRING</TYP>
-      </RSIMP>
-     </IMPORT>
-     <EXPORT>
-      <RSEXP>
-       <PARAMETER>RS_RESULT</PARAMETER>
-       <TYP>/PTLOMS/ET203</TYP>
-      </RSEXP>
-     </EXPORT>
-     <DOCUMENTATION>
-      <RSFDO>
-       <PARAMETER>IV_PROMPT_USUARIO</PARAMETER>
-       <KIND>P</KIND>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>IV_JSON_DADOS</PARAMETER>
-       <KIND>P</KIND>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>RS_RESULT</PARAMETER>
-       <KIND>P</KIND>
-      </RSFDO>
-     </DOCUMENTATION>
-    </item>
-    <item>
      <FUNCNAME>/PTLOMS/MF156</FUNCNAME>
      <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Relatório Consulta Analítica</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>IT_DATA</PARAMETER>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IT_ORDEM</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IT_USUARIO</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
        <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
       </RSIMP>
      </IMPORT>
@@ -1206,10 +1281,207 @@
       <RSFDO>
        <PARAMETER>IT_DATA</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Data início</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IT_ORDEM</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Ordem</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IT_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Usuario</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>ET_RETORNO</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>OMS - V2: Categoria de Tabela para /PTLOMS/ET204</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF160</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Função Busca Centro de Custo</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IR_KOSTL</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IR_KOKRS</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IR_KTEXT</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>/IWBEP/T_COD_SELECT_OPTIONS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_TOP</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>INT4</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_SKIP</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>INT4</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_SEARCH</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>STRING</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ET_CENTRO_CUSTO</PARAMETER>
+       <TYP>/PTLOMS/CT174</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IR_KOSTL</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS -  Range KOSTL</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IR_KOKRS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS -  Range KOKRS</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IR_KTEXT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS -  Range KTEXT</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_TOP</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_SKIP</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Nº natural</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_SEARCH</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Search</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ET_CENTRO_CUSTO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - V2 : Categoria de Tabela para /PTLOMS/ET196</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF161</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS - Validação de licença de usuário</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_USER</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>SYUNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_SSF_APPLICATION</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>SSFAPPL</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <TYP>/PTLOMS/ET207</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_USER</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Uusário</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_SSF_APPLICATION</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Aplicação</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>ES_RESULT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>OMS - Estrutura de validação de licença</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+    <item>
+     <FUNCNAME>/PTLOMS/MF166</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>OMS V2 - Função para alterar senha</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IM_USUARIO</PARAMETER>
+       <TYP>XUBNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IM_SENHA_ATUAL</PARAMETER>
+       <TYP>CHAR32</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IM_NOVA_SENHA</PARAMETER>
+       <TYP>CHAR32</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IM_CONF_SENHA</PARAMETER>
+       <TYP>CHAR32</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>EX_SENHA_ALTERADA</PARAMETER>
+       <TYP>CHAR1</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>EX_MENSAGEM</PARAMETER>
+       <TYP>BAPI_MSG</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IM_USUARIO</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Nome do usuário no mestre de usuários</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IM_SENHA_ATUAL</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IM_NOVA_SENHA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IM_CONF_SENHA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Campo de caracteres com um comprimento de 32</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>EX_SENHA_ALTERADA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Código de uma posição</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>EX_MENSAGEM</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Texto de mensagem</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>

@@ -14,6 +14,7 @@
    <FUNCTIONS>
     <item>
      <FUNCNAME>TABLEFRAME_/PTLOMS/GFTB071</FUNCNAME>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível superior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>VIEW_ACTION</PARAMETER>
@@ -60,44 +61,54 @@
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name der Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>TABLEPROC_/PTLOMS/GFTB071</FUNCNAME>
      <GLOBAL_FLAG>X</GLOBAL_FLAG>
+     <SHORT_TEXT>Atualização ampliada de tabelas nível inferior</SHORT_TEXT>
      <IMPORT>
       <RSIMP>
        <PARAMETER>FCODE</PARAMETER>
@@ -172,70 +183,87 @@
       <RSFDO>
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>gewünschte Funktion des Bausteins</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Name der Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
+       <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Korrekturnummer fehlt</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
+       <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
       </RSFDO>
      </DOCUMENTATION>
     </item>
@@ -250,7 +278,7 @@
       <TYPE>N</TYPE>
       <NEXTSCREEN>9001</NEXTSCREEN>
       <LINES>061</LINES>
-      <COLUMNS>255</COLUMNS>
+      <COLUMNS>171</COLUMNS>
      </HEADER>
      <CONTAINERS>
       <RPY_DYCATT>
@@ -263,8 +291,8 @@
        <ELEMENT_OF>SCREEN</ELEMENT_OF>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>255</LENGTH>
-       <HEIGHT>059</HEIGHT>
+       <LENGTH>170</LENGTH>
+       <HEIGHT>057</HEIGHT>
        <C_RESIZE_V>X</C_RESIZE_V>
        <C_RESIZE_H>X</C_RESIZE_H>
        <C_SCROLL_V>X</C_SCROLL_V>
@@ -278,7 +306,7 @@
        <TC_SEL_LNS>MULTIPLE</TC_SEL_LNS>
        <TC_SEL_CLS>NONE</TC_SEL_CLS>
        <TC_LSEL_CL>X</TC_LSEL_CL>
-       <TC_FIXCOL>006</TC_FIXCOL>
+       <TC_FIXCOL>007</TC_FIXCOL>
       </RPY_DYCATT>
      </CONTAINERS>
      <FIELDS>
@@ -288,8 +316,8 @@
        <TYPE>PUSH_TMPL</TYPE>
        <NAME>VIM_POSI_PUSH</NAME>
        <TEXT>____________________</TEXT>
-       <LINE>061</LINE>
-       <COLUMN>019</COLUMN>
+       <LINE>060</LINE>
+       <COLUMN>018</COLUMN>
        <LENGTH>020</LENGTH>
        <VISLENGTH>020</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -349,15 +377,14 @@
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-APLICACAO</NAME>
-       <TEXT>ID_Aplicação</TEXT>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>012</LENGTH>
+       <LENGTH>040</LENGTH>
        <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
-       <MODIFIC>F</MODIFIC>
+       <MODIFIC>V</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -365,7 +392,7 @@
        <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEXT</TYPE>
-       <NAME>%#AUTOTEXT001</NAME>
+       <NAME>%##AUTOTEXT001</NAME>
        <TEXT>Descr._Aplicação</TEXT>
        <LINE>001</LINE>
        <COLUMN>002</COLUMN>
@@ -381,15 +408,14 @@
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-FORMULARIO</NAME>
-       <TEXT>Formulário</TEXT>
        <LINE>001</LINE>
        <COLUMN>003</COLUMN>
-       <LENGTH>010</LENGTH>
+       <LENGTH>040</LENGTH>
        <VISLENGTH>020</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
-       <MODIFIC>F</MODIFIC>
+       <MODIFIC>V</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -397,7 +423,7 @@
        <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEXT</TYPE>
-       <NAME>%#AUTOTEXT002</NAME>
+       <NAME>%##AUTOTEXT002</NAME>
        <TEXT>Descr._Formulário</TEXT>
        <LINE>001</LINE>
        <COLUMN>004</COLUMN>
@@ -416,7 +442,7 @@
        <LINE>001</LINE>
        <COLUMN>005</COLUMN>
        <LENGTH>040</LENGTH>
-       <VISLENGTH>030</VISLENGTH>
+       <VISLENGTH>015</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
@@ -444,9 +470,25 @@
        <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEXT</TYPE>
-       <NAME>*/PTLOMS/TB071-IDENTIFICACAO</NAME>
+       <NAME>*/PTLOMS/TB071-TIPO_USO</NAME>
        <LINE>001</LINE>
        <COLUMN>007</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>010</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>1</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <TC_HEADING>X</TC_HEADING>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>*/PTLOMS/TB071-IDENTIFICACAO</NAME>
+       <LINE>001</LINE>
+       <COLUMN>008</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -462,7 +504,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-ERNAM</NAME>
        <LINE>001</LINE>
-       <COLUMN>008</COLUMN>
+       <COLUMN>009</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>012</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -478,7 +520,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-ERDAT</NAME>
        <LINE>001</LINE>
-       <COLUMN>009</COLUMN>
+       <COLUMN>010</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -494,13 +536,13 @@
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-ERZEIT</NAME>
        <LINE>001</LINE>
-       <COLUMN>010</COLUMN>
+       <COLUMN>011</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>008</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
-       <MODIFIC>V</MODIFIC>
+       <MODIFIC>4</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -510,7 +552,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-AENAM</NAME>
        <LINE>001</LINE>
-       <COLUMN>011</COLUMN>
+       <COLUMN>012</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>012</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -526,7 +568,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-AEDAT</NAME>
        <LINE>001</LINE>
-       <COLUMN>012</COLUMN>
+       <COLUMN>013</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -542,13 +584,13 @@
        <TYPE>TEXT</TYPE>
        <NAME>*/PTLOMS/TB071-AEZEIT</NAME>
        <LINE>001</LINE>
-       <COLUMN>013</COLUMN>
+       <COLUMN>014</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>008</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
-       <MODIFIC>V</MODIFIC>
+       <MODIFIC>4</MODIFIC>
        <REQU_ENTRY>N</REQU_ENTRY>
        <TC_HEADING>X</TC_HEADING>
       </RPY_DYFATC>
@@ -586,7 +628,6 @@
        <OUTPUT_FLD>X</OUTPUT_FLD>
        <REQU_ENTRY>O</REQU_ENTRY>
        <LEAD_ZEROS>X</LEAD_ZEROS>
-       <MATCHCODE>/PTLOMS/SH008</MATCHCODE>
        <DICT_I_FKY>X</DICT_I_FKY>
       </RPY_DYFATC>
       <RPY_DYFATC>
@@ -594,11 +635,10 @@
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
        <NAME>VG_DESC_APLIC</NAME>
-       <TEXT>________________________________________</TEXT>
-       <ROLLING>X</ROLLING>
+       <TEXT>________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>002</COLUMN>
-       <LENGTH>040</LENGTH>
+       <LENGTH>016</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
@@ -624,7 +664,6 @@
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
        <REQU_ENTRY>O</REQU_ENTRY>
-       <MATCHCODE>/PTLOMS/SH009</MATCHCODE>
        <DICT_I_FKY>X</DICT_I_FKY>
       </RPY_DYFATC>
       <RPY_DYFATC>
@@ -632,11 +671,10 @@
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
        <NAME>VG_DESC_FORM</NAME>
-       <TEXT>________________________________________</TEXT>
-       <ROLLING>X</ROLLING>
+       <TEXT>_________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>004</COLUMN>
-       <LENGTH>040</LENGTH>
+       <LENGTH>017</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
@@ -687,9 +725,29 @@
        <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
        <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
-       <NAME>/PTLOMS/TB071-IDENTIFICACAO</NAME>
+       <NAME>/PTLOMS/TB071-TIPO_USO</NAME>
+       <TEXT>?_________</TEXT>
        <LINE>001</LINE>
        <COLUMN>007</COLUMN>
+       <LENGTH>010</LENGTH>
+       <VISLENGTH>010</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>KEY</GROUP1>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>X</MODIFIC>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <REQU_ENTRY>O</REQU_ENTRY>
+       <DICT_I_VAL>X</DICT_I_VAL>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_/PTLOMS/TB071</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>/PTLOMS/TB071-IDENTIFICACAO</NAME>
+       <LINE>001</LINE>
+       <COLUMN>008</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -698,7 +756,6 @@
        <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
-       <REQU_ENTRY>R</REQU_ENTRY>
       </RPY_DYFATC>
       <RPY_DYFATC>
        <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
@@ -707,7 +764,7 @@
        <NAME>/PTLOMS/TB071-ERNAM</NAME>
        <TEXT>____________</TEXT>
        <LINE>001</LINE>
-       <COLUMN>008</COLUMN>
+       <COLUMN>009</COLUMN>
        <LENGTH>012</LENGTH>
        <VISLENGTH>012</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -724,7 +781,7 @@
        <NAME>/PTLOMS/TB071-ERDAT</NAME>
        <TEXT>__________</TEXT>
        <LINE>001</LINE>
-       <COLUMN>009</COLUMN>
+       <COLUMN>010</COLUMN>
        <LENGTH>010</LENGTH>
        <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -741,7 +798,7 @@
        <NAME>/PTLOMS/TB071-ERZEIT</NAME>
        <TEXT>________</TEXT>
        <LINE>001</LINE>
-       <COLUMN>010</COLUMN>
+       <COLUMN>011</COLUMN>
        <LENGTH>008</LENGTH>
        <VISLENGTH>008</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -758,7 +815,7 @@
        <NAME>/PTLOMS/TB071-AENAM</NAME>
        <TEXT>____________</TEXT>
        <LINE>001</LINE>
-       <COLUMN>011</COLUMN>
+       <COLUMN>012</COLUMN>
        <LENGTH>012</LENGTH>
        <VISLENGTH>012</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -775,7 +832,7 @@
        <NAME>/PTLOMS/TB071-AEDAT</NAME>
        <TEXT>__________</TEXT>
        <LINE>001</LINE>
-       <COLUMN>012</COLUMN>
+       <COLUMN>013</COLUMN>
        <LENGTH>010</LENGTH>
        <VISLENGTH>010</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -792,7 +849,7 @@
        <NAME>/PTLOMS/TB071-AEZEIT</NAME>
        <TEXT>________</TEXT>
        <LINE>001</LINE>
-       <COLUMN>013</COLUMN>
+       <COLUMN>014</COLUMN>
        <LENGTH>008</LENGTH>
        <VISLENGTH>008</VISLENGTH>
        <HEIGHT>001</HEIGHT>

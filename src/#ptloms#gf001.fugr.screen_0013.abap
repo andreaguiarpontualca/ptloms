@@ -1,41 +1,45 @@
 PROCESS BEFORE OUTPUT.
-  MODULE liste_initialisieren.
-  LOOP AT extract WITH CONTROL
-   tctrl_/ptloms/tb013 CURSOR nextline.
-    MODULE liste_show_liste.
-  ENDLOOP.
+ MODULE LISTE_INITIALISIEREN.
+ LOOP AT EXTRACT WITH CONTROL
+  TCTRL_/PTLOMS/TB013 CURSOR NEXTLINE.
+   MODULE LISTE_SHOW_LISTE.
+ ENDLOOP.
 *
 PROCESS AFTER INPUT.
-  MODULE liste_exit_command AT EXIT-COMMAND.
-  MODULE liste_before_loop.
-  LOOP AT extract.
-    MODULE liste_init_workarea.
-    CHAIN.
-      FIELD /ptloms/tb013-usuario .
-      FIELD /ptloms/tb013-perfil .
-      FIELD /ptloms/tb013-nome .
-      FIELD /ptloms/tb013-matricula .
-      FIELD /ptloms/tb013-objid .
-      FIELD /ptloms/tb013-sincroniza .
-      FIELD /ptloms/tb013-encerra .
-      FIELD /ptloms/tb013-limite_conf .
-      FIELD /ptloms/tb013-senha .
-      FIELD /ptloms/tb013-conf_senha .
-      FIELD /ptloms/tb013-associa .
-      FIELD /ptloms/tb013-bloqueado .
-      FIELD /ptloms/tb013-atualizar_senha .
-      FIELD /ptloms/tb013-material_saldo .
-      FIELD /ptloms/tb013-dia_inicio .
-      FIELD /ptloms/tb013-dias_retroativos .
-      FIELD /ptloms/tb013-dias_progressivos .
-      FIELD /ptloms/tb013-eliminado .
-      FIELD /ptloms/tb013-unidade_tempo .
-      MODULE set_update_flag ON CHAIN-REQUEST.
-    ENDCHAIN.
-    FIELD vim_marked MODULE liste_mark_checkbox.
-    CHAIN.
-      FIELD /ptloms/tb013-usuario .
-      MODULE liste_update_liste.
-    ENDCHAIN.
-  ENDLOOP.
-  MODULE liste_after_loop.
+ MODULE LISTE_EXIT_COMMAND AT EXIT-COMMAND.
+ MODULE LISTE_BEFORE_LOOP.
+ LOOP AT EXTRACT.
+   MODULE LISTE_INIT_WORKAREA.
+   CHAIN.
+    FIELD /PTLOMS/TB013-USUARIO .
+    FIELD /PTLOMS/TB013-PERFIL .
+    FIELD /PTLOMS/TB013-NOME .
+    FIELD /PTLOMS/TB013-MATRICULA .
+    FIELD /PTLOMS/TB013-OBJID .
+    FIELD /PTLOMS/TB013-SINCRONIZA .
+    FIELD /PTLOMS/TB013-ENCERRA .
+    FIELD /PTLOMS/TB013-LIMITE_CONF .
+    FIELD /PTLOMS/TB013-SENHA .
+    FIELD /PTLOMS/TB013-CONF_SENHA .
+    FIELD /PTLOMS/TB013-ASSOCIA .
+    FIELD /PTLOMS/TB013-BLOQUEADO .
+    FIELD /PTLOMS/TB013-ATUALIZAR_SENHA .
+    FIELD /PTLOMS/TB013-MATERIAL_SALDO .
+    FIELD /PTLOMS/TB013-DIA_INICIO .
+    FIELD /PTLOMS/TB013-DIAS_RETROATIVOS .
+    FIELD /PTLOMS/TB013-DIAS_PROGRESSIVOS .
+    FIELD /PTLOMS/TB013-ELIMINADO .
+    FIELD /PTLOMS/TB013-UNIDADE_TEMPO .
+    FIELD /PTLOMS/TB013-NAO_ALOCAR_OP .
+    FIELD /PTLOMS/TB013-SWERK .
+    FIELD /PTLOMS/TB013-EMAIL .
+    FIELD /PTLOMS/TB013-TELEFONE .
+    MODULE SET_UPDATE_FLAG ON CHAIN-REQUEST.
+   ENDCHAIN.
+   FIELD VIM_MARKED MODULE LISTE_MARK_CHECKBOX.
+   CHAIN.
+    FIELD /PTLOMS/TB013-USUARIO .
+    MODULE LISTE_UPDATE_LISTE.
+   ENDCHAIN.
+ ENDLOOP.
+ MODULE LISTE_AFTER_LOOP.
